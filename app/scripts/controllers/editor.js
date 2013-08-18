@@ -12,6 +12,4 @@ angular.module('pancakeApp')
 
     $scope.score = sharedProperties.getProperty().score;
 
-    $scope.name = "Test String";
-
   });

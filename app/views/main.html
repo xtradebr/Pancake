@@ -1,12 +1,18 @@
 <div class="hero-unit">
-    <h1>'안녕, 안녕!</h1>
-    <br>
-    <p>Yeoman 이용해 개발 중!</p>
-    <h3>재밌게 코딩해보자!!!!</h3>
+    <div class="title">
+        <h1>Sound Pancake</h1>
+        <div class="sub-title">
+            <h3>by pancake</h3>
+        </div>
 
-    <div style="margin-top: 32px; text-align:center;">
+        <br><br>
+        <!--<p>Yeoman 이용해 개발 중!</p>-->
+        <!--<h3>재밌게 코딩해보자!!!!</h3>-->
+    </div>
+
+    <div class="demo">
         <div ng-controller="CreateScoreCtrl">
-            <p><button class="btn btn-primary" ng-click="create()">새로운 악보 생성</button></p>
+            <p><button class="btn btn-primary" ng-click="create()">Demo</button></p>
             <div modal="shouldBeOpen" close="close()" options="opts">
                 <div class="modal-header">
                     <h3>새로운 악보 정보를 입력해주세요.</h3>
@@ -20,7 +26,7 @@
                         <option ng-repeat="each_beat in beat_list">{{each_beat}}</option>
                     </select>
 
-                    <p class="bpm-btn-group">
+                    <p>
                         <span>속도</span>
                         <button type="button" class="btn btn-primary" ng-model="score.bpm" btn-radio="'느림'">느림</button>
                         <button type="button" class="btn btn-primary" ng-model="score.bpm" btn-radio="'보통'">보통</button>
@@ -32,11 +38,7 @@
                     <button class="btn btn-warning cancel" ng-click="close()">취소</button>
                 </div>
             </div>
-            <p>입력한 정보<br>
-                악보 이름: {{score.title}}<br>
-                악보 박자: {{score.beat}}<br>
-                악보 속도: {{score.bpm}}
-            </p>
+
         </div>
     </div>
 </div>
