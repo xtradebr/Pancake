@@ -7,13 +7,23 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title>Pancake Prototype</title>
-    <meta name="description" content="">
+    <meta name="description" content="Pancake Prototype">
     <meta name="viewport" content="width=device-width">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
-        <!-- build:css({.tmp,app}) styles/main.css -->
-        <link rel="stylesheet" href="styles/main.css">
-        <!-- endbuild -->
+      <!-- build:css({.tmp,app}) styles/main.css  <custom styles by pancake> -->
+      <!--basic styles-->
+      <link rel="stylesheet" href="custom_bootstrap/css/uncompressed/bootstrap.css">
+      <link rel="stylesheet" href="custom_bootstrap/css/bootstrap-responsive.min.css" />
+      <link rel="stylesheet" href="custom_bootstrap/css/font-awesome.min.css" />
+
+      <!--ace styles-->
+      <link rel="stylesheet" href="custom_bootstrap/css/uncompressed/ace.css" />
+      <link rel="stylesheet" href="custom_bootstrap/css/ace-responsive.min.css" />
+      <link rel="stylesheet" href="custom_bootstrap/css/ace-skins.min.css" />
+
+      <link rel="stylesheet" href="styles/main.css" />
+      <!-- endbuild -->
 </head>
   <body ng-app="pancakeApp">
     <header class="header">
@@ -23,7 +33,7 @@
                   <a class="brand" href="http://localhost:9000/">
                       <strong>Pancake</strong>
                   </a>
-                  <ul class="nav">
+                  <ul class="nav ace-nav">
                       <li class="divider-vertical"></li>
                       <li><a href="http://localhost:9000/"><i class="icon-home icon-white"></i> Home</a></li>
                       <li class="divider-vertical"></li>
@@ -44,45 +54,20 @@
           </div>
       </div>
     </header>
-    <!--[if lt IE 7]>
-      <p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>
-    <![endif]-->
-
-    <!--[if lt IE 9]>
-      <script src="bower_components/es5-shim/es5-shim.js"></script>
-      <script src="bower_components/json3/lib/json3.min.js"></script>
-    <![endif]-->
 
     <!-- Add your site or application content here -->
     <div class="container" ng-view=""></div>
 
-    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
-    <!--<script>-->
-      <!--var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];-->
-      <!--(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];-->
-      <!--g.src='//www.google-analytics.com/ga.js';-->
-      <!--s.parentNode.insertBefore(g,s)}(document,'script'));-->
-    <!--</script>-->
-
     <script src="bower_components/jquery/jquery.js"></script>
     <script src="bower_components/angular/angular.js"></script>
-    <script src="bower_components/lib/ui-bootstrap-tpls-0.5.0.js"></script>
-    <script src="bower_components/lib/select2.js"></script>
 
         <!-- build:js scripts/plugins.js -->
-        <script src="bower_components/bootstrap-sass/js/bootstrap-affix.js"></script>
-        <script src="bower_components/bootstrap-sass/js/bootstrap-alert.js"></script>
-        <script src="bower_components/bootstrap-sass/js/bootstrap-dropdown.js"></script>
-        <script src="bower_components/bootstrap-sass/js/bootstrap-tooltip.js"></script>
-        <script src="bower_components/bootstrap-sass/js/bootstrap-modal.js"></script>
-        <script src="bower_components/bootstrap-sass/js/bootstrap-transition.js"></script>
-        <script src="bower_components/bootstrap-sass/js/bootstrap-button.js"></script>
-        <script src="bower_components/bootstrap-sass/js/bootstrap-popover.js"></script>
-        <script src="bower_components/bootstrap-sass/js/bootstrap-typeahead.js"></script>
-        <script src="bower_components/bootstrap-sass/js/bootstrap-carousel.js"></script>
-        <script src="bower_components/bootstrap-sass/js/bootstrap-scrollspy.js"></script>
-        <script src="bower_components/bootstrap-sass/js/bootstrap-collapse.js"></script>
-        <script src="bower_components/bootstrap-sass/js/bootstrap-tab.js"></script>
+        <script src="bower_components/lib/ui-bootstrap-tpls-0.5.0.js"></script>
+        <script src="bower_components/lib/select2.js"></script>
+        <script src="bower_components/lib/d3/d3.v3.js"></script>
+
+        <!--ace settings handler-->
+        <script src="custom_bootstrap/js/ace-extra.min.js"></script>
         <!-- endbuild -->
 
         <!-- build:js scripts/modules.js -->

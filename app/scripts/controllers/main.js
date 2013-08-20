@@ -18,10 +18,10 @@ angular.module('pancakeApp')
 
       $scope.ok = function () {
         //TODO: validate user input data
-        sharedProperties.setProperty( { score:$scope.score } );
+        sharedProperties.setProperty({ score: $scope.score });
         $location.path('/editor');
         $scope.shouldBeOpen = false;
-      }
+      };
 
       $scope.close = function () {
         $scope.shouldBeOpen = false;
@@ -30,19 +30,30 @@ angular.module('pancakeApp')
 
       var clearScore = function () {
         $scope.score = { title: '', beat: $scope.beat_list[1], bpm: $scope.bpm_list[1] };
-      }
+      };
 
       $scope.opts = {
         backdropFade: true,
         dialogFade:true
       };
     }
+
+    $scope.DemoCtrl = function ($location, sharedProperties) {
+
+      $scope.start = function () {
+        sharedProperties.setProperty(
+          { score: { title: 'Demo', beat: '4/4', bpm: '보통' } }
+        );
+        $location.path('/editor');
+      }
+    }
+
   })
   .service('sharedProperties', function () {
 
     var property = {
       score: { title: '', beat: '', bpm: '' }
-    }
+    };
     return {
       getProperty: function () {
         return property;

@@ -6,19 +6,17 @@
         </div>
 
         <br><br>
-        <!--<p>Yeoman 이용해 개발 중!</p>-->
-        <!--<h3>재밌게 코딩해보자!!!!</h3>-->
     </div>
 
     <div class="demo">
-        <div ng-controller="CreateScoreCtrl">
-            <p><button class="btn btn-primary" ng-click="create()">Demo</button></p>
+        <div ng-controller="CreateScoreCtrl" >
+            <p><button class="btn btn-app btn-primary" ng-click="create()">Create</button></p>
             <div modal="shouldBeOpen" close="close()" options="opts">
                 <div class="modal-header">
                     <h3>새로운 악보 정보를 입력해주세요.</h3>
                 </div>
                 <div class="modal-body">
-                    악보 이름: <input type="text" autofocus="true" ng-model="score.title"/>
+                    악보 이름: <input type="text" autofocus="true" ng-model="score.title" required/>
                     <br><br><br><br><br>
 
                     <span>박자</span>
@@ -28,17 +26,19 @@
 
                     <p>
                         <span>속도</span>
-                        <button type="button" class="btn btn-primary" ng-model="score.bpm" btn-radio="'느림'">느림</button>
-                        <button type="button" class="btn btn-primary" ng-model="score.bpm" btn-radio="'보통'">보통</button>
-                        <button type="button" class="btn btn-primary" ng-model="score.bpm" btn-radio="'빠름'">빠름</button>
+                        <button type="button" class="btn btn-small btn-purple" ng-model="score.bpm" btn-radio="'느림'">느림</button>
+                        <button type="button" class="btn btn-small btn-purple" ng-model="score.bpm" btn-radio="'보통'">보통</button>
+                        <button type="button" class="btn btn-small btn-purple" ng-model="score.bpm" btn-radio="'빠름'">빠름</button>
                     </p>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary" ng-click="ok()">확인</button></a>
-                    <button class="btn btn-warning cancel" ng-click="close()">취소</button>
+                    <button class="btn btn-app btn-success" ng-click="ok()">확인</button></a>
+                    <button class="btn btn-app btn-yellow" ng-click="close()">취소</button>
                 </div>
             </div>
-
+        </div>
+        <div ng-controller="DemoCtrl">
+            <p><button class="btn btn-app btn-pink" ng-click="start()">Demo</button></p>
         </div>
     </div>
 </div>
