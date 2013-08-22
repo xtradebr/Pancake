@@ -48,12 +48,23 @@ body {
 .edit_panel {
   width: auto;
   height: auto;
-  background-color: black;
-  display: block;
   margin: auto; }
 
+.edit_panel > p {
+  text-align: center; }
+
 .editor {
+  background-color: black;
   pointer-events: all; }
+
+.timeline_panel {
+  margin: 0 50px 0 50px;
+  background-color: #f9c455;
+  text-align: right;
+  border-radius: 6px; }
+
+.timeline {
+  background-color: #ff981a; }
 
 circle {
   stroke-width: 1.5px; }

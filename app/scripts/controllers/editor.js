@@ -12,72 +12,92 @@ angular.module('pancakeApp')
 
     $scope.score = sharedProperties.getProperty().score;
 
+    $scope.startComposition = function() {
+      $scope.editor.startComposition();
+    };
+
+    $scope.endComposition = function() {
+      $scope.editor.endComposition();
+    };
+
   })
   .directive('editorVisualization', function() {
 
     // constants
-    var colorSet = new ColorSet(d3.scale.category10());
     var editor;
 
     return {
       restrict: 'E',
       // 초기화, 템플릿안에 ng-repeat이 없다면 한번만 실행됨.
       link: function(scope, element, attr) {
-
-        editor = findEditor();
-        setEventListenersOf(editor);
-
-        function findEditor() {
-          return d3.select("svg");
-        }
-
-        function setEventListenersOf(editor) {
-          editor.on("click", fill)
-                .on("mousemove", particle);
-        }
-
+        editor = initEditor();
+        scope.editor = editor;
       }
     };
 
-    function draw(circle) {
-      circle.transition()
-        .duration(1500)
-        .ease(Math.sqrt)
-        .attr("r", getRandomInt(20, 40))
-        .style("stroke-opacity", 1e-6)
-        .remove();
-    }
-
-    function fill() {
-      var circle = makePreDefinedCircle(d3.mouse(this));
-      circle.style("fill", colorSet.getColor());
-      draw(circle);
-    }
-
-    function particle() {
-      var circle = makePreDefinedCircle(d3.mouse(this));
-      circle.style("fill", "none");
-      draw(circle);
-    }
-
-    function makePreDefinedCircle(mousePosition) {
-      var circle = editor.append("svg:circle");
-
-      circle.attr("cx", mousePosition[0])
-        .attr("cy", mousePosition[1])
-        .attr("r", 1e-6 + getRandomInt(0,10))
-        .style("stroke", colorSet.getColor())
-        .style("stroke-opacity", 1);
-
-      return circle;
-    }
-
-    function getRandomInt(min, max) {
-      return Math.floor(Math.random() * (max - min + 1)) + min;
+    function initEditor() {
+      return new PanelEditor( d3.select("svg") );
     }
 
   });
 
+function PanelEditor(svg) {
+  this.svg = svg;
+  svg.on("mousedown", down)
+     .on("mouseup", up)
+     .on("mousemove", move);
+
+  this.formatter = new MIDIFormatter();
+
+  var colorSet = new ColorSet(d3.scale.category10());
+  var circleColorStyle = "none";
+
+  function down() {
+    circleColorStyle = colorSet.getColor();
+    drawParticle(d3.mouse(this));
+  }
+
+  function up() {
+    colorSet.nextColor();
+    circleColorStyle = "none";
+    drawParticle(d3.mouse(this));
+  }
+
+  function move() {
+    drawParticle(d3.mouse(this));
+  }
+
+  function drawParticle(mousePosition) {
+
+    svg.append("svg:circle")
+        .attr("cx", mousePosition[0])
+        .attr("cy", mousePosition[1])
+        .attr("r", d3.random.normal(15, 4))
+        .style("stroke", colorSet.getColor())
+        .style("stroke-opacity", 1)
+        .style("fill", circleColorStyle)
+        .transition()
+        .duration(1500)
+//        .ease(Math.sqrt)
+        .style("stroke-opacity", 1e-6)
+        .style("fill-opacity", 1e-6)
+        .remove();
+  }
+
+  this.startComposition = function() {
+    var event = { type: 'mockOn', note: 'c#', timestamp: '134646', velocity: '0.5' };
+    alert("작곡을 시작함돠~\n");
+    this.formatter.createMIDI("Demo");
+    this.formatter.sendEvent(event);
+  };
+
+  this.endComposition = function() {
+    var event = { type: 'mockOff', note: 'c#', timestamp: '134646', velocity: '0.5' };
+    alert("작곡을 끝냄돠~\n");
+    this.formatter.saveMIDI();
+    this.formatter.sendEvent(event);
+  }
+}
 
 function ColorSet(set) {
   var currentColor = 0;
@@ -91,4 +111,11 @@ function ColorSet(set) {
     return this.getColor();
   }
 
+}
+
+function MIDIFormatter() {
+  // mock-up
+  this.sendEvent = function(event) {};
+  this.createMIDI = function(MIDI_Information) {};
+  this.saveMIDI = function() {};
 }
