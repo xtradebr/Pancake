@@ -16,46 +16,79 @@ angular.module('pancakeApp')
   .directive('editorVisualization', function() {
 
     // constants
-    var w = 640;
-    var h = 480;
-    var m = 30;
-    var z = d3.scale.category20c();
-    var i = 0;
+    var colorSet = new ColorSet(d3.scale.category10());
     var editor;
 
     return {
       restrict: 'E',
-      // attributes bound to the scope
-      scope: {},
       // 초기화, 템플릿안에 ng-repeat이 없다면 한번만 실행됨.
       link: function(scope, element, attr) {
 
-        // set-up initial svg object in document
-        editor = d3.select(element[0])
-          .append("svg:svg")
-          .attr("width", w)
-          .attr("height", h + m)
-          .style("pointer-events", "all")
-          .on("mousemove", particle);
+        editor = findEditor();
+        setEventListenersOf(editor);
 
-        function particle() {
-          var m = d3.mouse(this);
-
-          editor.append("svg:circle")
-            .attr("cx", m[0])
-            .attr("cy", m[1])
-            .attr("r", 1e-6)
-            .style("stroke", z(++i))
-            .style("stroke-opacity", 1)
-            .transition()
-            .duration(2000)
-            .ease(Math.sqrt)
-            .attr("r", 100)
-            .style("stroke-opacity", 1e-6)
-            .remove();
+        function findEditor() {
+          return d3.select("svg");
         }
+
+        function setEventListenersOf(editor) {
+          editor.on("click", fill)
+                .on("mousemove", particle);
+        }
+
       }
     };
 
+    function draw(circle) {
+      circle.transition()
+        .duration(1500)
+        .ease(Math.sqrt)
+        .attr("r", getRandomInt(20, 40))
+        .style("stroke-opacity", 1e-6)
+        .remove();
+    }
+
+    function fill() {
+      var circle = makePreDefinedCircle(d3.mouse(this));
+      circle.style("fill", colorSet.getColor());
+      draw(circle);
+    }
+
+    function particle() {
+      var circle = makePreDefinedCircle(d3.mouse(this));
+      circle.style("fill", "none");
+      draw(circle);
+    }
+
+    function makePreDefinedCircle(mousePosition) {
+      var circle = editor.append("svg:circle");
+
+      circle.attr("cx", mousePosition[0])
+        .attr("cy", mousePosition[1])
+        .attr("r", 1e-6 + getRandomInt(0,10))
+        .style("stroke", colorSet.getColor())
+        .style("stroke-opacity", 1);
+
+      return circle;
+    }
+
+    function getRandomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
 
   });
+
+
+function ColorSet(set) {
+  var currentColor = 0;
+  this.colors = set;
+  this.getColor = function() {
+    return this.colors(currentColor);
+  };
+
+  this.nextColor = function() {
+    ++currentColor;
+    return this.getColor();
+  }
+
+}
