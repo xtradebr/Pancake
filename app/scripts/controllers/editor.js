@@ -44,18 +44,15 @@ angular.module('pancakeApp')
 // TODO: Separation of Concerns은 자바스크립트에 대해 좀 더 이해한 후에 진행.
 function PanelEditor(svg) {
   this.svg = svg;
-//  svg.on("mousedown", down)
-//     .on("mouseup", up)
-//     .on("mousemove", move);
-
-  var time = d3.time.scale();
-//  printD(time.ticks(d3.time.second, 1));
-  function printDataToConsole(d) { console.log(d); }
+  svg.on("mousedown", down)
+     .on("mouseup", up)
+     .on("mousemove", move);
 
   var formatter = new MIDIFormatter();
 
   var colorSet = new ColorSet(d3.scale.category10());
   var circleColorStyle = "none";
+  var circleRadius = d3.random.normal(10, 2);
 
   // TODO: need to re-calculate event when window size changed
   var svgWidth = parseInt(this.svg.style("width"));
@@ -66,6 +63,9 @@ function PanelEditor(svg) {
   var circleSizeList = getCircleSizeList();
   var pitchRangeList = getPitchRagneList();
 
+  var mousePosition = [svgWidth, svgHeight];
+
+  // static images
   this.drawBackground = function() {
     var length = pitchCount-1;
     for(var i=0; i<length; i++) {
@@ -86,29 +86,16 @@ function PanelEditor(svg) {
       .style("stroke-width", 3);
   };
 
+  // dynamic images (animation)
   this.startAnimation = function() {
     d3.timer(flowAnimation);
 
-    var time = 0, frame = 7, tick = 0;
+    var time = 0, frame = 2, tick = 0;
 
     function flowAnimation() {
       if( ++tick > frame ) {
         tick = 0;
-//        printDataToConsole(this);
-        svg.append("svg:circle")
-          .attr("cx", xPos)
-          .attr("cy", svgHeight/2)
-          .attr("r", 10)
-          .style("stroke", colorSet.getColor())
-          .style("stroke-opacity", 1)
-          .style("fill", circleColorStyle)
-          .transition()
-          .attr("cx", -30)
-
-//        .style("stroke-opacity", 1e-6)
-//        .style("fill-opacity", 1e-6)
-          .remove();
-
+        drawCircle();
 
         return isEndAnimation();
       }
@@ -129,33 +116,32 @@ function PanelEditor(svg) {
 
   function down() {
     circleColorStyle = colorSet.getColor();
-    drawParticle(d3.mouse(this));
   }
 
   function up() {
     colorSet.nextColor();
     circleColorStyle = "none";
-    drawParticle(d3.mouse(this));
   }
 
   function move() {
-    drawParticle(d3.mouse(this));
+    mousePosition = d3.mouse(this);
+    circleRadius = getRadiusBaseOnXPos(mousePosition[0]);
   }
 
-  function drawParticle(mousePosition) {
-    printDataToConsole(mousePosition);
-
+  function drawCircle() {
     svg.append("svg:circle")
         .attr("cx", xPos)
         .attr("cy", getLocationInSVG(mousePosition[1]))
-        .attr("r", getRadiusBaseOnXPos(mousePosition[0]))
+        .attr("r", circleRadius)
         .style("stroke", colorSet.getColor())
         .style("stroke-opacity", 1)
         .style("fill", circleColorStyle)
         .transition()
         .attr("cx", -30)
-//        .style("stroke-opacity", 1e-6)
-//        .style("fill-opacity", 1e-6)
+        // 몇 초에 걸쳐서 움직일 것인가?
+        .duration("1000")
+        // 애니메이션 종류는 어떠한가?
+        .ease("linear")
         .remove();
   }
 
@@ -216,6 +202,8 @@ function PanelEditor(svg) {
     formatter.saveMIDI();
     formatter.sendEvent(event);
   }
+
+  function printDataToConsole(d) { console.log(d); }
 }
 
 function ColorSet(set) {
