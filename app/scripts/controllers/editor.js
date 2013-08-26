@@ -53,6 +53,7 @@ function PanelEditor(svg) {
   var colorSet = new ColorSet(d3.scale.category10());
   var circleColorStyle = "none";
   var circleRadius = d3.random.normal(10, 2);
+  var pointerCircle;
 
   // TODO: need to re-calculate event when window size changed
   var svgWidth = parseInt(this.svg.style("width"));
@@ -89,6 +90,13 @@ function PanelEditor(svg) {
   // dynamic images (animation)
   this.startAnimation = function() {
     d3.timer(flowAnimation);
+    pointerCircle = this.svg.append("svg:circle")
+                        .attr("cx", xPos)
+                        .attr("cy", getLocationInSVG(mousePosition[1]))
+                        .attr("r", 25)
+                        .attr("stroke", colorSet.getColor())
+                        .style("stroke-opacity", 1)
+                        .style("fill", "none");
 
     var time = 0, frame = 2, tick = 0;
 
@@ -119,13 +127,14 @@ function PanelEditor(svg) {
   }
 
   function up() {
-    colorSet.nextColor();
+//    colorSet.nextColor();
     circleColorStyle = "none";
   }
 
   function move() {
     mousePosition = d3.mouse(this);
     circleRadius = getRadiusBaseOnXPos(mousePosition[0]);
+    pointerCircle.attr("cy", mousePosition[1]);
   }
 
   function drawCircle() {
