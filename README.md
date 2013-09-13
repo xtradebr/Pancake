@@ -1,3 +1,3 @@
-Prototype For Team Pancake Project.
+Prototype of Team Sound Pancake.
 
 MIDI Editor. ver.0.1
