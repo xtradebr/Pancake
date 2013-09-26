@@ -13,7 +13,8 @@ angular.module('pancakeApp')
     $scope.score = sharedProperties.getProperty().score;
 
     $scope.startComposition = function() {
-      $scope.editor.startComposition();
+//      $scope.editor.startComposition();
+      $scope.editor.test();
     };
 
     $scope.endComposition = function() {
@@ -52,106 +53,61 @@ function PanelEditor(svg) {
 
   document.body.appendChild( stats.domElement );
 
+
+
   svg.on("mousedown", down)
      .on("mouseup", up)
      .on("mousemove", move);
 
   var formatter = new MIDIFormatter();
-
-  var colorSet = new ColorSet(d3.scale.category10());
-  var circleColorStyle = "none";
-  var circleRadius = d3.random.normal(10, 2);
   var pointerCircle;
 
   // TODO: need to re-calculate event when window size changed
-  var svgWidth = parseInt(svg.style("width"));
-  var svgHeight = parseInt(svg.style("height"));
-  var xPos = svgWidth/2;
-  var sectionCount = 10, pitchCount = 10;
-  var volumeRangeList = getVolumeRangeList();
-  var circleSizeList = getCircleSizeList();
-  var pitchRangeList = getPitchRagneList();
+  var svgWidth = parseInt(svg.style("width")),
+      svgHeight = parseInt(svg.style("height")),
+      xPos = svgWidth/2,
 
-  var mousePosition = [xPos, svgHeight/2];
+      pitch = d3.scale.linear().domain([0,9]).rangeRound([0,svgHeight]),
+      midInPitch = getMiddleYInPitch(),
+      currentPitch = 4,
+
+      mousePosition = [xPos, svgHeight/2],
+      bar_height;
+
+  var clicked = false, onGoing = true;
 
   // static images
-  this.drawBackground = function() {
-    var length = pitchCount-1;
-
-    svg.append("svg:line")
-      .attr("x1", xPos)
-      .attr("y1", 0)
-      .attr("x2", xPos)
-      .attr("y2", svgHeight)
-      .style("stroke", "rgb(180,180,180)")
-      .style("stroke-width", 3)
-      .classed("standard_line", "standard_line");
+  var drawBackground = function() {
 
     pointerCircle = svg.append("svg:circle")
       .attr("cx", xPos)
-      .attr("cy", getLocationInSVG(mousePosition[1]))
-      .attr("r", 25)
-      .attr("stroke", colorSet.getColor())
-      .style("stroke-opacity", 1)
-      .style("fill", "none");
+      .attr("cy", svgHeight/2)
+      .attr("r", 20)
+      .attr("stroke", ColorSet.nextColor())
+      .attr("stroke-width", 3)
+      .style("stroke-opacity", 1);
 
-    for(var i=0; i<length; i++) {
-      svg.append("svg:line")
-          .attr("x1", 0)
-          .attr("y1", pitchRangeList[i])
-          .attr("x2", svgWidth)
-          .attr("y2", pitchRangeList[i])
-          .style("stroke", "rgb(125,125,125)");
+    svg.append("rect")
+      .attr("class", "standard_bar")
+      .attr("x", xPos)
+      .attr("y", 0)
+      .attr("width", 2)
+      .attr("height", svgHeight);
+
+    for(var i=1; i<9; i++) {
+      svg.append("rect")
+        .attr("class", "standard_bar")
+        .attr("x", 0)
+        .attr("y", pitch(i))
+        .attr("width", svgWidth)
+        .attr("height", 1);
     }
-  };
+  }( );
 
   // dynamic images (animation)
-  this.startAnimation = function() {
-    var time = 0, tick = 0, frame = 2,
-        bar_tick = 0, bar_frame = frame*4;
+  var startAnimation = function() {
 
-    function animation() {
-      setInterval( function() {
-        stats.begin();
-        if( ++tick > frame ) {
-          tick = 0;
-          drawCircle("2000");
-
-          if( ++bar_tick > bar_frame ) {
-            bar_tick = 0;
-            drawBeatBar("4000");
-          }
-        }
-        stats.end();
-      }, 1000 / 60);
-    }
-    animation();
-
-    function flowAnimation() {
-      stats.begin();
-      if( ++tick > frame ) {
-        tick = 0;
-        drawCircle("2000");
-
-        if( ++bar_tick > bar_frame ) {
-          bar_tick = 0;
-          drawBeatBar("4000");
-        }
-
-        return isEndAnimation();
-      }
-      stats.end();
-      return false;
-    }
-
-    function isEndAnimation() {
-      return (++time > 100000000);
-    }
-
-  };
-
-  this.drawBackground();
-  this.startAnimation();
+  }( );
 
   var BeatBarPool = function() {
     var pool = [];
@@ -174,59 +130,93 @@ function PanelEditor(svg) {
         return pool[(idx++)%length];
       }
     }
-  }( );
-
-  var CirclePool = function() {
-    var pool = [];
-    for(var i=0; i<30; i++) {
-      pool[i] =
-        svg.append("svg:circle")
-          .attr("r", 10)
-          .style("stroke", colorSet.getColor())
-          .style("stroke-width", 2)
-      ;
-    }
-
-    var idx = 0, length = pool.length;
-
-    return {
-      getCircle: function() {
-        return pool[(idx++)%length];
-      }
-    }
-  }( );
+  };
 
   function down() {
-    circleColorStyle = colorSet.getColor();
+    var tick  = 0,
+        yIdx  = getCurrentPitchUsingMousePosition( getLocationInSVG(mousePosition[1]) ),
+        bar;
+
+        currentPitch = yIdx;
+        clicked   = true;
+
+        bar = svg.append("line")
+          .attr("x1", xPos).attr("y1", midInPitch[yIdx])
+          .attr("x2", xPos).attr("y2", midInPitch[yIdx])
+          .attr("class", "bar")
+          .style("stroke-width", bar_height);
+
+          d3.timer(function() {  
+            bar.transition()
+              .attr("x2", d3.round(xPos-tick))
+              .ease("linear");
+              tick += 5;
+
+            if( !clicked && onGoing ) {
+              diffuse(bar);
+            }
+
+            if( upHandler.isUped() ) {
+              upHandler.upClear();
+              diffuse(bar);
+              return true;
+            }
+            return !clicked;
+          });
+
+    function diffuse() {
+      bar.transition()
+        .attr("transform", "translate("+(-xPos)+",0)")
+        .ease("linear")
+        .duration(2000)
+        .remove();
+    }
   }
 
+  var upHandler = function() {
+    var isUp = false;
+    return {
+      upOnce: function() { isUp = true; },
+      isUped: function() { return isUp; },
+      upClear: function() { isUp = false; }
+    }
+  }( );
+
   function up() {
-//    colorSet.nextColor();
-    circleColorStyle = "none";
+    clicked = false;
+    // TODO: push bar data to score.
   }
 
   function move() {
     mousePosition = d3.mouse(this);
-    circleRadius = getRadiusBaseOnXPos(mousePosition[0]);
     pointerCircle.attr("cy", mousePosition[1]);
+    // state(clicked): 기존의 진행중인 bar 중단 + 새로운 bar 추가
+    // state(notClicked): 아무런 변화 없음
+    if( clicked && isCrossBorder(mousePosition[1]) ) {
+      upHandler.upOnce();
+      up();
+      down();
+    }
   }
 
-  function drawCircle(speed) {
-    CirclePool.getCircle()
-      .attr("cx", xPos)
-      .attr("cy", getLocationInSVG(mousePosition[1]))
-      .attr("r", circleRadius)
-      .style("fill", circleColorStyle)
-      .transition()
-      .attr("cx", -30)
-      .duration(speed)
-      .ease("linear");
+  function isCrossBorder(y) {
+    return ( currentPitch != getCurrentPitchUsingMousePosition(y) );
+  }
+
+  function getCurrentPitchUsingMousePosition(y) {
+    for(var i=9; i>=0; i--) {
+      if(y > pitch(i)) {
+        return i;
+      }
+    }
+    return 0;
   }
 
   function drawBeatBar(speed) {
 
     BeatBarPool.getBeatBar()
       .transition()
+      // .attr("transform", "translate("+(-xPos)+")")
       .attr("x1", -60)
       .attr("x2", -60)
       .duration(speed)
@@ -238,36 +228,14 @@ function PanelEditor(svg) {
       });
   }
 
-  function getVolumeRangeList() {
-    return getListFrom( 0, parseInt(svgWidth/sectionCount), sectionCount );
-  }
+  function getMiddleYInPitch() {
+    var mid = d3.round((pitch(1)-pitch(0))/2), d = [];
+    bar_height = d3.round(mid*1.6);
 
-  function getPitchRagneList() {
-    return getListFrom( 0, parseInt(svgHeight/pitchCount), pitchCount );
-  }
-
-  function getCircleSizeList() {
-    return getListFrom( 3, (23-7)/sectionCount, sectionCount );
-  }
-
-  function getListFrom(min, eachValue, count) {
-    min = typeof min !== 'undefined' ? min : 0;
-
-    var list = [];
-    for(var i=0; i<count; i++) {
-      list[i] = parseInt(min + eachValue*(i+1));
-//      printD("list["+i+"] is " + list[i]);
+    for(var i=0; i<9; i++) {
+      d[i] = pitch(i)+mid;
     }
-    return list;
-  }
-
-  function getRadiusBaseOnXPos(x) {
-    for(var idx=0, length=volumeRangeList.length ; idx<length; idx++) {
-      if(x < volumeRangeList[idx]) {
-        return circleSizeList[idx];
-      }
-    }
-    return circleSizeList[sectionCount-1];
+    return d;
   }
 
   function getLocationInSVG(y) {
@@ -297,19 +265,20 @@ function PanelEditor(svg) {
   function printDataToConsole(d) { console.log(d); }
 }
 
-function ColorSet(set) {
-  var currentColor = 0;
-  this.colors = set;
-  this.getColor = function() {
-    return this.colors(currentColor);
-  };
+var ColorSet = function() {
+  var current = 0,
+      set = d3.scale.category10();
 
-  this.nextColor = function() {
-    ++currentColor;
-    return this.getColor();
+  return {
+    getColor: function() {
+      return set(current);
+    },
+    nextColor: function() {
+      current = (current+1)%10;
+      return this.getColor();
+    }
   }
-
-}
+}( );
 
 // TODO: Timestamp와 실제 MIDI event의 매핑은 어떻게 해결할 것인가?
 //      실제 Timestamp 값을 그대로 MIDI event의 time 값으로 쓸 수 있으면 좋겠지만, 그것이 아니라면 변환이 필요하다.
