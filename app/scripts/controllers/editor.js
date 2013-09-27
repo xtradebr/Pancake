@@ -146,7 +146,7 @@ function PanelEditor(svg) {
           .attr("class", "bar")
           .style("stroke-width", bar_height);
 
-          d3.timer(function() {  
+          d3.timer(function() {
             bar.transition()
               .attr("x2", d3.round(xPos-tick))
               .ease("linear");
@@ -158,7 +158,11 @@ function PanelEditor(svg) {
 
             if( upHandler.isUped() ) {
               upHandler.upClear();
-              diffuse(bar);
+              if( tick > 30 ) {
+                diffuse(bar);
+              } else {
+                bar.remove();
+              }
               return true;
             }
             return !clicked;
