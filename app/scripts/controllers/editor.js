@@ -135,7 +135,7 @@ function PanelEditor(svg) {
   function down() {
     var tick  = 0,
         yIdx  = getCurrentPitchUsingMousePosition( getLocationInSVG(mousePosition[1]) ),
-        bar;
+        bar, dx = 5;
 
         currentPitch = yIdx;
         clicked   = true;
@@ -150,7 +150,7 @@ function PanelEditor(svg) {
             bar.transition()
               .attr("x2", d3.round(xPos-tick))
               .ease("linear");
-              tick += 5;
+              tick += dx;
 
             if( !clicked && onGoing ) {
               diffuse(bar);
@@ -168,6 +168,8 @@ function PanelEditor(svg) {
             return !clicked;
           });
 
+    // diffuse 함수 자체에 timer 붙이기. onGoing 일 동안 스스로를 translate 시킴
+    // dx는 down 내의 dx 만큼.
     function diffuse() {
       bar.transition()
         .attr("transform", "translate("+(-xPos)+",0)")
@@ -216,6 +218,7 @@ function PanelEditor(svg) {
     return 0;
   }
 
+  // timer를 이용해서 그려주기
   function drawBeatBar(speed) {
 
     BeatBarPool.getBeatBar()

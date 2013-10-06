@@ -20,9 +20,7 @@
                     <br><br><br><br><br>
 
                     <span>박자</span>
-                    <select ui-select2 ng-model="score.beat">
-                        <option ng-repeat="each_beat in beat_list">{{each_beat}}</option>
-                    </select>
+                    <select ng-model="score.beat" ng-options="beat for beat in beat_list"></select>
 
                     <p>
                         <span>속도</span>
