@@ -1,9 +1,9 @@
 /**
- * Created with JetBrains WebStorm.
+ * MIDI File Editor Script.
+ *
  * User: ipark
  * Date: 13. 8. 16.
  * Time: 오후 5:53
- * To change this template use File | Settings | File Templates.
  */
 'use strict';
 
@@ -267,7 +267,7 @@ function PanelEditor(svg) {
     alert("작곡을 끝냄돠~\n");
     formatter.saveMIDI();
     formatter.sendEvent(event);
-  }
+  };
 
   function printDataToConsole(d) { console.log(d); }
 }
