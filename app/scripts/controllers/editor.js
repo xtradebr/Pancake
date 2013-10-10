@@ -44,16 +44,15 @@ angular.module('pancakeApp')
 
 // TODO: Separation of Concerns은 자바스크립트에 대해 좀 더 이해한 후에 진행.
 function PanelEditor(svg) {
-  var stats = new Stats();
-  stats.setMode(0); // 0: fps, 1: ms
 
-  stats.domElement.style.position = 'absolute';
-  stats.domElement.style.left = xPos + 'px';
-  stats.domElement.style.top = svgHeight + 'px';
-
-  document.body.appendChild( stats.domElement );
-
-
+//  var stats = new Stats();
+//  stats.setMode(0); // 0: fps, 1: ms
+//
+//  stats.domElement.style.position = 'absolute';
+//  stats.domElement.style.left = xPos + 'px';
+//  stats.domElement.style.top = svgHeight + 'px';
+//
+//  document.body.appendChild( stats.domElement );
 
   svg.on("mousedown", down)
      .on("mouseup", up)

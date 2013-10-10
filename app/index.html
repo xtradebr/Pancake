@@ -1,4 +1,4 @@
-<!doctype html>
+<html ng-app="pancakeApp">
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
@@ -6,7 +6,6 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Pancake Prototype</title>
     <meta name="description" content="Pancake Prototype">
     <meta name="viewport" content="width=device-width">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
@@ -25,30 +24,30 @@
 
       <link rel="stylesheet" href="styles/main.css" />
       <!-- endbuild -->
+
+    <title ng-bind="$root.title + ' by Sound Pancake'">Sound Pancake</title>
+
 </head>
-  <body ng-app="pancakeApp">
+  <body>
     <header class="header">
       <div class="navbar navbar-fixed-top">
           <div class="navbar-inner">
               <div class="nav-container">
-                  <a class="brand" href="http://localhost:9000/">
-                      <strong>Pancake</strong>
+                  <a class="brand" href="/#!/home">
+                      <strong>Sound Pancake</strong>
                   </a>
                   <ul class="nav ace-nav">
                       <li class="divider-vertical"></li>
-                      <li><a href="http://localhost:9000/"><i class="icon-home icon-white"></i> Home</a></li>
+                      <li><a href="/#!/home"><i class="icon-home icon-white"></i> Home </a></li>
                       <li class="divider-vertical"></li>
-                      <li class="dropdown">
-                          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                              <i class="icon-book icon-white"></i> Learn <b class="caret"></b>
-                          </a>
-                          <ul class="dropdown-menu">
-                              <li><a href="http://localhost:9000/#/tutorial">Tutorial</a></li>
-                              <li><a href="http://localhost:9000/#/faq">FAQ</a></li>
-                          </ul>
-                      </li>
+
+                      <li><a href="/#!/editor"><i class="icon-music icon-white"></i> Editor </a></li>
                       <li class="divider-vertical"></li>
-                      <li><a href="http://localhost:9000/#/about"><i class="icon-question-sign icon-white"></i> About</a></li>
+
+                      <li><a href="/#!/playlist"><i class="icon-cloud icon-white"></i> Plsy List </a></li>
+                      <li class="divider-vertical"></li>
+
+                      <li><a href="/#!/about"><i class="icon-question-sign icon-white"></i> About </a></li>
                       <li class="divider-vertical"></li>
                   </ul>
               </div>
@@ -79,6 +78,7 @@
         <script src="scripts/app.js"></script>
         <script src="scripts/controllers/main.js"></script>
         <script src="scripts/controllers/editor.js"></script>
+        <script src="scripts/services/services.js"></script>
         <!-- endbuild -->
 </body>
 </html>
