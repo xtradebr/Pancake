@@ -48,23 +48,26 @@ body {
 .edit_panel {
   width: auto;
   height: auto;
-  margin: auto; }
-
-.edit_panel > p {
+  margin: auto;
+  margin-top: 10px;
   text-align: center; }
 
-.editor {
+.edit_panel > p {
+  text-align: center;
+  margin-top: 10px; }
+
+.edit_panel > p > a {
+  margin: 0 30px 0 30px; }
+
+#editor {
   background-color: black;
   pointer-events: all; }
 
 .timeline_panel {
-  margin: 0 50px 0 50px;
+  margin: 0 10px 0 10px;
   background-color: #f9c455;
-  text-align: right;
+  text-align: center;
   border-radius: 6px; }
-
-.timeline {
-  background-color: #ff981a; }
 
 .standard_bar {
   fill: #f5f5f5; }
