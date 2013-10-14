@@ -108,6 +108,95 @@ function PanelEditor(svg, scope) {
     }
   }( );
 
+  var BeatBarManager = function() {
+    var startX = svgWidth + 20;
+    var BeatBarPool = function() {
+      var pool = [];
+      for(var i=0; i<10; i++) {
+        pool[i] = svg.append("svg:line")
+          .attr("x1", startX)
+          .attr("y1", 0)
+          .attr("x2", startX)
+          .attr("y2", svgHeight)
+          .style("stroke", "rgb(125, 125, 125)")
+          .style("stroke-width", 5);
+      }
+
+      var idx = 0, length = pool.length;
+
+      return {
+        getBeatBar: function() {
+          return pool[(idx++)%length];
+        }
+      }
+    }( );
+
+    return {
+      beatBarReDraw: function(bar) {
+        var current = bar.attr("x1");
+        bar.transition()
+          .attr("x1", current-Animator.dx)
+          .attr("x2", current-Animator.dx)
+          .duration("10");
+
+        return ( current < 0 );
+      },
+      beatBarRemove: function(bar) {
+        console.log("Inner Remove!");
+        bar.transition()
+          .attr("x1", startX)
+          .attr("x2", startX)
+          .duration("1");
+      },
+      getBeatBar: function() {
+        return BeatBarPool.getBeatBar();
+      }
+    }
+  }( );
+
+  var NoteBarAnimManager = function() {
+    return {
+      noteBarIncreasingReDraw: function(note) {
+        var x2 = note.attr("x2");
+        note.transition()
+          .attr("x2", x2-Animator.dx)
+          .duration("10");
+
+        return upHandler.isUped();
+      },
+      noteBarFlow: function(note) {
+        upHandler.upClear();
+
+        var floatingNote = new animatableObj(note,
+                                              NoteBarAnimManager.noteBarMovingReDraw,
+                                              NoteBarAnimManager.noteBarRemove);
+        Animator.push(floatingNote);
+      },
+      noteBarMovingReDraw: function(note) {
+        var x1 = note.attr("x1"),
+            x2 = note.attr("x2");
+        note.transition()
+          .attr("x1", x1-Animator.dx)
+          .attr("x2", x2-Animator.dx)
+          .duration("10");
+
+        return ( x1 < 0 );
+      },
+      noteBarRemove: function(note) {
+        note.remove();
+      }
+    }
+  }( );
+
+  var upHandler = function() {
+    var isUp = false;
+    return {
+      upOnce: function() { isUp = true; },
+      isUped: function() { return isUp; },
+      upClear: function() { isUp = false; }
+    }
+  }( );
+
   // static images
   var drawBackground = function() {
 
@@ -134,46 +223,17 @@ function PanelEditor(svg, scope) {
         .attr("width", svgWidth)
         .attr("height", 1);
     }
-
-    drawBeatBar();
   }( );
 
   // dynamic images (animation)
   var startAnimation = function() {
-
-  }( );
-
-  var BeatBarPool = function() {
-    var pool = [];
-    for(var i=0; i<10; i++) {
-      pool[i] = svg.append("svg:line")
-                    .attr("x1", svgWidth)
-                    .attr("y1", 0)
-                    .attr("x2", svgWidth)
-                    .attr("y2", svgHeight)
-                    .style("stroke", "rgb(125, 125, 125)")
-                    .style("stroke-width", 1);
-    }
-
-    var idx = 0, length = pool.length;
-
-    return {
-      getBeatBar: function() {
-        return pool[(idx++)%length];
-      }
-    }
-  }( );
-
-  var upHandler = function() {
-    var isUp = false;
-    return {
-      upOnce: function() { isUp = true; },
-      isUped: function() { return isUp; },
-      upClear: function() { isUp = false; }
-    }
+    setInterval( function() {
+      drawBeatBar();
+    }, 2000);
   }( );
 
   function up() {
+    upHandler.upOnce();
     clicked = false;
     // TODO: push bar data to score.
   }
@@ -194,65 +254,31 @@ function PanelEditor(svg, scope) {
     if( recording.isDone() ) {
       return;
     }
+    clicked = true;
 
-    var tick  = 0,
-      yIdx  = getCurrentPitchUsingMousePosition( getLocationInSVG(mousePosition[1]) ),
-      bar, dx = 5;
+    var yIdx = getCurrentPitchUsingMousePosition( getLocationInSVG(mousePosition[1]) );
 
-    currentPitch = yIdx;
-    clicked   = true;
-
-    bar = svg.append("line")
+    var note = svg.append("line")
       .attr("x1", xPos).attr("y1", midInPitch[yIdx])
       .attr("x2", xPos).attr("y2", midInPitch[yIdx])
       .attr("class", "bar")
       .style("stroke-width", bar_height);
 
-    d3.timer(function() {
-      bar.transition()
-        .attr("x2", d3.round(xPos-tick))
-        .ease("linear");
-      tick += dx;
+   drawNoteBar(note);
+  }
 
-      if( !clicked && recording.isStillOnProgress() ) {
-        diffuse(bar);
-      }
+  function drawNoteBar(bar) {
+    var note = new animatableObj(bar,
+                                  NoteBarAnimManager.noteBarIncreasingReDraw,
+                                  NoteBarAnimManager.noteBarFlow);
+    Animator.push(note);
+  }
 
-      if( upHandler.isUped() ) {
-        upHandler.upClear();
-        if( tick > 30 ) {
-          diffuse(bar);
-        } else {
-          bar.remove();
-        }
-        return true;
-      }
-      return !clicked;
-    });
-
-    // diffuse 함수 자체에 timer 붙이기. onGoing 일 동안 스스로를 translate 시킴
-    // dx는 down 내의 dx 만큼.
-    // diffuse 함수는 마우스 액션에 관계없이 독립적으로 왼쪽으로 흐를 수 있도록 만들어주는 함수.
-    // diffuse 함수를 호출하는 시점부터 오로지 '작곡이 진행 중 인가' 여부에만 영향을 받음
-    function diffuse() {
-      d3.timer(function() {
-//        var current = bar.attr("x1");
-        bar.transition()
-          .attr("x1", bar.attr("x1")-dx)
-          .attr("x2", bar.attr("x2")-dx)
-//          .attr("transform", "translate("+(-xPos)+",0)")
-          .ease("linear")
-          .duration(20);
-
-        if( bar.attr("x1") < 0 ) {
-          noteList.add( {name: 'bar pushed'} );
-          bar.remove();
-          return true;
-        }
-
-        return recording.isDone();
-      });
-    }
+  function drawBeatBar() {
+    var bar = new animatableObj(BeatBarManager.getBeatBar(),
+                                BeatBarManager.beatBarReDraw,
+                                BeatBarManager.beatBarRemove);
+    Animator.push(bar);
   }
 
   function isCrossBorder(y) {
@@ -266,24 +292,6 @@ function PanelEditor(svg, scope) {
       }
     }
     return 0;
-  }
-
-  function drawBeatBar() {
-    var tick = 0;
-    d3.timer( function() {
-      // TODO: (++tick)%50 이라는 timing을 전체 시간축과 맞추기
-      if( (++tick)%50 == 0) {
-      BeatBarPool.getBeatBar()
-        .transition()
-        .attr("transform", "translate("+(-svgWidth)+")")
-        .ease("linear")
-        .duration(4000)
-        .each("end", function() {
-          d3.select(this)
-            .attr("transform", "");
-        });
-      }
-    });
   }
 
   function getMiddleYInPitch() {
@@ -352,3 +360,49 @@ function MIDIFormatter() {
   this.createMIDI = function(MIDI_Information) {};
   this.saveMIDI = function() {};
 }
+
+var Animator = function() {
+  var tick = 0,
+      frame = 1000, cps = Math.floor(1000/frame),
+      activeObjs = [];
+
+  d3.timer( function() {
+    tick++;
+
+    if( isDrawTime() ) {
+      activeObjs.forEach(reDraw);
+    }
+
+    function reDraw(element, index, array) {
+      var isReachEnd = element.reDraw();
+      if( isReachEnd ) {
+        array.splice(index, 1);
+        element.remove();
+      }
+    }
+
+    function isDrawTime() {
+      return (tick%cps) == 0;
+    }
+  });
+
+  return {
+    dx: 8,
+    push: function(obj) {
+      activeObjs.push(obj);
+    }
+  }
+}( );
+
+var animatableObj = function(obj, reDrawFunc, removeFunc) {
+  var object      = obj,
+      innerReDraw = reDrawFunc,
+      innerRemove = removeFunc;
+
+  this.reDraw = function() {
+    return innerReDraw(object);
+  };
+  this.remove = function() {
+    innerRemove(obj);
+  };
+};
