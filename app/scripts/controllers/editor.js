@@ -66,15 +66,6 @@ app.directive('timelineVisualization', function() {
 
 // TODO: Separation of Concerns은 자바스크립트에 대해 좀 더 이해한 후에 진행.
 function PanelEditor(svg, scope) {
-//  var stats = new Stats();
-//  stats.setMode(0); // 0: fps, 1: ms
-//
-//  stats.domElement.style.position = 'absolute';
-//  stats.domElement.style.left = xPos + 'px';
-//  stats.domElement.style.top = svgHeight + 'px';
-//
-//  document.body.appendChild( stats.domElement );
-
   svg.on("mousedown", down)
     .on("mouseup", up)
     .on("mousemove", move);
@@ -361,17 +352,32 @@ function MIDIFormatter() {
   this.saveMIDI = function() {};
 }
 
+// Global tick을 가지고 있는 단일 스레드 모델의 Animator이다.
+// Observer 패턴을 구현했다고 봐도 무방하다. Observer의 update 함수가 reDraw와 remove 함수다.
 var Animator = function() {
   var tick = 0,
-      frame = 1000, cps = Math.floor(1000/frame),
+      frame = 36, cps = Math.floor(1000/frame),
       activeObjs = [];
 
-  d3.timer( function() {
-    tick++;
+  var stats = function() {
+    var obj = new Stats();
 
-    if( isDrawTime() ) {
-      activeObjs.forEach(reDraw);
-    }
+    obj.setMode(0); // 0: fps, 1: ms
+
+    obj.domElement.style.position = 'absolute';
+    obj.domElement.style.left = 50 + 'px';
+    obj.domElement.style.top = 600 + 'px';
+
+    document.body.appendChild( obj.domElement );
+
+    return obj;
+  }( );
+
+  setInterval( function() {
+    stats.begin();
+    tick++;
+    activeObjs.forEach(reDraw);
+    stats.end();
 
     function reDraw(element, index, array) {
       var isReachEnd = element.reDraw();
@@ -380,20 +386,18 @@ var Animator = function() {
         element.remove();
       }
     }
-
-    function isDrawTime() {
-      return (tick%cps) == 0;
-    }
-  });
+  }, cps);
 
   return {
-    dx: 8,
+    dx: 10,
     push: function(obj) {
       activeObjs.push(obj);
     }
   }
 }( );
 
+// 객체 스스로가 repaint, remove 행동에 대한 책임이 있음
+// animatableObj는 Animator가 조작하는 단순한 container
 var animatableObj = function(obj, reDrawFunc, removeFunc) {
   var object      = obj,
       innerReDraw = reDrawFunc,
