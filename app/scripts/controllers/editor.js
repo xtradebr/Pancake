@@ -11,8 +11,12 @@ var app = angular.module('pancakeApp');
 app.controller('EditorCtrl', function($scope, sharedProperties) {
 
   $scope.noteList = new LinkedList();
+  $scope.emit = function(event) {
+    console.log("Note Released! in pitch " + event.pitch);
+    $scope.timeline.emit(event);
+  };
 
-  $scope.score = sharedProperties.getProperty().score;
+//  $scope.score = sharedProperties.getProperty().score;
 
   $scope.startComposition = function() {
     $scope.editor.startComposition();
@@ -70,23 +74,21 @@ function PanelEditor(svg, scope) {
     .on("mouseup", up)
     .on("mousemove", move);
 
-  var formatter = new MIDIFormatter();
   var pointerCircle;
 
   // TODO: need to re-calculate event when window size changed
-  var svgWidth = parseInt(svg.style("width")),
-      svgHeight = parseInt(svg.style("height")),
+  var svgWidth = DrawingUtility.getSVGWidth(svg),
+      svgHeight = DrawingUtility.getSVGHeight(svg),
       xPos = svgWidth/2,
 
-      pitch = d3.scale.linear().domain([0,9]).rangeRound([0,svgHeight]),
-      midInPitch = getMiddleYInPitch(),
-      currentPitch = 4,
+      pitch = DrawingUtility.getPitch(svgHeight),
+      midInPitch = DrawingUtility.getMiddleYInPitch(pitch),
+      currentPitch = 4, clickedTime,
 
       mousePosition = [xPos, svgHeight/2],
-      bar_height;
+      bar_height = DrawingUtility.calcBarHeight(pitch);
 
   var clicked = false;
-  var noteList = scope.noteList;
 
   var recording = function() {
     // TODO: startComposition 버튼을 누르면 true로 바뀌도록 구현 후 onGoing 기본 값을 false로 바꾸기
@@ -157,11 +159,16 @@ function PanelEditor(svg, scope) {
       },
       noteBarFlow: function(note) {
         upHandler.upClear();
-
         var floatingNote = new animatableObj(note,
                                               NoteBarAnimManager.noteBarMovingReDraw,
                                               NoteBarAnimManager.noteBarRemove);
         Animator.push(floatingNote);
+        scope.emit( {
+            data: note,
+            pitch: currentPitch,
+            time: clickedTime
+          }
+        );
       },
       noteBarMovingReDraw: function(note) {
         var x1 = note.attr("x1"),
@@ -226,7 +233,6 @@ function PanelEditor(svg, scope) {
   function up() {
     upHandler.upOnce();
     clicked = false;
-    // TODO: push bar data to score.
   }
 
   function move() {
@@ -246,12 +252,13 @@ function PanelEditor(svg, scope) {
       return;
     }
     clicked = true;
+    clickedTime = Animator.currentTime();
 
-    var yIdx = getCurrentPitchUsingMousePosition( getLocationInSVG(mousePosition[1]) );
+    currentPitch = getCurrentPitchUsingMousePosition( getLocationInSVG(mousePosition[1]) );
 
     var note = svg.append("line")
-      .attr("x1", xPos).attr("y1", midInPitch[yIdx])
-      .attr("x2", xPos).attr("y2", midInPitch[yIdx])
+      .attr("x1", xPos).attr("y1", midInPitch[currentPitch])
+      .attr("x2", xPos).attr("y2", midInPitch[currentPitch])
       .attr("class", "bar")
       .style("stroke-width", bar_height);
 
@@ -285,16 +292,6 @@ function PanelEditor(svg, scope) {
     return 0;
   }
 
-  function getMiddleYInPitch() {
-    var mid = d3.round((pitch(1)-pitch(0))/2), d = [];
-    bar_height = d3.round(mid*1.6);
-
-    for(var i=0; i<9; i++) {
-      d[i] = pitch(i)+mid;
-    }
-    return d;
-  }
-
   function getLocationInSVG(y) {
     if( y < 0 ) {
       return 0;
@@ -322,13 +319,125 @@ function PanelEditor(svg, scope) {
   function printDataToConsole(d) { console.log(d); }
 }
 
+// TODO: when totalTime changed, existed notes have to be changed.
 function TimelineEditor(svg, scope) {
+  var svgWidth = DrawingUtility.getSVGWidth(svg),
+      svgHeight = DrawingUtility.getSVGHeight(svg),
 
+      xBorder = d3.round(svgWidth*0.1),
+      yBorder = d3.round(svgHeight*0.3),
+      drawAreaWidth = svgWidth - xBorder,
+
+      pitch = DrawingUtility.getPitch(svgHeight - yBorder),
+      midInPitch = DrawingUtility.getMiddleYInPitch(pitch),
+      bar_height = DrawingUtility.calcBarHeight(pitch);
+
+  var totalTime = 60, dt = 15,
+      EditorTotalLength = totalTime * Animator.fps * Animator.dx,
+      BarTransformRate = drawAreaWidth / EditorTotalLength,
+      noteList = [];
+
+  midInPitch.forEach(function(element, index, array) {
+    array[index] += yBorder;
+  });
+
+  var drawBackground = function() {
+    var timeYPos = d3.round(svgHeight*0.2);
+
+    // vertical divider bewteen edit layer and information layer
+    svg.append("rect")
+      .attr("class", "division_bar")
+      .attr("x", xBorder)
+      .attr("y", 0)
+      .attr("width", 2)
+      .attr("height", svgHeight);
+
+    // horizontal divider between time indicator layer and edit layer
+    svg.append("rect")
+      .attr("class", "division_bar")
+      .attr("x", 0)
+      .attr("y", yBorder)
+      .attr("width", svgWidth)
+      .attr("height", 2);
+
+    // Instrument Information
+    svg.append("text")
+      .attr("x", xBorder/2)
+      .attr("y", d3.round(svgHeight*0.7))
+      .text("Piano")
+      .attr("font-size", "20px");
+
+    // Total Time Information
+    // TODO: Refactoring text contents - changed by total time
+    svg.append("text")
+      .attr("class", "total_time")
+      .attr("x", xBorder/2)
+      .attr("y", timeYPos)
+      .text("01:00");
+
+    for(var i=1; i<=3; i++) {
+      var x = xBorder + (svgWidth-xBorder)*i/4;
+      // Time Indicator Divider
+      svg.append("rect")
+        .attr("class", "division_bar")
+        .attr("x", x)
+        .attr("y", 0)
+        .attr("width", 2)
+        .attr("height", d3.round(svgHeight*0.3));
+
+      // Time Indicator Information
+      // TODO: Refactoring text contents - changed by total time
+      svg.append("text")
+        .attr("class", "time_indicator")
+        .attr("x", x + 30)
+        .attr("y", timeYPos)
+        .text("00:" + totalTime *i/4);
+    }
+
+
+  }( );
+
+  this.emit = function(event) {
+    var transformedNote = drawNoteBar(event);
+    noteList.push(transformedNote);
+  };
+
+  function drawNoteBar(event) {
+    var origin = event.data,
+        currentPitch = event.pitch,
+        originLen = d3.round(origin.attr("x1") - origin.attr("x2")),
+        x = xBorder + event.time * drawAreaWidth / totalTime;
+
+    return svg.append("line")
+      .attr("x1", x)
+      .attr("x2", x + (originLen * BarTransformRate))
+      .attr("y1", midInPitch[currentPitch])
+      .attr("y2", midInPitch[currentPitch])
+      .attr("class", "bar")
+      .style("stroke-width", bar_height);
+  }
 }
+
+var DrawingUtility = function() {
+  return {
+    getSVGWidth: function(svg) { return parseInt(svg.style("width")); },
+    getSVGHeight: function(svg) { return parseInt(svg.style("height")); },
+    getPitch: function(height) { return d3.scale.linear().domain([0,9]).rangeRound([0,height]); },
+    getMiddleYInPitch: function(pitch) {
+      var mid = d3.round((pitch(1)-pitch(0))/2), d = [];
+
+      for(var i=0; i<9; i++) {
+        d[i] = pitch(i)+mid;
+      }
+      return d;
+    },
+    calcBarHeight: function(pitch) { return d3.round( d3.round((pitch(1)-pitch(0))/2) * 1.6 ); }
+  }
+}( );
 
 var ColorSet = function() {
   var current = 0,
-    set = d3.scale.category10();
+      set = d3.scale.category10();
 
   return {
     getColor: function() {
@@ -341,43 +450,16 @@ var ColorSet = function() {
   }
 }( );
 
-// TODO: Timestamp와 실제 MIDI event의 매핑은 어떻게 해결할 것인가?
-//      실제 Timestamp 값을 그대로 MIDI event의 time 값으로 쓸 수 있으면 좋겠지만, 그것이 아니라면 변환이 필요하다.
-//      d3.scale.linear().domain( [start, end] ).range( [start, end] )
-//      도메인에 해당하는 값을 넣으면, linear하게 range범위로 확장시켜줌. (normalize같은 경우도 가능)
-function MIDIFormatter() {
-  // mock-up
-  this.sendEvent = function(event) {};
-  this.createMIDI = function(MIDI_Information) {};
-  this.saveMIDI = function() {};
-}
-
 // Global tick을 가지고 있는 단일 스레드 모델의 Animator이다.
 // Observer 패턴을 구현했다고 봐도 무방하다. Observer의 update 함수가 reDraw와 remove 함수다.
 var Animator = function() {
   var tick = 0,
-      frame = 36, cps = Math.floor(1000/frame),
+      fps = 36, cps = Math.floor(1000/fps),
       activeObjs = [];
 
-  var stats = function() {
-    var obj = new Stats();
-
-    obj.setMode(0); // 0: fps, 1: ms
-
-    obj.domElement.style.position = 'absolute';
-    obj.domElement.style.left = 50 + 'px';
-    obj.domElement.style.top = 600 + 'px';
-
-    document.body.appendChild( obj.domElement );
-
-    return obj;
-  }( );
-
   setInterval( function() {
-    stats.begin();
     tick++;
     activeObjs.forEach(reDraw);
-    stats.end();
 
     function reDraw(element, index, array) {
       var isReachEnd = element.reDraw();
@@ -390,9 +472,9 @@ var Animator = function() {
 
   return {
     dx: 10,
-    push: function(obj) {
-      activeObjs.push(obj);
-    }
+    fps: fps,
+    push: function(obj) { activeObjs.push(obj); },
+    currentTime: function() { return tick/fps; }
   }
 }( );
 
