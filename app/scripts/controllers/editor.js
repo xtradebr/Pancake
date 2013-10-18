@@ -10,20 +10,40 @@
 var app = angular.module('pancakeApp');
 app.controller('EditorCtrl', function($scope, sharedProperties) {
 
+  var MidiController = function() {
+
+    // 강호가 만든 MIDI 모듈이 들어갈 자리.
+    // 해당 모듈은 MidiController 내부에서만 존재하고,
+    // 외부로 노출된 sendEvent가 위임해주는 이벤트를 미디 파일에 기록한다.
+//    var module = new MidiModule();
+    var module;
+    var pitch = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+
+    var formatting = function(event) {
+      return {
+        pitch: pitch[event.pitch],
+        startTime: event.startTime,
+        dt: event.endTime-event.startTime
+      };
+    };
+
+    return {
+      sendEvent: function(event) {
+        module.sendEvent( formatting(event) );
+      }
+    }
+  }( );
+
   $scope.noteList = new LinkedList();
   $scope.emit = function(event) {
-    console.log("Note Released! in pitch " + event.pitch);
     $scope.timeline.emit(event);
+//    MidiController.sendEvent(event);
   };
 
-//  $scope.score = sharedProperties.getProperty().score;
-
+  // TODO: impl after integration with midi player
   $scope.startComposition = function() {
-    $scope.editor.startComposition();
   };
-
   $scope.endComposition = function() {
-//    $scope.editor.endComposition();
     console.log($scope.noteList.size());
   };
 
@@ -130,12 +150,11 @@ function PanelEditor(svg, scope) {
         bar.transition()
           .attr("x1", current-Animator.dx)
           .attr("x2", current-Animator.dx)
-          .duration("10");
+          .duration("1");
 
         return ( current < 0 );
       },
       beatBarRemove: function(bar) {
-        console.log("Inner Remove!");
         bar.transition()
           .attr("x1", startX)
           .attr("x2", startX)
@@ -150,15 +169,19 @@ function PanelEditor(svg, scope) {
   var NoteBarAnimManager = function() {
     return {
       noteBarIncreasingReDraw: function(note) {
-        var x2 = note.attr("x2");
         note.transition()
-          .attr("x2", x2-Animator.dx)
-          .duration("10");
+          .attr("x2", note.attr("x2")-Animator.dx)
+          .duration("1");
 
         return upHandler.isUped();
       },
       noteBarFlow: function(note) {
         upHandler.upClear();
+        if( note.attr("x1")-note.attr("x2") < Animator.dx ) {
+          note.remove();
+          return;
+        }
+
         var floatingNote = new animatableObj(note,
                                               NoteBarAnimManager.noteBarMovingReDraw,
                                               NoteBarAnimManager.noteBarRemove);
@@ -166,7 +189,8 @@ function PanelEditor(svg, scope) {
         scope.emit( {
             data: note,
             pitch: currentPitch,
-            time: clickedTime
+            startTime: clickedTime,
+            endTime: Animator.currentTime()
           }
         );
       },
@@ -195,14 +219,13 @@ function PanelEditor(svg, scope) {
     }
   }( );
 
-  // static images
-  var drawBackground = function() {
-
+  // draw background
+  (function() {
     pointerCircle = svg.append("svg:circle")
       .attr("cx", xPos)
       .attr("cy", svgHeight/2)
       .attr("r", 20)
-      .attr("stroke", ColorSet.nextColor())
+      .attr("stroke", "#1f77b4")
       .attr("stroke-width", 3)
       .style("stroke-opacity", 1);
 
@@ -213,7 +236,7 @@ function PanelEditor(svg, scope) {
       .attr("width", 2)
       .attr("height", svgHeight);
 
-    for(var i=1; i<9; i++) {
+    for(var i=1; i<DrawingUtility.pitchCount; i++) {
       svg.append("rect")
         .attr("class", "standard_bar")
         .attr("x", 0)
@@ -221,14 +244,14 @@ function PanelEditor(svg, scope) {
         .attr("width", svgWidth)
         .attr("height", 1);
     }
-  }( );
+  })( );
 
-  // dynamic images (animation)
-  var startAnimation = function() {
+  // draw editor animation
+  (function() {
     setInterval( function() {
       drawBeatBar();
     }, 2000);
-  }( );
+  })( );
 
   function up() {
     upHandler.upOnce();
@@ -240,8 +263,7 @@ function PanelEditor(svg, scope) {
     pointerCircle.attr("cy", mousePosition[1]);
     // state(clicked): 기존의 진행중인 bar 중단 + 새로운 bar 추가
     // state(notClicked): 아무런 변화 없음
-    if( clicked && isCrossBorder(mousePosition[1]) ) {
-      upHandler.upOnce();
+    if( clicked && isCrossBorder(mousePosition[1]) && semaphore.canConsume() ) {
       up();
       down();
     }
@@ -253,6 +275,7 @@ function PanelEditor(svg, scope) {
     }
     clicked = true;
     clickedTime = Animator.currentTime();
+    semaphore.consume();
 
     currentPitch = getCurrentPitchUsingMousePosition( getLocationInSVG(mousePosition[1]) );
 
@@ -284,7 +307,7 @@ function PanelEditor(svg, scope) {
   }
 
   function getCurrentPitchUsingMousePosition(y) {
-    for(var i=9; i>=0; i--) {
+    for(var i=DrawingUtility.pitchCount; i>=0; i--) {
       if(y > pitch(i)) {
         return i;
       }
@@ -302,21 +325,7 @@ function PanelEditor(svg, scope) {
     }
   }
 
-  this.startComposition = function() {
-    var event = { type: 'mockOn', note: 'c#', timestamp: '134646', velocity: '0.5' };
-//    alert("작곡을 시작함돠~\n");
-    formatter.createMIDI("Demo");
-    formatter.sendEvent(event);
-  };
-
-  this.endComposition = function() {
-    var event = { type: 'mockOff', note: 'c#', timestamp: '134646', velocity: '0.5' };
-//    alert("작곡을 끝냄돠~\n");
-    formatter.saveMIDI();
-    formatter.sendEvent(event);
-  };
-
-  function printDataToConsole(d) { console.log(d); }
+  function print(data) { console.log(data); }
 }
 
 // TODO: when totalTime changed, existed notes have to be changed.
@@ -328,20 +337,21 @@ function TimelineEditor(svg, scope) {
       yBorder = d3.round(svgHeight*0.3),
       drawAreaWidth = svgWidth - xBorder,
 
-      pitch = DrawingUtility.getPitch(svgHeight - yBorder),
+      pitch = DrawingUtility.getPitch(svgHeight - yBorder - d3.round(svgHeight*0.03)),
       midInPitch = DrawingUtility.getMiddleYInPitch(pitch),
       bar_height = DrawingUtility.calcBarHeight(pitch);
 
-  var totalTime = 60, dt = 15,
+  var totalTime = 30, dt = 15,
       EditorTotalLength = totalTime * Animator.fps * Animator.dx,
       BarTransformRate = drawAreaWidth / EditorTotalLength,
       noteList = [];
 
   midInPitch.forEach(function(element, index, array) {
-    array[index] += yBorder;
+    array[index] += yBorder + d3.round(svgHeight*0.02);
   });
 
-  var drawBackground = function() {
+  // draw background
+  (function() {
     var timeYPos = d3.round(svgHeight*0.2);
 
     // vertical divider bewteen edit layer and information layer
@@ -373,7 +383,7 @@ function TimelineEditor(svg, scope) {
       .attr("class", "total_time")
       .attr("x", xBorder/2)
       .attr("y", timeYPos)
-      .text("01:00");
+      .text(timeFilter(totalTime));
 
     for(var i=1; i<=3; i++) {
       var x = xBorder + (svgWidth-xBorder)*i/4;
@@ -391,11 +401,9 @@ function TimelineEditor(svg, scope) {
         .attr("class", "time_indicator")
         .attr("x", x + 30)
         .attr("y", timeYPos)
-        .text("00:" + totalTime *i/4);
+        .text(timeFilter(totalTime *i/4));
     }
-
-
-  }( );
+  })( );
 
   this.emit = function(event) {
     var transformedNote = drawNoteBar(event);
@@ -406,7 +414,7 @@ function TimelineEditor(svg, scope) {
     var origin = event.data,
         currentPitch = event.pitch,
         originLen = d3.round(origin.attr("x1") - origin.attr("x2")),
-        x = xBorder + event.time * drawAreaWidth / totalTime;
+        x = xBorder + event.startTime * drawAreaWidth / totalTime;
 
     return svg.append("line")
       .attr("x1", x)
@@ -416,37 +424,42 @@ function TimelineEditor(svg, scope) {
       .attr("class", "bar")
       .style("stroke-width", bar_height);
   }
+
+  // make second to mm:ss formate
+  function timeFilter(second) {
+    function toDoubleDigit(d) {
+      return (d<10)? "0"+d : d;
+    }
+    second = Math.floor(second);
+    var m = 0, s = second%60;
+
+    if( second >= 60 ) {
+      console.log("gg");
+      m = Math.floor( second/60 );
+    }
+    m = toDoubleDigit(m);
+    s = toDoubleDigit(s);
+
+    return (m+":"+s);
+  }
 }
 
 var DrawingUtility = function() {
+  var pitchCount = 12;
   return {
     getSVGWidth: function(svg) { return parseInt(svg.style("width")); },
     getSVGHeight: function(svg) { return parseInt(svg.style("height")); },
-    getPitch: function(height) { return d3.scale.linear().domain([0,9]).rangeRound([0,height]); },
+    getPitch: function(height) { return d3.scale.linear().domain([0,pitchCount]).rangeRound([0,height]); },
     getMiddleYInPitch: function(pitch) {
       var mid = d3.round((pitch(1)-pitch(0))/2), d = [];
 
-      for(var i=0; i<9; i++) {
+      for(var i=0; i<pitchCount; i++) {
         d[i] = pitch(i)+mid;
       }
       return d;
     },
-    calcBarHeight: function(pitch) { return d3.round( d3.round((pitch(1)-pitch(0))/2) * 1.6 ); }
-  }
-}( );
-
-var ColorSet = function() {
-  var current = 0,
-      set = d3.scale.category10();
-
-  return {
-    getColor: function() {
-      return set(current);
-    },
-    nextColor: function() {
-      current = (current+1)%10;
-      return this.getColor();
-    }
+    calcBarHeight: function(pitch) { return d3.round( d3.round((pitch(1)-pitch(0))/2) * 1.6 ); },
+    pitchCount: pitchCount
   }
 }( );
 
@@ -454,12 +467,21 @@ var ColorSet = function() {
 // Observer 패턴을 구현했다고 봐도 무방하다. Observer의 update 함수가 reDraw와 remove 함수다.
 var Animator = function() {
   var tick = 0,
-      fps = 36, cps = Math.floor(1000/fps),
-      activeObjs = [];
+      fps = 36,
+      activeObjs = [],
+      animationId;
 
-  setInterval( function() {
-    tick++;
+  animationId = setInterval( function() {
+
+    // Animation Start
+    semaphore.release();
+    tick += 1;
     activeObjs.forEach(reDraw);
+    // Animation End
+
+    if( tick%fps == 0 ) {
+//      console.log(tick/fps);
+    }
 
     function reDraw(element, index, array) {
       var isReachEnd = element.reDraw();
@@ -468,7 +490,7 @@ var Animator = function() {
         element.remove();
       }
     }
-  }, cps);
+  }, Math.floor(1000/fps));
 
   return {
     dx: 10,
@@ -492,3 +514,15 @@ var animatableObj = function(obj, reDrawFunc, removeFunc) {
     innerRemove(obj);
   };
 };
+
+// 객체가 추가되는 시점을 Animator의 tick과 동기화되도록 해주는 Critical Section
+// wait(consume) is called when mouse down event occurs
+// release is called when Animator's time interval occurs
+var semaphore = function() {
+  var state = true;
+  return {
+    consume: function() { state = false; },
+    release: function() { state = true; },
+    canConsume: function() { return state; }
+  }
+}( );
