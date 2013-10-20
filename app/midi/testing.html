@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>MIDI player</title>
+	<script src="./inc/jasmid/stream.js"></script>
+	<script src="./inc/jasmid/midifile.js"></script>
+	<script src="./inc/jasmid/replayer.js"></script>
+	<script src="./inc/Base64.js"></script>
+	<script src="./inc/base64binary.js"></script>
+	<script src="./inc/WebMIDIAPI.js"></script>
+	<!--<script src="./inc/SoundManager2/script/soundmanager2.js"></script>-->
+	<script src="./js/MIDI/AudioDetect.js"></script>
+	<script src="./js/MIDI/LoadPlugin.js"></script>
+	<script src="./js/MIDI/Player.js"></script>
+	<script src="./js/MIDI/Plugin.js"></script>
+	<script src="./js/Window/DOMLoader.script.js"></script>
+	<script src="./js/Window/DOMLoader.XMLHttp.js"></script>
+	<script src="./js/Window/Event.js"></script>
+	
+</head>
+<body>
+
+	<p id="title"></p>
+	<button id="NoteOnButton" name="NoteOnButton" onclick="MIDI.noteOn(1,60,80,0);">NoteOn</button>
+	<button id="NoteOffButton" name="NoteOffButton" onclick="MIDI.noteOff(1,60,0);">NoteOff</button>
+	
+<script>
+
+var player;
+MIDI.loadPlugin(function () {
+	player = MIDI.Player;
+});
+
+
+</script>
+
+
+</body>
+</html>
