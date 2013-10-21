@@ -7,10 +7,10 @@ angular.module('pancakeApp')
 
     $scope.CreateScoreCtrl = function ($scope, $location, sharedProperties) {
 
-      $scope.beat_list = ['3/4', '4/4', '6/8'];
-      $scope.bpm_list = ['느림', '보통', '빠름'];
+      $scope.beatList = ['3/4', '4/4', '6/8'];
+      $scope.bpmList = ['느림', '보통', '빠름'];
 
-      $scope.score = { title: '', beat: $scope.beat_list[1], bpm: $scope.bpm_list[1] };
+      $scope.score = { title: '', beat: $scope.beatList[1], bpm: $scope.bpmList[1] };
 
       $scope.create = function () {
         $scope.shouldBeOpen = true;
@@ -29,7 +29,7 @@ angular.module('pancakeApp')
       };
 
       var clearScore = function () {
-        $scope.score = { title: '', beat: $scope.beat_list[1], bpm: $scope.bpm_list[1] };
+        $scope.score = { title: '', beat: $scope.beatList[1], bpm: $scope.bpmList[1] };
       };
 
       $scope.opts = {
@@ -45,6 +45,6 @@ angular.module('pancakeApp')
           { score: { title: 'Demo', beat: '4/4', bpm: '보통' }
         });
         $location.path('/editor');
-      }
-    }
+      };
+    };
   });

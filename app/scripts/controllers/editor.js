@@ -8,8 +8,11 @@
 'use strict';
 
 var app = angular.module('pancakeApp');
-app.controller('EditorCtrl', function($scope, sharedProperties) {
+app.controller('EditorCtrl', function($scope) {
 
+  // MidiController가 할 일
+  // Editor로부터 전송된 event를 MIDI로 전송할 포맷에 맞게 변경한 후
+  // MIDI에 sendEvent를 하는 것
   var MidiController = function() {
 
     // 강호가 만든 MIDI 모듈이 들어갈 자리.
@@ -17,6 +20,8 @@ app.controller('EditorCtrl', function($scope, sharedProperties) {
     // 외부로 노출된 sendEvent가 위임해주는 이벤트를 미디 파일에 기록한다.
 //    var module = new MidiModule();
     var module;
+    // 48 = C, 49 = C#, ...
+    // 넘겨줄 데이터 = pitch, dt
     var pitch = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
 
     var formatting = function(event) {
@@ -31,7 +36,7 @@ app.controller('EditorCtrl', function($scope, sharedProperties) {
       sendEvent: function(event) {
         module.sendEvent( formatting(event) );
       }
-    }
+    };
   }( );
 
   $scope.noteList = new LinkedList();
@@ -56,6 +61,10 @@ app.directive('editorVisualization', function() {
 
   var editor;
 
+  function initEditor(scope) {
+    return new PanelEditor( d3.select('#editor'), scope );
+  }
+
   return {
     restrict: 'E',
     // 초기화, 템플릿안에 ng-repeat이 없다면 한번만 실행됨.
@@ -64,16 +73,15 @@ app.directive('editorVisualization', function() {
       scope.editor = editor;
     }
   };
-
-  function initEditor(scope) {
-    return new PanelEditor( d3.select("#editor"), scope );
-  }
-
 });
 
 app.directive('timelineVisualization', function() {
 
   var timeline;
+
+  function initTimeline(scope) {
+    return new TimelineEditor( d3.select('#timeline'), scope );
+  }
 
   return {
     restrict: 'E',
@@ -82,17 +90,13 @@ app.directive('timelineVisualization', function() {
       scope.timeline = timeline;
     }
   };
-
-  function initTimeline(scope) {
-    return new TimelineEditor( d3.select("#timeline"), scope );
-  }
 });
 
 // TODO: Separation of Concerns은 자바스크립트에 대해 좀 더 이해한 후에 진행.
 function PanelEditor(svg, scope) {
-  svg.on("mousedown", down)
-    .on("mouseup", up)
-    .on("mousemove", move);
+  svg.on('mousedown', down)
+    .on('mouseup', up)
+    .on('mousemove', move);
 
   var pointerCircle;
 
@@ -106,7 +110,7 @@ function PanelEditor(svg, scope) {
       currentPitch = 4, clickedTime,
 
       mousePosition = [xPos, svgHeight/2],
-      bar_height = DrawingUtility.calcBarHeight(pitch);
+      barHeight = DrawingUtility.calcBarHeight(pitch);
 
   var clicked = false;
 
@@ -118,7 +122,7 @@ function PanelEditor(svg, scope) {
       stop: function() { onGoing = false; },
       isStillOnProgress: function() { return onGoing; },
       isDone: function() { return !onGoing; }
-    }
+    };
   }( );
 
   var BeatBarManager = function() {
@@ -126,13 +130,13 @@ function PanelEditor(svg, scope) {
     var BeatBarPool = function() {
       var pool = [];
       for(var i=0; i<10; i++) {
-        pool[i] = svg.append("svg:line")
-          .attr("x1", startX)
-          .attr("y1", 0)
-          .attr("x2", startX)
-          .attr("y2", svgHeight)
-          .style("stroke", "rgb(125, 125, 125)")
-          .style("stroke-width", 5);
+        pool[i] = svg.append('svg:line')
+          .attr('x1', startX)
+          .attr('y1', 0)
+          .attr('x2', startX)
+          .attr('y2', svgHeight)
+          .style('stroke', 'rgb(125, 125, 125)')
+          .style('stroke-width', 5);
       }
 
       var idx = 0, length = pool.length;
@@ -141,48 +145,49 @@ function PanelEditor(svg, scope) {
         getBeatBar: function() {
           return pool[(idx++)%length];
         }
-      }
+      };
     }( );
 
     return {
       beatBarReDraw: function(bar) {
-        var current = bar.attr("x1");
+        var current = bar.attr('x1');
         bar.transition()
-          .attr("x1", current-Animator.dx)
-          .attr("x2", current-Animator.dx)
-          .duration("1");
+          .attr('x1', current-Animator.dx)
+          .attr('x2', current-Animator.dx)
+          .duration('1');
 
         return ( current < 0 );
       },
       beatBarRemove: function(bar) {
         bar.transition()
-          .attr("x1", startX)
-          .attr("x2", startX)
-          .duration("1");
+          .attr('x1', startX)
+          .attr('x2', startX)
+          .duration('1');
       },
       getBeatBar: function() {
         return BeatBarPool.getBeatBar();
       }
-    }
+    };
   }( );
 
   var NoteBarAnimManager = function() {
     return {
       noteBarIncreasingReDraw: function(note) {
         note.transition()
-          .attr("x2", note.attr("x2")-Animator.dx)
-          .duration("1");
+          .attr('x2', note.attr('x2')-Animator.dx)
+          .duration('1');
 
         return upHandler.isUped();
       },
       noteBarFlow: function(note) {
         upHandler.upClear();
-        if( note.attr("x1")-note.attr("x2") < Animator.dx ) {
+        MIDI.noteOff(1, 65, 0);
+        if( note.attr('x1')-note.attr('x2') < Animator.dx ) {
           note.remove();
           return;
         }
 
-        var floatingNote = new animatableObj(note,
+        var floatingNote = new AnimatableObj(note,
                                               NoteBarAnimManager.noteBarMovingReDraw,
                                               NoteBarAnimManager.noteBarRemove);
         Animator.push(floatingNote);
@@ -195,19 +200,19 @@ function PanelEditor(svg, scope) {
         );
       },
       noteBarMovingReDraw: function(note) {
-        var x1 = note.attr("x1"),
-            x2 = note.attr("x2");
+        var x1 = note.attr('x1'),
+            x2 = note.attr('x2');
         note.transition()
-          .attr("x1", x1-Animator.dx)
-          .attr("x2", x2-Animator.dx)
-          .duration("10");
+          .attr('x1', x1-Animator.dx)
+          .attr('x2', x2-Animator.dx)
+          .duration('10');
 
         return ( x1 < 0 );
       },
       noteBarRemove: function(note) {
         note.remove();
       }
-    }
+    };
   }( );
 
   var upHandler = function() {
@@ -216,33 +221,33 @@ function PanelEditor(svg, scope) {
       upOnce: function() { isUp = true; },
       isUped: function() { return isUp; },
       upClear: function() { isUp = false; }
-    }
+    };
   }( );
 
   // draw background
   (function() {
-    pointerCircle = svg.append("svg:circle")
-      .attr("cx", xPos)
-      .attr("cy", svgHeight/2)
-      .attr("r", 20)
-      .attr("stroke", "#1f77b4")
-      .attr("stroke-width", 3)
-      .style("stroke-opacity", 1);
+    pointerCircle = svg.append('svg:circle')
+      .attr('cx', xPos)
+      .attr('cy', svgHeight/2)
+      .attr('r', 20)
+      .attr('stroke', '#1f77b4')
+      .attr('stroke-width', 3)
+      .style('stroke-opacity', 1);
 
-    svg.append("rect")
-      .attr("class", "standard_bar")
-      .attr("x", xPos)
-      .attr("y", 0)
-      .attr("width", 2)
-      .attr("height", svgHeight);
+    svg.append('rect')
+      .attr('class', 'standard_bar')
+      .attr('x', xPos)
+      .attr('y', 0)
+      .attr('width', 2)
+      .attr('height', svgHeight);
 
     for(var i=1; i<DrawingUtility.pitchCount; i++) {
-      svg.append("rect")
-        .attr("class", "standard_bar")
-        .attr("x", 0)
-        .attr("y", pitch(i))
-        .attr("width", svgWidth)
-        .attr("height", 1);
+      svg.append('rect')
+        .attr('class', 'standard_bar')
+        .attr('x', 0)
+        .attr('y', pitch(i))
+        .attr('width', svgWidth)
+        .attr('height', 1);
     }
   })( );
 
@@ -259,8 +264,9 @@ function PanelEditor(svg, scope) {
   }
 
   function move() {
+    /*jshint validthis:true */
     mousePosition = d3.mouse(this);
-    pointerCircle.attr("cy", mousePosition[1]);
+    pointerCircle.attr('cy', mousePosition[1]);
     // state(clicked): 기존의 진행중인 bar 중단 + 새로운 bar 추가
     // state(notClicked): 아무런 변화 없음
     if( clicked && isCrossBorder(mousePosition[1]) && semaphore.canConsume() ) {
@@ -279,31 +285,32 @@ function PanelEditor(svg, scope) {
 
     currentPitch = getCurrentPitchUsingMousePosition( getLocationInSVG(mousePosition[1]) );
 
-    var note = svg.append("line")
-      .attr("x1", xPos).attr("y1", midInPitch[currentPitch])
-      .attr("x2", xPos).attr("y2", midInPitch[currentPitch])
-      .attr("class", "bar")
-      .style("stroke-width", bar_height);
+    var note = svg.append('line')
+      .attr('x1', xPos).attr('y1', midInPitch[currentPitch])
+      .attr('x2', xPos).attr('y2', midInPitch[currentPitch])
+      .attr('class', 'bar')
+      .style('stroke-width', barHeight);
 
-   drawNoteBar(note);
+    drawNoteBar(note);
   }
 
   function drawNoteBar(bar) {
-    var note = new animatableObj(bar,
+    var note = new AnimatableObj(bar,
                                   NoteBarAnimManager.noteBarIncreasingReDraw,
                                   NoteBarAnimManager.noteBarFlow);
     Animator.push(note);
+    MIDI.noteOn(1, 65, 30, 0);
   }
 
   function drawBeatBar() {
-    var bar = new animatableObj(BeatBarManager.getBeatBar(),
+    var bar = new AnimatableObj(BeatBarManager.getBeatBar(),
                                 BeatBarManager.beatBarReDraw,
                                 BeatBarManager.beatBarRemove);
     Animator.push(bar);
   }
 
   function isCrossBorder(y) {
-    return ( currentPitch != getCurrentPitchUsingMousePosition(y) );
+    return ( currentPitch !== getCurrentPitchUsingMousePosition(y) );
   }
 
   function getCurrentPitchUsingMousePosition(y) {
@@ -339,7 +346,7 @@ function TimelineEditor(svg, scope) {
 
       pitch = DrawingUtility.getPitch(svgHeight - yBorder - d3.round(svgHeight*0.03)),
       midInPitch = DrawingUtility.getMiddleYInPitch(pitch),
-      bar_height = DrawingUtility.calcBarHeight(pitch);
+      barHeight = DrawingUtility.calcBarHeight(pitch);
 
   var totalTime = 30, dt = 15,
       EditorTotalLength = totalTime * Animator.fps * Animator.dx,
@@ -355,52 +362,52 @@ function TimelineEditor(svg, scope) {
     var timeYPos = d3.round(svgHeight*0.2);
 
     // vertical divider bewteen edit layer and information layer
-    svg.append("rect")
-      .attr("class", "division_bar")
-      .attr("x", xBorder)
-      .attr("y", 0)
-      .attr("width", 2)
-      .attr("height", svgHeight);
+    svg.append('rect')
+      .attr('class', 'division_bar')
+      .attr('x', xBorder)
+      .attr('y', 0)
+      .attr('width', 2)
+      .attr('height', svgHeight);
 
     // horizontal divider between time indicator layer and edit layer
-    svg.append("rect")
-      .attr("class", "division_bar")
-      .attr("x", 0)
-      .attr("y", yBorder)
-      .attr("width", svgWidth)
-      .attr("height", 2);
+    svg.append('rect')
+      .attr('class', 'division_bar')
+      .attr('x', 0)
+      .attr('y', yBorder)
+      .attr('width', svgWidth)
+      .attr('height', 2);
 
     // Instrument Information
-    svg.append("text")
-      .attr("x", xBorder/2)
-      .attr("y", d3.round(svgHeight*0.7))
-      .text("Piano")
-      .attr("font-size", "20px");
+    svg.append('text')
+      .attr('x', xBorder/2)
+      .attr('y', d3.round(svgHeight*0.7))
+      .text('Piano')
+      .attr('font-size', '20px');
 
     // Total Time Information
     // TODO: Refactoring text contents - changed by total time
-    svg.append("text")
-      .attr("class", "total_time")
-      .attr("x", xBorder/2)
-      .attr("y", timeYPos)
+    svg.append('text')
+      .attr('class', 'total_time')
+      .attr('x', xBorder/2)
+      .attr('y', timeYPos)
       .text(timeFilter(totalTime));
 
     for(var i=1; i<=3; i++) {
       var x = xBorder + (svgWidth-xBorder)*i/4;
       // Time Indicator Divider
-      svg.append("rect")
-        .attr("class", "division_bar")
-        .attr("x", x)
-        .attr("y", 0)
-        .attr("width", 2)
-        .attr("height", d3.round(svgHeight*0.3));
+      svg.append('rect')
+        .attr('class', 'division_bar')
+        .attr('x', x)
+        .attr('y', 0)
+        .attr('width', 2)
+        .attr('height', d3.round(svgHeight*0.3));
 
       // Time Indicator Information
       // TODO: Refactoring text contents - changed by total time
-      svg.append("text")
-        .attr("class", "time_indicator")
-        .attr("x", x + 30)
-        .attr("y", timeYPos)
+      svg.append('text')
+        .attr('class', 'time_indicator')
+        .attr('x', x + 30)
+        .attr('y', timeYPos)
         .text(timeFilter(totalTime *i/4));
     }
   })( );
@@ -413,42 +420,43 @@ function TimelineEditor(svg, scope) {
   function drawNoteBar(event) {
     var origin = event.data,
         currentPitch = event.pitch,
-        originLen = d3.round(origin.attr("x1") - origin.attr("x2")),
+        originLen = d3.round(origin.attr('x1') - origin.attr('x2')),
         x = xBorder + event.startTime * drawAreaWidth / totalTime;
 
-    return svg.append("line")
-      .attr("x1", x)
-      .attr("x2", x + (originLen * BarTransformRate))
-      .attr("y1", midInPitch[currentPitch])
-      .attr("y2", midInPitch[currentPitch])
-      .attr("class", "bar")
-      .style("stroke-width", bar_height);
+    console.log("In Timeline: " + currentPitch +", " + x + " ~ " + (x + (originLen * BarTransformRate)));
+    return svg.append('line')
+      .attr('x1', x)
+      .attr('x2', x + (originLen * BarTransformRate))
+      .attr('y1', midInPitch[currentPitch])
+      .attr('y2', midInPitch[currentPitch])
+      .attr('class', 'bar')
+      .style('stroke-width', barHeight);
   }
 
   // make second to mm:ss formate
   function timeFilter(second) {
     function toDoubleDigit(d) {
-      return (d<10)? "0"+d : d;
+      return (d<10)? '0'+d : d;
     }
     second = Math.floor(second);
     var m = 0, s = second%60;
 
     if( second >= 60 ) {
-      console.log("gg");
+      console.log('gg');
       m = Math.floor( second/60 );
     }
     m = toDoubleDigit(m);
     s = toDoubleDigit(s);
 
-    return (m+":"+s);
+    return (m+':'+s);
   }
 }
 
 var DrawingUtility = function() {
   var pitchCount = 12;
   return {
-    getSVGWidth: function(svg) { return parseInt(svg.style("width")); },
-    getSVGHeight: function(svg) { return parseInt(svg.style("height")); },
+    getSVGWidth: function(svg) { return parseInt(svg.style('width'), 10); },
+    getSVGHeight: function(svg) { return parseInt(svg.style('height'), 10); },
     getPitch: function(height) { return d3.scale.linear().domain([0,pitchCount]).rangeRound([0,height]); },
     getMiddleYInPitch: function(pitch) {
       var mid = d3.round((pitch(1)-pitch(0))/2), d = [];
@@ -460,7 +468,7 @@ var DrawingUtility = function() {
     },
     calcBarHeight: function(pitch) { return d3.round( d3.round((pitch(1)-pitch(0))/2) * 1.6 ); },
     pitchCount: pitchCount
-  }
+  };
 }( );
 
 // Global tick을 가지고 있는 단일 스레드 모델의 Animator이다.
@@ -479,7 +487,7 @@ var Animator = function() {
     activeObjs.forEach(reDraw);
     // Animation End
 
-    if( tick%fps == 0 ) {
+    if( tick%fps === 0 ) {
 //      console.log(tick/fps);
     }
 
@@ -497,12 +505,12 @@ var Animator = function() {
     fps: fps,
     push: function(obj) { activeObjs.push(obj); },
     currentTime: function() { return tick/fps; }
-  }
+  };
 }( );
 
 // 객체 스스로가 repaint, remove 행동에 대한 책임이 있음
 // animatableObj는 Animator가 조작하는 단순한 container
-var animatableObj = function(obj, reDrawFunc, removeFunc) {
+var AnimatableObj = function(obj, reDrawFunc, removeFunc) {
   var object      = obj,
       innerReDraw = reDrawFunc,
       innerRemove = removeFunc;
@@ -524,5 +532,10 @@ var semaphore = function() {
     consume: function() { state = false; },
     release: function() { state = true; },
     canConsume: function() { return state; }
-  }
+  };
 }( );
+
+var player;
+MIDI.loadPlugin(function () {
+  player = MIDI.Player;
+});
