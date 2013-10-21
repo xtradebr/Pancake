@@ -107,7 +107,7 @@ function PanelEditor(svg, scope) {
 
       pitch = DrawingUtility.getPitch(svgHeight),
       midInPitch = DrawingUtility.getMiddleYInPitch(pitch),
-      currentPitch = 4, clickedTime,
+      currentPitch = 4,
 
       mousePosition = [xPos, svgHeight/2],
       barHeight = DrawingUtility.calcBarHeight(pitch);
@@ -181,7 +181,7 @@ function PanelEditor(svg, scope) {
       },
       noteBarFlow: function(note) {
         upHandler.upClear();
-        MIDI.noteOff(1, 65, 0);
+        // TODO: Midi Note Off timing
         if( note.attr('x1')-note.attr('x2') < Animator.dx ) {
           note.remove();
           return;
@@ -193,8 +193,8 @@ function PanelEditor(svg, scope) {
         Animator.push(floatingNote);
         scope.emit( {
             data: note,
-            pitch: currentPitch,
-            startTime: clickedTime,
+            pitch: note.currentPitch,
+            startTime: note.clickedTime,
             endTime: Animator.currentTime()
           }
         );
@@ -280,7 +280,6 @@ function PanelEditor(svg, scope) {
       return;
     }
     clicked = true;
-    clickedTime = Animator.currentTime();
     semaphore.consume();
 
     currentPitch = getCurrentPitchUsingMousePosition( getLocationInSVG(mousePosition[1]) );
@@ -295,11 +294,13 @@ function PanelEditor(svg, scope) {
   }
 
   function drawNoteBar(bar) {
+    bar.currentPitch = currentPitch;
+    bar.clickedTime = Animator.currentTime();
     var note = new AnimatableObj(bar,
                                   NoteBarAnimManager.noteBarIncreasingReDraw,
                                   NoteBarAnimManager.noteBarFlow);
-    Animator.push(note);
-    MIDI.noteOn(1, 65, 30, 0);
+    Animator.push(note)
+    // TODO: Midi Note On timing
   }
 
   function drawBeatBar() {
@@ -331,8 +332,6 @@ function PanelEditor(svg, scope) {
       return svgHeight;
     }
   }
-
-  function print(data) { console.log(data); }
 }
 
 // TODO: when totalTime changed, existed notes have to be changed.
@@ -423,7 +422,6 @@ function TimelineEditor(svg, scope) {
         originLen = d3.round(origin.attr('x1') - origin.attr('x2')),
         x = xBorder + event.startTime * drawAreaWidth / totalTime;
 
-    console.log("In Timeline: " + currentPitch +", " + x + " ~ " + (x + (originLen * BarTransformRate)));
     return svg.append('line')
       .attr('x1', x)
       .attr('x2', x + (originLen * BarTransformRate))
@@ -442,7 +440,6 @@ function TimelineEditor(svg, scope) {
     var m = 0, s = second%60;
 
     if( second >= 60 ) {
-      console.log('gg');
       m = Math.floor( second/60 );
     }
     m = toDoubleDigit(m);
