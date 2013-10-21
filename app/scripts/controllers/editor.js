@@ -13,7 +13,7 @@ app.controller('EditorCtrl', function($scope) {
   // MidiController가 할 일
   // Editor로부터 전송된 event를 MIDI로 전송할 포맷에 맞게 변경한 후
   // MIDI에 sendEvent를 하는 것
-  var MidiController = function() {
+  var MidiController = (function() {
 
     // 강호가 만든 MIDI 모듈이 들어갈 자리.
     // 해당 모듈은 MidiController 내부에서만 존재하고,
@@ -37,7 +37,7 @@ app.controller('EditorCtrl', function($scope) {
         module.sendEvent( formatting(event) );
       }
     };
-  }( );
+  }( ));
 
   $scope.noteList = new LinkedList();
   $scope.emit = function(event) {
@@ -114,7 +114,7 @@ function PanelEditor(svg, scope) {
 
   var clicked = false;
 
-  var recording = function() {
+  var recording = (function() {
     // TODO: startComposition 버튼을 누르면 true로 바뀌도록 구현 후 onGoing 기본 값을 false로 바꾸기
     var onGoing = true;
     return {
@@ -123,11 +123,11 @@ function PanelEditor(svg, scope) {
       isStillOnProgress: function() { return onGoing; },
       isDone: function() { return !onGoing; }
     };
-  }( );
+  }( ));
 
-  var BeatBarManager = function() {
+  var BeatBarManager = (function() {
     var startX = svgWidth + 20;
-    var BeatBarPool = function() {
+    var BeatBarPool = (function() {
       var pool = [];
       for(var i=0; i<10; i++) {
         pool[i] = svg.append('svg:line')
@@ -146,7 +146,7 @@ function PanelEditor(svg, scope) {
           return pool[(idx++)%length];
         }
       };
-    }( );
+    }( ));
 
     return {
       beatBarReDraw: function(bar) {
@@ -168,9 +168,9 @@ function PanelEditor(svg, scope) {
         return BeatBarPool.getBeatBar();
       }
     };
-  }( );
+  }( ));
 
-  var NoteBarAnimManager = function() {
+  var NoteBarAnimManager = (function() {
     return {
       noteBarIncreasingReDraw: function(note) {
         note.transition()
@@ -205,7 +205,7 @@ function PanelEditor(svg, scope) {
         note.transition()
           .attr('x1', x1-Animator.dx)
           .attr('x2', x2-Animator.dx)
-          .duration('10');
+          .duration('1');
 
         return ( x1 < 0 );
       },
@@ -213,16 +213,16 @@ function PanelEditor(svg, scope) {
         note.remove();
       }
     };
-  }( );
+  }( ));
 
-  var upHandler = function() {
+  var upHandler = (function() {
     var isUp = false;
     return {
       upOnce: function() { isUp = true; },
       isUped: function() { return isUp; },
       upClear: function() { isUp = false; }
     };
-  }( );
+  }( ));
 
   // draw background
   (function() {
@@ -299,7 +299,7 @@ function PanelEditor(svg, scope) {
     var note = new AnimatableObj(bar,
                                   NoteBarAnimManager.noteBarIncreasingReDraw,
                                   NoteBarAnimManager.noteBarFlow);
-    Animator.push(note)
+    Animator.push(note);
     // TODO: Midi Note On timing
   }
 
@@ -449,7 +449,7 @@ function TimelineEditor(svg, scope) {
   }
 }
 
-var DrawingUtility = function() {
+var DrawingUtility = (function() {
   var pitchCount = 12;
   return {
     getSVGWidth: function(svg) { return parseInt(svg.style('width'), 10); },
@@ -466,11 +466,11 @@ var DrawingUtility = function() {
     calcBarHeight: function(pitch) { return d3.round( d3.round((pitch(1)-pitch(0))/2) * 1.6 ); },
     pitchCount: pitchCount
   };
-}( );
+}( ));
 
 // Global tick을 가지고 있는 단일 스레드 모델의 Animator이다.
 // Observer 패턴을 구현했다고 봐도 무방하다. Observer의 update 함수가 reDraw와 remove 함수다.
-var Animator = function() {
+var Animator = (function() {
   var tick = 0,
       fps = 36,
       activeObjs = [],
@@ -483,10 +483,6 @@ var Animator = function() {
     tick += 1;
     activeObjs.forEach(reDraw);
     // Animation End
-
-    if( tick%fps === 0 ) {
-//      console.log(tick/fps);
-    }
 
     function reDraw(element, index, array) {
       var isReachEnd = element.reDraw();
@@ -503,7 +499,7 @@ var Animator = function() {
     push: function(obj) { activeObjs.push(obj); },
     currentTime: function() { return tick/fps; }
   };
-}( );
+}( ));
 
 // 객체 스스로가 repaint, remove 행동에 대한 책임이 있음
 // animatableObj는 Animator가 조작하는 단순한 container
@@ -523,14 +519,14 @@ var AnimatableObj = function(obj, reDrawFunc, removeFunc) {
 // 객체가 추가되는 시점을 Animator의 tick과 동기화되도록 해주는 Critical Section
 // wait(consume) is called when mouse down event occurs
 // release is called when Animator's time interval occurs
-var semaphore = function() {
+var semaphore = (function() {
   var state = true;
   return {
     consume: function() { state = false; },
     release: function() { state = true; },
     canConsume: function() { return state; }
   };
-}( );
+}( ));
 
 var player;
 MIDI.loadPlugin(function () {
