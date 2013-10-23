@@ -550,16 +550,16 @@ var MidiController = (function() {
   // 외부로 노출된 sendEvent가 위임해주는 이벤트를 미디 파일에 기록한다.
   var module = MIDI.loadPlugin(function() {
     module = MIDI;
-    module.noteOn = function(func) {
+    module.noteOn = (function(func) {
       return function(note) {
         return func(0, note, 60, 0);
       };
-    }( MIDI.noteOn );
-    module.noteOff = function(func) {
+    }(MIDI.noteOn));
+    module.noteOff = (function(func) {
       return function(note) {
         return func(0, note, 0);
       };
-    }( MIDI.noteOff );
+    }(MIDI.noteOff));
   });
   // 48 = C, 49 = C#, ..., B = 59
   // 넘겨줄 데이터 = pitch, dt
