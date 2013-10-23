@@ -10,35 +10,6 @@
 var app = angular.module('pancakeApp');
 app.controller('EditorCtrl', function($scope) {
 
-  // MidiController가 할 일
-  // Editor로부터 전송된 event를 MIDI로 전송할 포맷에 맞게 변경한 후
-  // MIDI에 sendEvent를 하는 것
-  var MidiController = (function() {
-
-    // 강호가 만든 MIDI 모듈이 들어갈 자리.
-    // 해당 모듈은 MidiController 내부에서만 존재하고,
-    // 외부로 노출된 sendEvent가 위임해주는 이벤트를 미디 파일에 기록한다.
-//    var module = new MidiModule();
-    var module;
-    // 48 = C, 49 = C#, ...
-    // 넘겨줄 데이터 = pitch, dt
-    var pitch = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
-
-    var formatting = function(event) {
-      return {
-        pitch: pitch[event.pitch],
-        startTime: event.startTime,
-        dt: event.endTime-event.startTime
-      };
-    };
-
-    return {
-      sendEvent: function(event) {
-        module.sendEvent( formatting(event) );
-      }
-    };
-  }( ));
-
   $scope.noteList = new LinkedList();
   $scope.emit = function(event) {
     $scope.timeline.emit(event);
@@ -51,12 +22,8 @@ app.controller('EditorCtrl', function($scope) {
   $scope.endComposition = function() {
     console.log($scope.noteList.size());
   };
-
 });
 
-// TODO: 가장 시급한 TODO, 모든 애니메이션이 하나의 clock과 동기화 되거나, 같은 주기의 tick_clock을 가져야 한다.
-// 지금은 제각각 따로 놀고 있다 -_-;; 그래서 무슨 횡스크롤 액션 배경마냥 depth가 생겨버렸다.
-// timeline을 그린 후에 해결하자.
 app.directive('editorVisualization', function() {
 
   var editor;
@@ -181,7 +148,6 @@ function PanelEditor(svg, scope) {
       },
       noteBarFlow: function(note) {
         upHandler.upClear();
-        // TODO: Midi Note Off timing
         if( note.attr('x1')-note.attr('x2') < Animator.dx ) {
           note.remove();
           return;
@@ -261,6 +227,7 @@ function PanelEditor(svg, scope) {
   function up() {
     upHandler.upOnce();
     clicked = false;
+    MidiController.noteOff(currentPitch);
   }
 
   function move() {
@@ -300,7 +267,7 @@ function PanelEditor(svg, scope) {
                                   NoteBarAnimManager.noteBarIncreasingReDraw,
                                   NoteBarAnimManager.noteBarFlow);
     Animator.push(note);
-    // TODO: Midi Note On timing
+    MidiController.noteOn(currentPitch);
   }
 
   function drawBeatBar() {
@@ -528,7 +495,64 @@ var semaphore = (function() {
   };
 }( ));
 
-var player;
-MIDI.loadPlugin(function () {
-  player = MIDI.Player;
-});
+// MidiController가 할 일
+// Editor로부터 전송된 event를 MIDI로 전송할 포맷에 맞게 변경한 후
+// MIDI에 sendEvent를 하는 것
+var MidiController = (function() {
+
+  // 강호가 만든 MIDI 모듈이 들어갈 자리.
+  // 해당 모듈은 MidiController 내부에서만 존재하고,
+  // 외부로 노출된 sendEvent가 위임해주는 이벤트를 미디 파일에 기록한다.
+  var module = MIDI.loadPlugin(function() {
+    module = MIDI;
+    module.noteOn = function(func) {
+      return function(note) {
+        return func(0, note, 60, 0);
+      };
+    }( MIDI.noteOn );
+    module.noteOff = function(func) {
+      return function(note) {
+        return func(0, note, 0);
+      };
+    }( MIDI.noteOff );
+  });
+  // 48 = C, 49 = C#, ..., B = 59
+  // 넘겨줄 데이터 = pitch, dt
+  var pitch = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+  var pitchSound = [];
+
+  pitch.reverse();
+  pitch.forEach(function(element, index, array) {
+    pitchSound.push(59-index);
+  });
+
+  var formatting = function(event) {
+    return {
+      pitch: pitch[event.pitch],
+      startTime: event.startTime,
+      dt: event.endTime-event.startTime
+    };
+  };
+
+  return {
+    sendEvent: function(event) {
+      module.sendEvent( formatting(event) );
+    },
+    noteOn: function(note) {
+      // when people access editor directly, editor needs time for load plugin.
+      // error occurs before loading is done. so check it and flow away.
+      try {
+        // interactive sound playing
+//        console.log(pitch[note] + " is playing..");
+        module.noteOn(pitchSound[note]);
+        // record static midi event
+      } catch (e) {}
+    },
+    noteOff: function(note) {
+      try {
+//        console.log(pitch[note] + " stop playing..");
+        module.noteOff(pitchSound[note]);
+      } catch (e) {}
+    }
+  };
+}( ));
