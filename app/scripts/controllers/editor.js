@@ -10,17 +10,23 @@
 var app = angular.module('pancakeApp');
 app.controller('EditorCtrl', function($scope) {
 
-  $scope.noteList = new LinkedList();
+  // TODO: 작곡 완료 후, replay 기능 구현
+  // noteList는 작곡을 완료한 후, 재생할 때 다시 보여줄 svg 객체들을 가지고 있다.
+  var noteList = new LinkedList();
   $scope.emit = function(event) {
+    noteList.addLast(event);
     $scope.timeline.emit(event);
-//    MidiController.sendEvent(event);
   };
 
-  // TODO: impl after integration with midi player
   $scope.startComposition = function() {
+    noteList.removeAll();
+    $scope.editor.startComposition();
   };
   $scope.endComposition = function() {
-    console.log($scope.noteList.size());
+    // $scope.noteList의 데이터는 svg데이터와 pitch, startTime, endTime에 대한 데이터임
+    // 실제 MIDI 파일을 만들기 위해 사용되는 데이터는 MidiController 내부에 들어있음.
+    $scope.editor.endComposition();
+    console.log("size: " + noteList.size());
   };
 });
 
@@ -82,12 +88,10 @@ function PanelEditor(svg, scope) {
   var clicked = false;
 
   var recording = (function() {
-    // TODO: startComposition 버튼을 누르면 true로 바뀌도록 구현 후 onGoing 기본 값을 false로 바꾸기
-    var onGoing = true;
+    var onGoing = false;
     return {
       start: function() { onGoing = true; },
       stop: function() { onGoing = false; },
-      isStillOnProgress: function() { return onGoing; },
       isDone: function() { return !onGoing; }
     };
   }( ));
@@ -147,6 +151,8 @@ function PanelEditor(svg, scope) {
         return upHandler.isUped();
       },
       noteBarFlow: function(note) {
+        var event;
+
         upHandler.upClear();
         if( note.attr('x1')-note.attr('x2') < Animator.dx ) {
           note.remove();
@@ -157,13 +163,11 @@ function PanelEditor(svg, scope) {
                                               NoteBarAnimManager.noteBarMovingReDraw,
                                               NoteBarAnimManager.noteBarRemove);
         Animator.push(floatingNote);
-        scope.emit( {
-            data: note,
-            pitch: note.currentPitch,
-            startTime: note.clickedTime,
-            endTime: Animator.currentTime()
-          }
-        );
+
+        event = { data: note, pitch: note.currentPitch,
+                  startTime: note.clickedTime, endTime: Animator.currentTime() };
+        MidiController.pushEvent( event );
+        scope.emit( event );
       },
       noteBarMovingReDraw: function(note) {
         var x1 = note.attr('x1'),
@@ -218,11 +222,15 @@ function PanelEditor(svg, scope) {
   })( );
 
   // draw editor animation
-  (function() {
-    setInterval( function() {
-      drawBeatBar();
+  var backgroundAnimation = function() {
+    var animID = setInterval( function() {
+      if( recording.isDone() ){
+        clearInterval(animID);
+      } else {
+        drawBeatBar();
+      }
     }, 2000);
-  })( );
+  };
 
   function up() {
     upHandler.upOnce();
@@ -299,6 +307,20 @@ function PanelEditor(svg, scope) {
       return svgHeight;
     }
   }
+
+  this.startComposition = function() {
+    console.log("Animation Start!");
+    backgroundAnimation();
+    recording.start();
+    Animator.start();
+  };
+
+  this.endComposition = function() {
+    console.log("Animation Stop!");
+    Animator.stop();
+    recording.stop();
+    MidiController.makeMidiFile();
+  };
 }
 
 // TODO: when totalTime changed, existed notes have to be changed.
@@ -443,28 +465,44 @@ var Animator = (function() {
       activeObjs = [],
       animationId;
 
-  animationId = setInterval( function() {
-
-    // Animation Start
-    semaphore.release();
-    tick += 1;
-    activeObjs.forEach(reDraw);
-    // Animation End
-
-    function reDraw(element, index, array) {
-      var isReachEnd = element.reDraw();
-      if( isReachEnd ) {
-        array.splice(index, 1);
-        element.remove();
-      }
-    }
-  }, Math.floor(1000/fps));
-
   return {
     dx: 10,
     fps: fps,
     push: function(obj) { activeObjs.push(obj); },
-    currentTime: function() { return tick/fps; }
+    currentTime: function() { return tick/fps; },
+    start: function() {
+      animationId = setInterval( function() {
+
+        // Animation Start
+        semaphore.release();
+        tick += 1;
+        activeObjs.forEach(reDraw);
+        // Animation End
+
+        function reDraw(element, index, array) {
+          var isReachEnd = element.reDraw();
+          if( isReachEnd ) {
+            array.splice(index, 1);
+            element.remove();
+          }
+        }
+      }, Math.floor(1000/fps));
+    },
+    stop: function() {
+      var id = setInterval( function() {
+        if(activeObjs.length > 0 ) {
+          console.log("finishing check");
+          return;
+        }
+
+        console.log("Nothing is in activeObjs");
+        tick = 0;
+        clearInterval(animationId);
+        clearInterval(id);
+
+      }, Math.floor(1000/fps));
+
+    }
   };
 }( ));
 
@@ -520,6 +558,7 @@ var MidiController = (function() {
   // 넘겨줄 데이터 = pitch, dt
   var pitch = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
   var pitchSound = [];
+  var eventList = new LinkedList();
 
   pitch.reverse();
   pitch.forEach(function(element, index, array) {
@@ -528,31 +567,33 @@ var MidiController = (function() {
 
   var formatting = function(event) {
     return {
-      pitch: pitch[event.pitch],
+      pitch: pitchSound[event.pitch],
       startTime: event.startTime,
       dt: event.endTime-event.startTime
     };
   };
 
   return {
-    sendEvent: function(event) {
-      module.sendEvent( formatting(event) );
+    makeMidiFile: function() {
+      // TODO 강호에게 MIDI 이벤트들 넘겨주기
+//      module.sendEvent( eventList );
+      console.log("\n Make MIDI File!, size: " + eventList.size());
+      eventList.removeAll();
     },
     noteOn: function(note) {
       // when people access editor directly, editor needs time for load plugin.
       // error occurs before loading is done. so check it and flow away.
       try {
-        // interactive sound playing
-//        console.log(pitch[note] + " is playing..");
         module.noteOn(pitchSound[note]);
-        // record static midi event
       } catch (e) {}
     },
     noteOff: function(note) {
       try {
-//        console.log(pitch[note] + " stop playing..");
         module.noteOff(pitchSound[note]);
       } catch (e) {}
+    },
+    pushEvent: function(event) {
+      eventList.add( formatting(event) );
     }
   };
 }( ));
