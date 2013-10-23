@@ -68,8 +68,12 @@ app.directive('timelineVisualization', function() {
 // TODO: Separation of Concerns은 자바스크립트에 대해 좀 더 이해한 후에 진행.
 function PanelEditor(svg, scope) {
   svg.on('mousedown', down)
-    .on('mouseup', up)
-    .on('mousemove', move);
+     .on('mousemove', move);
+  window.addEventListener('mouseup', function() {
+    if( clicked ) {
+      up();
+    }
+  });
 
   var pointerCircle;
 
@@ -153,6 +157,7 @@ function PanelEditor(svg, scope) {
       noteBarFlow: function(note) {
         var event;
 
+//        console.log("note is released!");
         upHandler.upClear();
         if( note.attr('x1')-note.attr('x2') < Animator.dx ) {
           note.remove();
@@ -310,6 +315,7 @@ function PanelEditor(svg, scope) {
 
   this.startComposition = function() {
     console.log("Animation Start!");
+    upHandler.upClear();
     backgroundAnimation();
     recording.start();
     Animator.start();
@@ -323,7 +329,7 @@ function PanelEditor(svg, scope) {
   };
 }
 
-// TODO: when totalTime changed, existed notes have to be changed.
+// TODO #1 : when totalTime changed, existed notes have to be changed.
 function TimelineEditor(svg, scope) {
   var svgWidth = DrawingUtility.getSVGWidth(svg),
       svgHeight = DrawingUtility.getSVGHeight(svg),
@@ -402,7 +408,8 @@ function TimelineEditor(svg, scope) {
 
   this.emit = function(event) {
     var transformedNote = drawNoteBar(event);
-    noteList.push(transformedNote);
+    // TODO: if #1 function is needs, timeline have to take care about note list
+//    noteList.push(transformedNote);
   };
 
   function drawNoteBar(event) {
