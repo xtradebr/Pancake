@@ -22,6 +22,7 @@
       <link rel="stylesheet" href="custom_bootstrap/css/ace-responsive.min.css" />
       <link rel="stylesheet" href="custom_bootstrap/css/ace-skins.min.css" />
 
+      <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css" />
       <link rel="stylesheet" href="styles/main.css" />
       <!-- endbuild -->
 
@@ -63,14 +64,31 @@
         <script src="bower_components/angular/angular.js"></script>
         <!-- endbuild -->
 
-        <!-- build:js scripts/plugins.js -->
-        <script src="bower_components/lib/ui-bootstrap-tpls-0.5.0.js"></script>
-        <script src="bower_components/lib/d3/d3.v3.min.js"></script>
+        <!-- build:js scripts/libraries.js -->
+        <script src="lib/ui-bootstrap-tpls-0.5.0.js"></script>
+        <script src="lib/d3/d3.js"></script>
         <script src="bower_components/stats.js/build/stats.min.js"></script>
         <script src="bower_components/linkedlist.js/LinkedList.min.js"></script>
 
         <!--ace settings handler-->
         <script src="custom_bootstrap/js/ace-extra.min.js"></script>
+        <!-- endbuild -->
+
+        <!-- build:js scripts/midi.js -->
+        <script src="lib/midi/inc/jasmid/stream.js"></script>
+        <script src="lib/midi/inc/jasmid/midifile.js"></script>
+        <script src="lib/midi/inc/jasmid/replayer.js"></script>
+        <script src="lib/midi/inc/Base64.js"></script>
+        <script src="lib/midi/inc/base64binary.js"></script>
+        <script src="lib/midi/inc/WebMIDIAPI.js"></script>
+        <!--<script src="midi/inc/SoundManager2/script/soundmanager2.js"></script>-->
+        <script src="lib/midi/js/MIDI/AudioDetect.js"></script>
+        <script src="lib/midi/js/MIDI/LoadPlugin.js"></script>
+        <script src="lib/midi/js/MIDI/Player.js"></script>
+        <script src="lib/midi/js/MIDI/Plugin.js"></script>
+        <script src="lib/midi/js/Window/DOMLoader.script.js"></script>
+        <script src="lib/midi/js/Window/DOMLoader.XMLHttp.js"></script>
+        <script src="lib/midi/js/Window/Event.js"></script>
         <!-- endbuild -->
 
         <!-- build:js({.tmp,app}) scripts/scripts.js -->

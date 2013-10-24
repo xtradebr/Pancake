@@ -1,43 +1,34 @@
-<div class="hero-unit">
-    <div class="title">
-        <h1>Sound Pancake</h1>
-        <div class="sub-title">
-            <h3>by pancake</h3>
+<div class="main-container">
+    <div class="hero-unit">
+        <div class="title">
+            <h1><strong>{{ title }}</strong></h1>
+            <br>
+            <p class="description">
+                <strong>{{ description }}</strong>
+            </p>
+            <br>
+            <br>
         </div>
 
-        <br><br>
+        <div class="demo">
+            <div ng-controller="DemoCtrl">
+                <p><button class="btn btn-primary" ng-click="start()">Try Demo</button></p>
+            </div>
+        </div>
     </div>
 
-    <div class="demo">
-        <div ng-controller="CreateScoreCtrl" >
-            <p><button class="btn btn-app btn-primary" ng-click="create()">Create</button></p>
-            <div modal="shouldBeOpen" close="close()" options="opts">
-                <div class="modal-header">
-                    <h3>새로운 악보 정보를 입력해주세요.</h3>
-                </div>
-                <div class="modal-body">
-                    악보 이름: <input type="text" autofocus="true" ng-model="score.title" required/>
-                    <br><br><br><br><br>
-
-                    <span>박자</span>
-                    <select ng-model="score.beat" ng-options="beat for beat in beat_list"></select>
-
-                    <p>
-                        <span>속도</span>
-                        <button type="button" class="btn btn-small btn-purple" ng-model="score.bpm" btn-radio="'느림'">느림</button>
-                        <button type="button" class="btn btn-small btn-purple" ng-model="score.bpm" btn-radio="'보통'">보통</button>
-                        <button type="button" class="btn btn-small btn-purple" ng-model="score.bpm" btn-radio="'빠름'">빠름</button>
-                    </p>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-app btn-success" ng-click="ok()">확인</button>
-                    <button class="btn btn-app btn-yellow" ng-click="close()">취소</button>
+    <div class="keyword-grid">
+        <div class="row-fluid">
+            <div ng-repeat="keyword in keywordList">
+                <div class="span4">
+                    <div class="small-hero-unit">
+                        <i class='{{ keyword.icon }}'><label>{{ keyword.name }}</label></i>
+                        <div class="small-description">
+                            <p>{{ keyword.description }}</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div ng-controller="DemoCtrl">
-            <p><button class="btn btn-app btn-pink" ng-click="start()">Demo</button></p>
-        </div>
     </div>
 </div>
-
