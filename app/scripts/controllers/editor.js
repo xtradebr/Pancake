@@ -7,6 +7,7 @@
  */
 'use strict';
 
+// TODO: Integration with Master branch after MIDI module function correctly.
 var app = angular.module('pancakeApp');
 app.controller('EditorCtrl', function($scope) {
 
@@ -478,6 +479,7 @@ var Animator = (function() {
     push: function(obj) { activeObjs.push(obj); },
     currentTime: function() { return tick/fps; },
     start: function() {
+      tick = 0;
       animationId = setInterval( function() {
 
         // Animation Start
