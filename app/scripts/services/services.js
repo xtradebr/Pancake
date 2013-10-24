@@ -1,6 +1,7 @@
 /**
  * Created by ipark on 13. 10. 10..
  */
+'use strict';
 
 angular.module('pancakeApp')
   .service('sharedProperties', function () {
@@ -16,5 +17,5 @@ angular.module('pancakeApp')
       setProperty: function (value) {
         property = value;
       }
-    }
+    };
   });

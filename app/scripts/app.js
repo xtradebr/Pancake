@@ -32,7 +32,7 @@ app.config(function ($routeProvider, $locationProvider) {
 });
 
 app.run(function ($rootScope) {
-  $rootScope.$on('$routeChangeSuccess', function(event, currentRoute, previousRoute) {
+  $rootScope.$on('$routeChangeSuccess', function(event, currentRoute) {
     $rootScope.title = currentRoute.title;
   });
 });
