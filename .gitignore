@@ -5,3 +5,4 @@ dist
 .DS_Store
 .idea*
 app/custom_bootstrap
+app/bower_component
