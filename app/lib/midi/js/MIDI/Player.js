@@ -54,10 +54,56 @@ root.clearAnimation = function() {
 	}
 };
 
+root.setAnimation = function(config) {
+	var callback = (typeof(config) === "function") ? config : config.callback;
+	var interval = config.interval || 30;
+	var currentTime = 0;
+	var tOurTime = 0;
+	var tTheirTime = 0;
+	//
+	root.clearAnimation();
+	root.interval = window.setInterval(function () {
+		if (root.endTime === 0) return;
+		if (root.playing) {
+			currentTime = (tTheirTime === root.currentTime) ? tOurTime - (new Date).getTime() : 0;
+			if (root.currentTime === 0) {
+				currentTime = 0;
+			} else {
+				currentTime = root.currentTime - currentTime;
+			}
+			if (tTheirTime !== root.currentTime) {
+				tOurTime = (new Date).getTime();
+				tTheirTime = root.currentTime;
+			}
+		} else { // paused
+			currentTime = root.currentTime;
+		}
+		var endTime = root.endTime;
+		var percent = currentTime / endTime;
+		var total = currentTime / 1000;
+		var minutes = total / 60;
+		var seconds = total - (minutes * 60);
+		var t1 = minutes * 60 + seconds;
+		var t2 = (endTime / 1000);
+		if (t2 - t1 < -1) return;
+		callback({
+			now: t1,
+			end: t2,
+			events: noteRegistrar
+		});
+	}, interval);
+};
+
 // helpers
 
 root.loadMidiFile = function() { // reads midi into javascript array of events
 	root.replayer = new Replayer(MidiFile(root.currentData), root.timeWarp);
+	root.data = root.replayer.getData();
+	root.endTime = getLength();
+};
+
+root.loadComposition = function() { //reads composition
+	root.replayer = new Replayer(CompositionFile(root.currentData), root.timeWarp);
 	root.data = root.replayer.getData();
 	root.endTime = getLength();
 };
@@ -73,6 +119,15 @@ root.loadFile = function (file, callback) {
 	}
 	//insert here for non-base64 string handling
 	///
+
+	else if (typeof(file)==="object") {
+		var data = file;
+		root.currentData = data;
+		root.loadComposition();
+		if (callback) callback(data);
+		return;
+	}
+
 	var fetch = new XMLHttpRequest();
 	fetch.open('GET', file);
 	fetch.overrideMimeType("text/plain; charset=x-user-defined");

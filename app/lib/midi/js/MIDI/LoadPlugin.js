@@ -35,7 +35,7 @@ MIDI.loadPlugin = function(conf) {
 		}
 	};
 	///
-	MIDI.soundfontUrl = conf.soundfontUrl || MIDI.soundfontUrl || "./midi/soundfont/";
+	MIDI.soundfontUrl = conf.soundfontUrl || MIDI.soundfontUrl || "./lib/midi/soundfont/";
 	/// Detect the best type of audio to use.
 	MIDI.audioDetect(function(types) {
 		var api = "";
@@ -75,7 +75,7 @@ connect.flash = function(filetype, instruments, conf) {
 	// fairly quick, but requires loading of individual MP3s (more http requests).
 	MIDI.lang="Flash API";
 	DOMLoader.script.add({
-		src: conf.soundManagerUrl || "./midi/inc/SoundManager2/script/soundmanager2.js",
+		src: conf.soundManagerUrl || "./lib/midi/inc/SoundManager2/script/soundmanager2.js",
 		verify: "SoundManager",
 		callback: function () {
 			MIDI.Flash.connect(instruments, conf);
