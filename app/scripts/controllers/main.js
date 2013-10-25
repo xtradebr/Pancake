@@ -3,40 +3,13 @@
 angular.module('pancakeApp')
   .controller('MainCtrl', function ($scope) {
 
-    //TODO: home에서 처리할 모든 작업들 컨트롤러로 만들어서 주입...
-
-    $scope.CreateScoreCtrl = function ($scope, $location, sharedProperties) {
-
-      $scope.beatList = ['3/4', '4/4', '6/8'];
-      $scope.bpmList = ['느림', '보통', '빠름'];
-
-      $scope.score = { title: '', beat: $scope.beatList[1], bpm: $scope.bpmList[1] };
-
-      $scope.create = function () {
-        $scope.shouldBeOpen = true;
-      };
-
-      $scope.ok = function () {
-        //TODO: validate user input data
-        sharedProperties.setProperty({ score: $scope.score });
-        $location.path('/editor');
-        $scope.shouldBeOpen = false;
-      };
-
-      $scope.close = function () {
-        $scope.shouldBeOpen = false;
-        clearScore();
-      };
-
-      var clearScore = function () {
-        $scope.score = { title: '', beat: $scope.beatList[1], bpm: $scope.bpmList[1] };
-      };
-
-      $scope.opts = {
-        backdropFade: true,
-        dialogFade:true
-      };
-    };
+    $scope.title = 'Sound Pancake';
+    $scope.description = 'Sound Pancake이란 서비스임. 막 주저리 주저리 써놓고 싶지만, 구현된게 아직 없어서 ㅎㅎㅎㅎㅎㅎㅎ';
+    $scope.keywordList = [
+      {icon: 'fa fa-bullhorn fa-3x', name: '재미짐', description: '인터랙티브함 ㅎㅎㅎ'},
+      {icon: 'fa fa-coffee fa-3x', name: '조촐함', description: '암것도 없음 ㅎㅎㅎ'},
+      {icon: 'fa fa-headphones fa-3x', name: '쉬움', description: '마우스 클릭만 하면 됨 ㅎㅎㅎ'}
+    ];
 
     $scope.DemoCtrl = function ($location, sharedProperties) {
 

@@ -7,6 +7,7 @@
  */
 'use strict';
 
+// TODO: Integration with Master branch after MIDI module function correctly.
 var app = angular.module('pancakeApp');
 app.controller('EditorCtrl', function($scope) {
 
@@ -21,6 +22,7 @@ app.controller('EditorCtrl', function($scope) {
   $scope.startComposition = function() {
     noteList.removeAll();
     $scope.editor.startComposition();
+    $scope.timeline.startComposition();
   };
   $scope.endComposition = function() {
     // $scope.noteList의 데이터는 svg데이터와 pitch, startTime, endTime에 대한 데이터임
@@ -352,7 +354,7 @@ function TimelineEditor(svg, scope) {
   });
 
   // draw background
-  (function() {
+  var drawBackground = (function() {
     var timeYPos = d3.round(svgHeight*0.2);
 
     // vertical divider bewteen edit layer and information layer
@@ -410,6 +412,11 @@ function TimelineEditor(svg, scope) {
     var transformedNote = drawNoteBar(event);
     // TODO: if #1 function is needs, timeline have to take care about note list
 //    noteList.push(transformedNote);
+  };
+
+  this.startComposition = function() {
+    // clear timeline area
+    d3.selectAll('.bar').remove();
   };
 
   function drawNoteBar(event) {
@@ -478,6 +485,7 @@ var Animator = (function() {
     push: function(obj) { activeObjs.push(obj); },
     currentTime: function() { return tick/fps; },
     start: function() {
+      tick = 0;
       animationId = setInterval( function() {
 
         // Animation Start
