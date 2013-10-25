@@ -1,3 +1,5 @@
+'use strict';
+
 /* 필요한 js include
 	<script src="./inc/jasmid/stream.js"></script>
 	<script src="./inc/jasmid/midifile.js"></script>
@@ -15,9 +17,9 @@
 	<script src="./js/Window/Event.js"></script>
 */
 
-
-MIDI.noteOn(channel, note, velocity, delay);
-MIDI.noteOff(channel, note, delay);
+//----단순히 편집기 상에서 노트를 재생할때 사용하는 스크립트----
+//MIDI.noteOn(channel, note, velocity, delay);
+//MIDI.noteOff(channel, note, delay);
 
 //channel의 경우 악기마다 분리해주면 되는데 복수의 악기를 지원하기 전까진 임의의 채널(0~15)에 고정하여 사용.
 //note는 0~127에 해당하는 노트값
@@ -32,4 +34,49 @@ MIDI.noteOff(channel, note, delay);
 
 //MidiFile class의 필요 데이터
 //
+
+//----하나의 작곡 단위를 composition이라고 하자.----
+//아래와 같은 자료구조에 저장한다.
+
+var composition = {};
+
+composition.formatType=1;
+composition.trackCount=1; //단일트랙 파일인 경우만 생각함
+composition.timeDivision=480; //Ticks per Beat;
+composition.header = {
+  'formatType': composition.formatType,
+  'trackCount': composition.trackCount,
+  'ticksPerBeat': composition.ticksPerBeat
+};
+composition.tracks=[];
+
+composition.noteOn = function(deltaTime, noteNumber, velocity){
+  var event={};
+  event.deltaTime=deltaTime;
+  event.type='channel';
+  event.noteNumber=noteNumber;
+  event.velocity=velocity;
+  event.subType='noteOn';
+
+  composition.tracks[0].push(event);
+};
+
+composition.noteOff = function(deltaTime, noteNumber){
+  var event={};
+  event.deltaTime=deltaTime;
+  event.type='channel';
+  event.noteNumber=noteNumber;
+
+  composition.tracks[0].push(event);
+};
+
+function CompositionFile(){
+
+  return {
+    'header': composition.header,
+    'tracks': composition.tracks
+  };
+}
+
+
 
