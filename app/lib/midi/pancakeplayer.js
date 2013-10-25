@@ -1,20 +1,20 @@
 'use strict';
 
 /* 필요한 js include
- <script src="./inc/jasmid/stream.js"></script>
- <script src="./inc/jasmid/midifile.js"></script>
- <script src="./inc/jasmid/replayer.js"></script>
- <script src="./inc/Base64.js"></script>
- <script src="./inc/base64binary.js"></script>
- <script src="./inc/WebMIDIAPI.js"></script>
- <script src="./inc/SoundManager2/script/soundmanager2.js"></script>
- <script src="./js/MIDI/AudioDetect.js"></script>
- <script src="./js/MIDI/LoadPlugin.js"></script>
- <script src="./js/MIDI/Player.js"></script>
- <script src="./js/MIDI/Plugin.js"></script>
- <script src="./js/Window/DOMLoader.script.js"></script>
- <script src="./js/Window/DOMLoader.XMLHttp.js"></script>
- <script src="./js/Window/Event.js"></script>
+	<script src="./inc/jasmid/stream.js"></script>
+	<script src="./inc/jasmid/midifile.js"></script>
+	<script src="./inc/jasmid/replayer.js"></script>
+	<script src="./inc/Base64.js"></script>
+	<script src="./inc/base64binary.js"></script>
+	<script src="./inc/WebMIDIAPI.js"></script>
+	<script src="./inc/SoundManager2/script/soundmanager2.js"></script>
+	<script src="./js/MIDI/AudioDetect.js"></script>
+	<script src="./js/MIDI/LoadPlugin.js"></script>
+	<script src="./js/MIDI/Player.js"></script>
+	<script src="./js/MIDI/Plugin.js"></script>
+	<script src="./js/Window/DOMLoader.script.js"></script>
+	<script src="./js/Window/DOMLoader.XMLHttp.js"></script>
+	<script src="./js/Window/Event.js"></script>
 */
 
 //----단순히 편집기 상에서 노트를 재생할때 사용하는 스크립트----
@@ -34,6 +34,7 @@
 
 //MidiFile class의 필요 데이터
 //
+
 //----하나의 작곡 단위를 composition이라고 하자.----
 //아래와 같은 자료구조에 저장한다.
 
@@ -76,7 +77,6 @@ function CompositionFile(){
     'tracks': composition.tracks
   };
 }
-
 
 
 
