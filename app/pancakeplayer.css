@@ -32,6 +32,7 @@ div.player {
         text-shadow: 1px 1px 2px #000;
         -moz-text-shadow: 1px 1px 2px #000;
         margin-bottom: 15px;
+        width: 720px;
 }
 div.player #capsule {
         border: 1px solid #000;
@@ -49,8 +50,10 @@ div.player #capsule {
         border-radius: 5px;
         -moz-border-radius: 5px;
         -webkit-border-radius: 5px;
-        width: 420px;
         display: inline-block;
+
+        /********플레이어의 내비게이션 캡슐 사이즈 조정*******/
+        width: 420px;
         height: 30px;
 }
 div.player #capsule #cursor {
