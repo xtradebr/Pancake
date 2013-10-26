@@ -2,6 +2,8 @@
  * Created by ipark on 2013. 10. 25..
  */
 
+'use strict';
+
 angular.module('pancakeApp')
   .controller('PlayListCtrl', function($scope) {
 
@@ -12,18 +14,22 @@ angular.module('pancakeApp')
       {
         // id: server에서 참조하는 각 player의 고유 식별 번호
         id: 1,
-        name: 'Bruno Mars Player', description: 'Bruno Mars 이제 질렸음...',
-        publisher: 'bruno mars lover', publisher_image: 'Some Image...',
-        music_list: [
+        name: 'Bruno Mars Player',
+        description: 'Bruno Mars 이제 질렸음...',
+        publisher: 'bruno mars lover',
+        publisherImage: 'Some Image...',
+        musicList: [
           { name: 'Marry You', time: 240, album: 'Doo-Wops & Hooligans' },
           { name: 'Money Make Her Smile', time: 180, album: 'Unorthodox Jukebox' }
         ]
       },
       {
         id: 2,
-        name: 'Dark Knights Player', description: 'Movie Dark Knights O.S.T',
-        publisher: 'Joker', publisher_profile_image: 'Some Image...',
-        music_list: [
+        name: 'Dark Knights Player',
+        description: 'Movie Dark Knights O.S.T',
+        publisher: 'Joker',
+        publisherImage: 'Some Image...',
+        musicList: [
           { name: 'Why So Serious?', time: 554, album: 'Dark Knights O.S.T' },
           { name: 'Like A Dog Chasing Cars', time: 303, album: 'Dark Knights O.S.T' }
         ]
@@ -76,7 +82,7 @@ angular.module('pancakeApp')
           this.filter = '';
         }
       };
-    }
+    };
   });
 
 angular.module('pancakeApp')
