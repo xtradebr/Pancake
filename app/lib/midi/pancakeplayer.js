@@ -1,3 +1,4 @@
+"use strict";
 /* 필요한 js include
 	<script src="./inc/jasmid/stream.js"></script>
 	<script src="./inc/jasmid/midifile.js"></script>
@@ -34,37 +35,39 @@
 //----하나의 작곡 단위를 composition이라고 하자.----
 //아래와 같은 자료구조에 저장한다.
 
-var composition = {};
+var composition = function(){
 
-composition.formatType=1;
-composition.trackCount=1; //단일트랙 파일인 경우만 생각함
-composition.timeDivision=480; //Ticks per Beat;
-composition.header = {
-		'formatType': composition.formatType,
-		'trackCount': composition.trackCount,
-		'ticksPerBeat': composition.ticksPerBeat
-}
-composition.tracks=[];
+	var formatType=1;
+	var trackCount=1; //단일트랙 파일인 경우만 생각함
+	var timeDivision=480; //Ticks per Beat;
+	var header = {
+		'formatType': formatType,
+		'trackCount': trackCount,
+		'ticksPerBeat': ticksPerBeat
+	}
+	var tracks=[];
+	tracks[0]=[];
 
-composition.noteOn = function(deltaTime, noteNumber, velocity){
-	var event={};
-	event.deltaTime=deltaTime;
-	event.type='channel';
-	event.noteNumber=noteNumber;
-	event.velocity=velocity;
-	event.subType='noteOn';
+	function noteOn(deltaTime, noteNumber, velocity){
+		var event={};
+		event.deltaTime=deltaTime;
+		event.type='channel';
+		event.noteNumber=noteNumber;
+		event.velocity=velocity;
+		event.subType='noteOn';
 
-	tracks[0].push(event);
-}
+		tracks[0].push(event);
+	}
 
-composition.noteOff = function(deltaTime, noteNumber){
-	var event={};
-	event.deltaTime=deltaTime;
-	event.type='channel';
-	event.noteNumber=noteNumber;
+	function noteOff(deltaTime, noteNumber){
+		var event={};
+		event.deltaTime=deltaTime;
+		event.type='channel';
+		event.noteNumber=noteNumber;
 
-	tracks[0].push(event);
-}
+		tracks[0].push(event);
+	}
+};
 
 function CompositionFile(){
 
@@ -73,6 +76,11 @@ function CompositionFile(){
 		'tracks': composition.tracks
 	}
 }
+
+//---playlist 데이터 관리---//
+
+var myplaylist = {};
+
 
 
 
