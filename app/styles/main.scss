@@ -1,6 +1,8 @@
 $iconSpritePath: "../images/glyphicons-halflings.png";
 $iconWhiteSpritePath: "../images/glyphicons-halflings-white.png";
 
+
+/* Base Color: #4894B9 */
 /* Put your CSS here */
 html, body {
   -webkit-user-select: none;
@@ -67,6 +69,7 @@ body {
   font-size: 18px;
   display: inline-block;
   margin-left: 30px;
+  cursor: default;
 }
 .small-hero-unit >  i {
   margin-bottom: 20px;
@@ -118,3 +121,109 @@ body {
   stroke: lightgreen;
 }
 /* Editor Styling End */
+
+/* Play List Styling Start */
+.list-search-area {
+  margin: 15px 0;
+}
+.list-search-area > label {
+  cursor: default;
+  border-radius: 10px;
+}
+.list-search-area > .btn-primary:hover {
+  background-color: #438eb9 !important;
+}
+
+.search-box {
+  display: inline-block;
+  margin-left: 15px;
+  vertical-align: middle;
+}
+.search-box .search-query {
+  padding-left: 30px;
+  width: 400px;
+  line-height: 25px;
+}
+.search-box .fa-search {
+  position:relative;
+}
+.search-box .fa-search:before {
+  position:absolute;
+  left: 15px;
+  top: -10px;
+}
+
+.divider-horizontal {
+  margin-top: 15px;
+  border-bottom: 2px solid #4894B9;
+}
+
+.row-fluid {
+  height: 100%;
+}
+.row-fluid .span3 {
+  margin-left: 20px;
+}
+.span3 .divider-vertical {
+  height: 100%;
+  border-left: 2px solid #4894B9;
+  margin-top: 0px;
+}
+
+.playlist {
+  margin-top: 15px;
+}
+.playlist > ol {
+  margin-left: 0px;
+}
+.playlist ol > div > li {
+  margin: 10px 0 10px 35px;
+  font-size: 22px;
+}
+.playlist .description {
+  margin-left: 35px;
+  margin-bottom: 25px;
+  font-size: 14px;
+  color: #a8a8a8;
+  display: block;
+}
+.playlist .publisher {
+  display: inline-block;
+}
+
+player-component {
+  border: 2px solid black;
+  border-radius: 15px;
+  padding: 15px;
+  display: block;
+  width: 450px;
+  height: 150px;
+}
+
+.filter-area {
+  padding-left: 30px;
+  padding-top: 40px;
+}
+.filter-area .filter-checkbox {
+  margin: -2px 0 0 0;
+  font-size: 16px;
+}
+.filter-name {
+  padding-left: 6px;
+  font-size: 14px;
+}
+
+.filter-area > .search-box {
+  display: block;
+  margin-left: 0px;
+  margin-top: 10px;
+}
+.filter-area > .search-box .search-query {
+  width: 140px;
+  line-height: 20px;
+}
+.filter-alert {
+  margin-top: 15px;
+}
+
+/* Play List Styling End */
