@@ -5,7 +5,7 @@
 
 <body>
 
-    <div class="player" style="height: 42px; box-shadow: 0 -1px #000; margin-bottom: 0;">
+    <div class="player">
         <div class="time-controls" style="float: left; margin: 0; position: relative; top: 5px;">
             <span id="capsule"><span id="cursor"></span></span>
             <span id="playtime" class="time">0:00</span>
@@ -21,13 +21,10 @@
 
 <script>
 
-// Begin loading indication.
 var player;
-
 MIDI.loadPlugin(function () {
-  player = MIDI.Player;
-
-  player.loadFile(song[songid++%3], player.start);
+    player = MIDI.Player;
+    player.loadFile(song[songid++%3], player.start);
 });
 
 MIDIPlayerPercentage(player);
@@ -48,8 +45,6 @@ var pausePlayStop = function(stop) {
                 MIDI.Player.resume();
         }
 };
-
-///////  ///////
 
 var MIDIPlayerPercentage = function(player) {
         
@@ -91,7 +86,7 @@ var MIDIPlayerPercentage = function(player) {
                 // display the information to the user
                 timeCursor.style.width = (percent * 100) + "%";
                 playtime.innerHTML = timeFormatting(now);
-                endtime.innerHTML = "-" + timeFormatting(end - now);
+                endtime.innerHTML = timeFormatting(end);
         });
 };
 

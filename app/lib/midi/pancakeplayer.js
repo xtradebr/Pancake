@@ -1,4 +1,9 @@
+<<<<<<< HEAD
 "use strict";
+=======
+'use strict';
+
+>>>>>>> b7c54ba4b5927dc98074222adf8e4b38dbba9c5a
 /* 필요한 js include
 	<script src="./inc/jasmid/stream.js"></script>
 	<script src="./inc/jasmid/midifile.js"></script>
@@ -31,12 +36,15 @@
 //midi/inc/jasmid/midifile.js의 MidiFile 클래스의 형식에 맞추어 데이터 생성한 후 플레이어에 그것을 던져주어야 함.
 //간단한 코드인데다 정리가 깔끔하게 되어있어서 그대로 사용함.
 
+//MidiFile class의 필요 데이터
+//
 
 //----하나의 작곡 단위를 composition이라고 하자.----
 //아래와 같은 자료구조에 저장한다.
 
 var composition = function(){
 
+<<<<<<< HEAD
 	var formatType=1;
 	var trackCount=1; //단일트랙 파일인 경우만 생각함
 	var timeDivision=480; //Ticks per Beat;
@@ -67,20 +75,49 @@ var composition = function(){
 
 		tracks[0].push(event);
 	}
+=======
+composition.formatType=1;
+composition.trackCount=1; //단일트랙 파일인 경우만 생각함
+composition.timeDivision=480; //Ticks per Beat;
+composition.header = {
+  'formatType': composition.formatType,
+  'trackCount': composition.trackCount,
+  'ticksPerBeat': composition.ticksPerBeat
+};
+composition.tracks=[];
+
+composition.noteOn = function(deltaTime, noteNumber, velocity){
+  var event={};
+  event.deltaTime=deltaTime;
+  event.type='channel';
+  event.noteNumber=noteNumber;
+  event.velocity=velocity;
+  event.subType='noteOn';
+
+  composition.tracks[0].push(event);
+};
+
+composition.noteOff = function(deltaTime, noteNumber){
+  var event={};
+  event.deltaTime=deltaTime;
+  event.type='channel';
+  event.noteNumber=noteNumber;
+
+  composition.tracks[0].push(event);
+>>>>>>> b7c54ba4b5927dc98074222adf8e4b38dbba9c5a
 };
 
 function CompositionFile(){
 
-	return {
-		'header': composition.header,
-		'tracks': composition.tracks
-	}
+  return {
+    'header': composition.header,
+    'tracks': composition.tracks
+  };
 }
 
 //---playlist 데이터 관리---//
 
 var myplaylist = {};
-
 
 
 

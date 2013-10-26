@@ -106,7 +106,7 @@ root.loadComposition = function() { //reads composition
 	root.replayer = new Replayer(CompositionFile(root.currentData), root.timeWarp);
 	root.data = root.replayer.getData();
 	root.endTime = getLength();
-}
+};
 
 root.loadFile = function (file, callback) {
 	root.stop();
@@ -117,6 +117,8 @@ root.loadFile = function (file, callback) {
 		if (callback) callback(data);
 		return;
 	}
+	//insert here for non-base64 string handling
+	///
 
 	else if (typeof(file)==="object") {
 		var data = file;
