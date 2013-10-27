@@ -112,16 +112,23 @@ function CompositionFile(){
 
 var playlist = function(){
 
+	/*
+		entry: 한 곡, 즉 하나의 MidiObject에 대응
+		list: entry의 리스트
+		entryNum: entry의 순서
+		numOfEntries: entry 개수
+	*/
+
 	var list=[];
+	var numOfEntries = 0;
 
-	function addToList(){
-		var entry;
-
-
+	function addToList(midiID){
+		var entry={};
+		entry.midiID=midiID;
+		numOfEntries++;
+		entry.entryNum=numOfEntries;
 		list.push(entry);
 	};
-
-
 
 };
 
