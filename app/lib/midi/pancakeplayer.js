@@ -70,43 +70,44 @@ var composition = function(){
 		tracks[0].push(event);
 	}
 
-composition.formatType=1;
-composition.trackCount=1; //단일트랙 파일인 경우만 생각함
-composition.timeDivision=480; //Ticks per Beat;
-composition.header = {
-  'formatType': composition.formatType,
-  'trackCount': composition.trackCount,
-  'ticksPerBeat': composition.ticksPerBeat
-};
-composition.tracks=[];
+	composition.formatType=1;
+	composition.trackCount=1; //단일트랙 파일인 경우만 생각함
+	composition.timeDivision=480; //Ticks per Beat;
+	composition.header = {
+		'formatType': composition.formatType,
+		'trackCount': composition.trackCount,
+		'ticksPerBeat': composition.ticksPerBeat
+	};
+	composition.tracks=[];
 
-composition.noteOn = function(deltaTime, noteNumber, velocity){
-  var event={};
-  event.deltaTime=deltaTime;
-  event.type='channel';
-  event.noteNumber=noteNumber;
-  event.velocity=velocity;
-  event.subType='noteOn';
+	composition.noteOn = function(deltaTime, noteNumber, velocity){
+		var event={};
+		event.deltaTime=deltaTime;
+		event.type='channel';
+		event.noteNumber=noteNumber;
+		event.velocity=velocity;
+		event.subType='noteOn';
 
-  composition.tracks[0].push(event);
-};
+		composition.tracks[0].push(event);
+	};
 
-composition.noteOff = function(deltaTime, noteNumber){
-  var event={};
-  event.deltaTime=deltaTime;
-  event.type='channel';
-  event.noteNumber=noteNumber;
+	composition.noteOff = function(deltaTime, noteNumber){
+		var event={};
+		event.deltaTime=deltaTime;
+		event.type='channel';
+		event.noteNumber=noteNumber;
 
-  composition.tracks[0].push(event);
-};
+		composition.tracks[0].push(event);
+	};
+
+}
 
 function CompositionFile(){
-
-  return {
-    'header': composition.header,
-    'tracks': composition.tracks
-  };
-}
+	return {
+		'header': composition.header,
+		'tracks': composition.tracks
+	}
+};
 
 //---playlist 데이터 관리---//
 
