@@ -1,21 +1,24 @@
 <html>
 <head>
   <link rel="stylesheet" href="pancakeplayer.css">
+  <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css">
 </head>
 
 <body>
 
     <div class="player">
-        <div class="time-controls" style="float: left; margin: 0; position: relative; top: 5px;">
+        <div class="time-controls">
             <span id="capsule"><span id="cursor"></span></span>
             <span id="playtime" class="time">0:00</span>
-            <span id="endtime" class="time">-0:00</span>
+            <span id="endtime" class="time">0:00</span>
         </div>
-        <div style="margin: 0 auto; width: 160px; float: left;">
-            <input type="image" src="./images/pause.png" align="absmiddle" value="pause" onclick="pausePlayStop()" id="pausePlayStop">
-            <input type="image" src="./images/stop.png" align="absmiddle" value="stop" onclick="pausePlayStop(true)">
-            <input type="image" src="./images/backward.png" align="absmiddle" value="stop" onclick="player.getNextSong(-1);">
-            <input type="image" src="./images/forward.png" align="absmiddle" value="stop" onclick="player.getNextSong(+1);">
+        <div class="buttons">
+            <i class="fa fa-stop" value="stop" onclick=""></i>
+            <i class="fa fa-play" value="play" onclick=""></i>
+            <i class="fa fa-pause" value="pause" onclick=""></i>
+            <i class="fa fa-backward" value="backward" onclick=""></i>
+            <i class="fa fa-forward" value="forward" onclick=""></i>
+            <i class="fa fa-eject" value="playlist" onclick=""></i>
         </div>
     </div>
 
@@ -32,6 +35,7 @@ MIDIPlayerPercentage(player);
 MIDI.loader.stop();
 
 // Toggle between Pause and Play modes.
+/*
 var pausePlayStop = function(stop) {
         var d = document.getElementById("pausePlayStop");
         if (stop) {
@@ -45,6 +49,7 @@ var pausePlayStop = function(stop) {
                 MIDI.Player.resume();
         }
 };
+*/
 
 var MIDIPlayerPercentage = function(player) {
         
