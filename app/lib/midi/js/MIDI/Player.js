@@ -117,9 +117,8 @@ root.loadFile = function (file, callback) {
 		if (callback) callback(data);
 		return;
 	}
-	//insert here for non-base64 string handling
-	///
 
+	//insert here for non-base64 string handling
 	else if (typeof(file)==="object") {
 		var data = file;
 		root.currentData = data;
