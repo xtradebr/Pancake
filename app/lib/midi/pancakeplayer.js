@@ -1,5 +1,9 @@
 "use strict";
 
+/*
+	player setup
+*/
+
 var player;
 MIDI.loadPlugin(function () {
     player = MIDI.Player;
@@ -50,6 +54,9 @@ var MIDIPlayerPercentage = function(player) {
         });
 };
 
+/*
+	composition data setup
+*/
 
 var composition = function(){
 
@@ -138,8 +145,6 @@ var playlist = function(){
 	var list=[];
 	var numOfEntries = 0;
 	var entryNum = 0;
-p
-
 
 	function loadSong(){
 
@@ -149,8 +154,13 @@ p
 
 	function loadPlaylistOnLogin(){
 
-		
 		//list=
+		
+		for(int i=0; i<list.length; i++)
+		{
+			addToList(list[i]);
+		}
+
 	};
 
 	function addToList(midiID){
