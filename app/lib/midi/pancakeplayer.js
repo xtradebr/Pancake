@@ -118,10 +118,25 @@ var playlist = function(){
 		list: entry의 리스트
 		entryNum: entry의 순서
 		numOfEntries: entry 개수
+		nowPlaying: 현재 플레이하고있는 곡의 entryNum
 	*/
 
 	var list=[];
 	var numOfEntries = 0;
+	var entryNum = 0;
+
+
+
+	function loadSong(){
+
+		player.loadSong(song,callback);
+	};
+
+	function loadPlaylistOnLogin(){
+
+		
+		//list=
+	};
 
 	function addToList(midiID){
 		var entry={};
@@ -132,7 +147,3 @@ var playlist = function(){
 	};
 
 };
-
-
-
-
