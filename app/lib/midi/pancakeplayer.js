@@ -1,9 +1,4 @@
-<<<<<<< HEAD
 "use strict";
-=======
-'use strict';
-
->>>>>>> b7c54ba4b5927dc98074222adf8e4b38dbba9c5a
 /* 필요한 js include
 	<script src="./inc/jasmid/stream.js"></script>
 	<script src="./inc/jasmid/midifile.js"></script>
@@ -44,7 +39,6 @@
 
 var composition = function(){
 
-<<<<<<< HEAD
 	var formatType=1;
 	var trackCount=1; //단일트랙 파일인 경우만 생각함
 	var timeDivision=480; //Ticks per Beat;
@@ -75,7 +69,7 @@ var composition = function(){
 
 		tracks[0].push(event);
 	}
-=======
+
 composition.formatType=1;
 composition.trackCount=1; //단일트랙 파일인 경우만 생각함
 composition.timeDivision=480; //Ticks per Beat;
@@ -104,7 +98,6 @@ composition.noteOff = function(deltaTime, noteNumber){
   event.noteNumber=noteNumber;
 
   composition.tracks[0].push(event);
->>>>>>> b7c54ba4b5927dc98074222adf8e4b38dbba9c5a
 };
 
 function CompositionFile(){
@@ -117,7 +110,20 @@ function CompositionFile(){
 
 //---playlist 데이터 관리---//
 
-var myplaylist = {};
+var playlist = function(){
+
+	var list=[];
+
+	function addToList(){
+		var entry;
+
+
+		list.push(entry);
+	};
+
+
+
+};
 
 
 
