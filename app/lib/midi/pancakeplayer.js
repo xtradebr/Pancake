@@ -1,41 +1,55 @@
 "use strict";
-/* 필요한 js include
-	<script src="./inc/jasmid/stream.js"></script>
-	<script src="./inc/jasmid/midifile.js"></script>
-	<script src="./inc/jasmid/replayer.js"></script>
-	<script src="./inc/Base64.js"></script>
-	<script src="./inc/base64binary.js"></script>
-	<script src="./inc/WebMIDIAPI.js"></script>
-	<script src="./inc/SoundManager2/script/soundmanager2.js"></script>
-	<script src="./js/MIDI/AudioDetect.js"></script>
-	<script src="./js/MIDI/LoadPlugin.js"></script>
-	<script src="./js/MIDI/Player.js"></script>
-	<script src="./js/MIDI/Plugin.js"></script>
-	<script src="./js/Window/DOMLoader.script.js"></script>
-	<script src="./js/Window/DOMLoader.XMLHttp.js"></script>
-	<script src="./js/Window/Event.js"></script>
-*/
 
-//----단순히 편집기 상에서 노트를 재생할때 사용하는 스크립트----
-//MIDI.noteOn(channel, note, velocity, delay);
-//MIDI.noteOff(channel, note, delay);
+var player;
+MIDI.loadPlugin(function () {
+    player = MIDI.Player;
+});
 
-//channel의 경우 악기마다 분리해주면 되는데 복수의 악기를 지원하기 전까진 임의의 채널(0~15)에 고정하여 사용.
-//note는 0~127에 해당하는 노트값
-//velocity는 0~127에 해당하는 타건속도-얼마나 건반을 강하게 누르는지에 대한 값. 적당한 값으로 고정하여 사용하면 될듯.
-//delay는 초단위의 딜레이. 0으로 해놓고 사용해야 함.
+MIDIPlayerPercentage(player);
 
+MIDI.loader.stop();
 
+var MIDIPlayerPercentage = function(player) {
+        
+        var playtime = document.getElementById("playtime");
+        var endtime = document.getElementById("endtime");
+        var capsule = document.getElementById("capsule");
+        var timeCursor = document.getElementById("cursor");
+        
+        Event.add(capsule, "drag", function (event, self) {
+                Event.cancel(event);
+                player.currentTime = (self.x) / 420 * player.endTime;
+                if (player.currentTime < 0) player.currentTime = 0;
+                if (player.currentTime > player.endTime) player.currentTime = player.endTime;
+                if (self.state === "down") {
+                        player.pause(true);
+                } else if (self.state === "up") {
+                        player.resume();
+                }
+        });
+        //
+        function timeFormatting(n) {
+                var minutes = n / 60 >> 0; 
+                var seconds = String(n - (minutes * 60) >> 0);
+                if (seconds.length == 1) seconds = "0" + seconds;
+                return minutes + ":" + seconds;
+        };
+        
+        player.setAnimation(function(data, element) {
+                var percent = data.now / data.end;
+                var now = data.now >> 0;
+                var end = data.end >> 0;
+                if (now === end) { // go to next song
 
-//**** play 하기 위한 요건이자 에디터에서 받아오는 데이터를 저장하기 위한 포맷 ****
-//midi/inc/jasmid/midifile.js의 MidiFile 클래스의 형식에 맞추어 데이터 생성한 후 플레이어에 그것을 던져주어야 함.
-//간단한 코드인데다 정리가 깔끔하게 되어있어서 그대로 사용함.
+                        player.loadFile(song, player.start); // load MIDI
+                }
+                // display the information to the user
+                timeCursor.style.width = (percent * 100) + "%";
+                playtime.innerHTML = timeFormatting(now);
+                endtime.innerHTML = timeFormatting(end);
+        });
+};
 
-//MidiFile class의 필요 데이터
-//
-
-//----하나의 작곡 단위를 composition이라고 하자.----
-//아래와 같은 자료구조에 저장한다.
 
 var composition = function(){
 
@@ -124,12 +138,13 @@ var playlist = function(){
 	var list=[];
 	var numOfEntries = 0;
 	var entryNum = 0;
-
+p
 
 
 	function loadSong(){
 
 		player.loadSong(song,callback);
+		//callback may include reloading playlist view etc
 	};
 
 	function loadPlaylistOnLogin(){
