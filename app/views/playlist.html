@@ -16,6 +16,15 @@
                         <li><span> {{ player.name }} </span></li>
                         <span class="description"> {{ player.description }} </span>
                         <player-component></player-component>
+
+                        <div class="publishing">
+                            published by
+                            <div class="publisher-inform">
+                                <div class="publisher-name" ng-show="showPublisher">{{ player.publisher }}</div>
+                                <span class="{{ player.publisherImage }} publisher"
+                                      ng-mouseenter="showPublisher=true" ng-mouseleave="showPublisher=false"></span>
+                            </div>
+                        </div>
                         <div class="divider-horizontal"></div>
                     </div>
                 </ol>

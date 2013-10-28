@@ -9,15 +9,19 @@ angular.module('pancakeApp')
 
     // TODO: dummy (empty) data. 실제론 서버에 쿼리를 날림
     $scope.playerName = '';
+    $scope.showPublisher = false;
 
     $scope.playerlists = [
       {
         // id: server에서 참조하는 각 player의 고유 식별 번호
         id: 1,
         name: 'Bruno Mars Player',
-        description: 'Bruno Mars 이제 질렸음...',
+        description: 'Bruno Mars 이제 안 듣는뎅...',
         publisher: 'bruno mars lover',
-        publisherImage: 'Some Image...',
+        publisherImage: 'fa fa-apple fa-7x',
+        likes: 100,
+        comments: 20,
+        shareLink: 'http://soundpancake.io/player/link/bruno-mars-lover/bruno-mars-player',
         musicList: [
           { name: 'Marry You', time: 240, album: 'Doo-Wops & Hooligans' },
           { name: 'Money Make Her Smile', time: 180, album: 'Unorthodox Jukebox' }
@@ -28,7 +32,10 @@ angular.module('pancakeApp')
         name: 'Dark Knights Player',
         description: 'Movie Dark Knights O.S.T',
         publisher: 'Joker',
-        publisherImage: 'Some Image...',
+        publisherImage: 'fa fa-github-alt fa-7x',
+        likes: 500,
+        comments: 59,
+        shareLink: 'http://soundpancake.io/player/link/joker/dark-knights-player',
         musicList: [
           { name: 'Why So Serious?', time: 554, album: 'Dark Knights O.S.T' },
           { name: 'Like A Dog Chasing Cars', time: 303, album: 'Dark Knights O.S.T' }
@@ -92,8 +99,20 @@ angular.module('pancakeApp')
     // 해당 리스트의 요소들을 player라는 이름으로 interation 할 때,
     // playerComponent element 사용 가능
     function link(scope, element) {
-      console.log(scope);
-      console.log(element);
+      scope.onLike = false;
+      scope.onComments = false;
+      scope.onSahre = false;
+      scope.showList = false;
+
+      scope.play = function() {
+        // add music info to inside player
+        console.log("Play Fn is called");
+      };
+
+      scope.list = function() {
+        console.log(scope);
+        console.log(scope.player.musicList);
+      };
     }
 
     return {

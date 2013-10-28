@@ -159,7 +159,7 @@ body {
 }
 
 .row-fluid {
-  height: 100%;
+  //height: 100%;
 }
 .row-fluid .span3 {
   margin-left: 20px;
@@ -187,17 +187,94 @@ body {
   color: #a8a8a8;
   display: block;
 }
-.playlist .publisher {
+.playlist .publishing {
   display: inline-block;
+  padding-left: 20%;
+  margin-top: 20px;
+}
+.playlist .publisher {
+  padding-left: 20px;
+  margin-top: 5px;
+}
+.publisher-inform {
+  display: inline-block;
+}
+.publisher-name {
+  font-size: 15px;
+  color: cadetblue;
+  text-align: center;
 }
 
 player-component {
   border: 2px solid black;
   border-radius: 15px;
   padding: 15px;
-  display: block;
+  display: inline-block;
   width: 450px;
   height: 150px;
+  text-align: center;
+
+}
+player-component .span4 {
+  height: 100%;
+}
+player-component .span8 {
+  height: 100%;
+}
+.play-control > a {
+  color: black;
+  text-decoration: none;
+  padding: 13% 0;
+}
+.play-control > a:hover {
+  text-decoration: none;
+  color: cadetblue;
+}
+.inform-text {
+  //height: 50%;
+  font-size: 32px;
+  padding: 8% 0;
+}
+player-component .divider-horizontal {
+  border-color: black;
+  margin-top: 0px;
+}
+.social {
+  padding: 4% 0;
+}
+.social > a {
+  padding-left: 10px;
+  color: black;
+  text-decoration: none;
+  display: inline-block;
+  min-height: 67px;
+}
+.social > a:hover {
+  text-decoration: none;
+  color: cadetblue;
+}
+.social-inform-text {
+  font-size: 15px;
+}
+.social-act-text {
+  display: block;
+  font-size: 20px;
+  margin-top: -40px;
+  margin-bottom: 20px;
+}
+.social .dropdown {
+  display: inline-block;
+}
+.social .dropdown > a {
+  padding-left: 10px;
+  color: black;
+  text-decoration: none;
+  display: inline-block;
+  min-height: 67px;
+}
+.social .dropdown > a:hover {
+  text-decoration: none;
+  color: cadetblue;
 }
 
 .filter-area {
