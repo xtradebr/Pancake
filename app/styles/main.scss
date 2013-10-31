@@ -1,6 +1,8 @@
 $iconSpritePath: "../images/glyphicons-halflings.png";
 $iconWhiteSpritePath: "../images/glyphicons-halflings-white.png";
 
+
+/* Base Color: #4894B9 */
 /* Put your CSS here */
 html, body {
   -webkit-user-select: none;
@@ -62,12 +64,22 @@ body {
   padding: 30px;
   background-color: #eee;
   border-radius: 15px;
+<<<<<<< HEAD
 }
 .small-hero-unit > i > label {
   font-size: 18px;
   display: inline-block;
   margin-left: 30px;
 }
+=======
+}
+.small-hero-unit > i > label {
+  font-size: 18px;
+  display: inline-block;
+  margin-left: 30px;
+  cursor: default;
+}
+>>>>>>> master
 .small-hero-unit >  i {
   margin-bottom: 20px;
 }
@@ -117,4 +129,191 @@ body {
 .bar {
   stroke: lightgreen;
 }
+<<<<<<< HEAD
 /* Editor Styling End */
+=======
+/* Editor Styling End */
+
+/* Play List Styling Start */
+.list-search-area {
+  margin: 15px 0;
+}
+.list-search-area > label {
+  cursor: default;
+  border-radius: 10px;
+}
+.list-search-area > .btn-primary:hover {
+  background-color: #438eb9 !important;
+}
+
+.search-box {
+  display: inline-block;
+  margin-left: 15px;
+  vertical-align: middle;
+}
+.search-box .search-query {
+  padding-left: 30px;
+  width: 400px;
+  line-height: 25px;
+}
+.search-box .fa-search {
+  position:relative;
+}
+.search-box .fa-search:before {
+  position:absolute;
+  left: 15px;
+  top: -10px;
+}
+
+.divider-horizontal {
+  margin-top: 15px;
+  border-bottom: 2px solid #4894B9;
+}
+
+.row-fluid {
+  //height: 100%;
+}
+.row-fluid .span3 {
+  margin-left: 20px;
+}
+.span3 .divider-vertical {
+  height: 100%;
+  border-left: 2px solid #4894B9;
+  margin-top: 0px;
+}
+
+.playlist {
+  margin-top: 15px;
+}
+.playlist > ol {
+  margin-left: 0px;
+}
+.playlist ol > div > li {
+  margin: 10px 0 10px 35px;
+  font-size: 22px;
+}
+.playlist .description {
+  margin-left: 35px;
+  margin-bottom: 25px;
+  font-size: 14px;
+  color: #a8a8a8;
+  display: block;
+}
+.playlist .publishing {
+  display: inline-block;
+  padding-left: 20%;
+  margin-top: 20px;
+}
+.playlist .publisher {
+  padding-left: 20px;
+  margin-top: 5px;
+}
+.publisher-inform {
+  display: inline-block;
+}
+.publisher-name {
+  font-size: 15px;
+  color: cadetblue;
+  text-align: center;
+}
+
+player-component {
+  border: 2px solid black;
+  border-radius: 15px;
+  padding: 15px;
+  display: inline-block;
+  width: 450px;
+  height: 150px;
+  text-align: center;
+
+}
+player-component .span4 {
+  height: 100%;
+}
+player-component .span8 {
+  height: 100%;
+}
+.play-control > a {
+  color: black;
+  text-decoration: none;
+  padding: 13% 0;
+}
+.play-control > a:hover {
+  text-decoration: none;
+  color: cadetblue;
+}
+.inform-text {
+  //height: 50%;
+  font-size: 32px;
+  padding: 8% 0;
+}
+player-component .divider-horizontal {
+  border-color: black;
+  margin-top: 0px;
+}
+.social {
+  padding: 4% 0;
+}
+.social > a {
+  padding-left: 10px;
+  color: black;
+  text-decoration: none;
+  display: inline-block;
+  min-height: 67px;
+}
+.social > a:hover {
+  text-decoration: none;
+  color: cadetblue;
+}
+.social-inform-text {
+  font-size: 15px;
+}
+.social-act-text {
+  display: block;
+  font-size: 20px;
+  margin-top: -40px;
+  margin-bottom: 20px;
+}
+.social .dropdown {
+  display: inline-block;
+}
+.social .dropdown > a {
+  padding-left: 10px;
+  color: black;
+  text-decoration: none;
+  display: inline-block;
+  min-height: 67px;
+}
+.social .dropdown > a:hover {
+  text-decoration: none;
+  color: cadetblue;
+}
+
+.filter-area {
+  padding-left: 30px;
+  padding-top: 40px;
+}
+.filter-area .filter-checkbox {
+  margin: -2px 0 0 0;
+  font-size: 16px;
+}
+.filter-name {
+  padding-left: 6px;
+  font-size: 14px;
+}
+
+.filter-area > .search-box {
+  display: block;
+  margin-left: 0px;
+  margin-top: 10px;
+}
+.filter-area > .search-box .search-query {
+  width: 140px;
+  line-height: 20px;
+}
+.filter-alert {
+  margin-top: 15px;
+}
+
+/* Play List Styling End */
+>>>>>>> master

@@ -1,0 +1,116 @@
+<html>
+<head>
+  <link rel="stylesheet" href="pancakeplayer.css">
+</head>
+
+<body>
+
+    <div class="player" style="height: 42px; box-shadow: 0 -1px #000; margin-bottom: 0;">
+        <div class="time-controls" style="float: left; margin: 0; position: relative; top: 5px;">
+            <span id="playtime" class="time">0:00</span>
+            <span id="capsule"><span id="cursor"></span></span>
+            <span id="endtime" class="time" style="text-align: left;">-0:00</span>
+        </div>
+        <div style="margin: 0 auto; width: 160px; float: left;">
+            <input type="image" src="./images/pause.png" align="absmiddle" value="pause" onclick="pausePlayStop()" id="pausePlayStop">
+            <input type="image" src="./images/stop.png" align="absmiddle" value="stop" onclick="pausePlayStop(true)">
+            <input type="image" src="./images/backward.png" align="absmiddle" value="stop" onclick="player.getNextSong(-1);">
+            <input type="image" src="./images/forward.png" align="absmiddle" value="stop" onclick="player.getNextSong(+1);">
+        </div>
+    </div>
+
+<script>
+
+// Begin loading indication.
+var player;
+
+MIDI.loadPlugin(function () {
+  player = MIDI.Player;
+
+  player.loadFile(song[songid++%3], player.start);
+});
+
+MIDIPlayerPercentage(player);
+
+MIDI.loader.stop();
+
+// Toggle between Pause and Play modes.
+var pausePlayStop = function(stop) {
+        var d = document.getElementById("pausePlayStop");
+        if (stop) {
+                MIDI.Player.stop();
+                d.src = "./images/play.png";
+        } else if (MIDI.Player.playing) {
+                d.src = "./images/play.png";
+                MIDI.Player.pause(true);
+        } else {
+                d.src = "./images/pause.png";
+                MIDI.Player.resume();
+        }
+};
+
+///////  ///////
+
+var MIDIPlayerPercentage = function(player) {
+        
+        var playtime = document.getElementById("playtime");
+        var endtime = document.getElementById("endtime");
+        var capsule = document.getElementById("capsule");
+        var timeCursor = document.getElementById("cursor");
+        
+        Event.add(capsule, "drag", function (event, self) {
+                Event.cancel(event);
+                player.currentTime = (self.x) / 420 * player.endTime;
+                if (player.currentTime < 0) player.currentTime = 0;
+                if (player.currentTime > player.endTime) player.currentTime = player.endTime;
+                if (self.state === "down") {
+                        player.pause(true);
+                } else if (self.state === "up") {
+                        player.resume();
+                }
+        });
+        //
+        function timeFormatting(n) {
+                var minutes = n / 60 >> 0; 
+                var seconds = String(n - (minutes * 60) >> 0);
+                if (seconds.length == 1) seconds = "0" + seconds;
+                return minutes + ":" + seconds;
+        };
+        player.getNextSong = function(n) {
+                //var id = Math.abs((songid += n) % song.length);
+                //player.loadFile(song[id], player.start); // load MIDI
+        };
+        player.setAnimation(function(data, element) {
+                var percent = data.now / data.end;
+                var now = data.now >> 0; // where we are now
+                var end = data.end >> 0; // end of song
+                if (now === end) { // go to next song
+                        var id = ++ songid % song.length;
+                        player.loadFile(song[id], player.start); // load MIDI
+                }
+                // display the information to the user
+                timeCursor.style.width = (percent * 100) + "%";
+                playtime.innerHTML = timeFormatting(now);
+                endtime.innerHTML = "-" + timeFormatting(end - now);
+        });
+};
+
+</script>
+  <!-- build:js scripts/midi.js -->
+  <script src="lib/midi/inc/jasmid/stream.js"></script>
+  <script src="lib/midi/inc/jasmid/midifile.js"></script>
+  <script src="lib/midi/inc/jasmid/replayer.js"></script>
+  <script src="lib/midi/inc/Base64.js"></script>
+  <script src="lib/midi/inc/base64binary.js"></script>
+  <script src="lib/midi/inc/WebMIDIAPI.js"></script>
+  <!--<script src="midi/inc/SoundManager2/script/soundmanager2.js"></script>-->
+  <script src="lib/midi/js/MIDI/AudioDetect.js"></script>
+  <script src="lib/midi/js/MIDI/LoadPlugin.js"></script>
+  <script src="lib/midi/js/MIDI/Player.js"></script>
+  <script src="lib/midi/js/MIDI/Plugin.js"></script>
+  <script src="lib/midi/js/Window/DOMLoader.script.js"></script>
+  <script src="lib/midi/js/Window/DOMLoader.XMLHttp.js"></script>
+  <script src="lib/midi/js/Window/Event.js"></script>
+  <!-- endbuild -->
+</body>
+</html>
