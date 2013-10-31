@@ -1,0 +1,71 @@
+<div class="container-fluid">
+    <div class="list-search-area">
+        <label class="btn btn-primary">Play List Name</label>
+        <div class="search-box">
+            <i class="fa fa-search"></i>
+            <input class="search-query" placeholder="Search..." ng-model="playerName"/>
+        </div>
+    </div>
+    <div class="divider-horizontal"></div>
+    <div class="row-fluid">
+        <!-- Play List Area -->
+        <div class="span9">
+            <div class="playlist">
+                <h1><strong>Hot 3 Player</strong></h1>
+                <ol>
+                    <div ng-repeat="player in playerlists">
+                        <li><span> {{ player.name }} </span></li>
+                        <span class="description"> {{ player.description }} </span>
+                        <player-component></player-component>
+
+                        <div class="publishing">
+                            published by
+                            <div class="publisher-inform">
+                                <div class="publisher-name" ng-show="showPublisher">{{ player.publisher }}</div>
+                                <span class="{{ player.publisherImage }} publisher"
+                                      ng-mouseenter="showPublisher=true" ng-mouseleave="showPublisher=false"></span>
+                            </div>
+                        </div>
+                        <div class="divider-horizontal"></div>
+                    </div>
+                </ol>
+            </div>
+        </div>
+        <!-- Filter Area -->
+        <div class="span3">
+            <div class="divider-vertical">
+                <div class="filter-area" ng-controller="FilterCtrl">
+                    <h1>Filter</h1>
+                    <h4>Mood</h4>
+                    <table>
+                        <tbody>
+                        <tr ng-repeat="mood in moods">
+                            <td>
+                                <input type="checkbox" class="filter-checkbox" ng-model="mood.checked" />
+                                <span class="filter-name">{{ mood.name }}</span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <form class="search-box" ng-submit="addMoodFilter()">
+                        <i class="fa fa-search"></i>
+                        <input class="search-query" placeholder="Search..." ng-model="filter" name="filter"/>
+                        <alert class="filter-alert" ng-repeat="alert in alerts">{{ alert.msg }}</alert>
+                    </form>
+                    <br/><br/>
+                    <h4>Social Action</h4>
+                    <table>
+                        <tbody>
+                        <tr ng-repeat="action in socialAction">
+                            <td>
+                                <input class="filter-checkbox" type="checkbox" ng-model="action.checked" />
+                                <span class="filter-name">{{ action.name }}</span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
