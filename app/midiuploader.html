@@ -21,14 +21,29 @@
 
 <input type="file" id="files" name="file" ></input>
 <form>
-Title: <input type="text" name="title">
+Title: <input type="text" id="title" name="title">
 <!--Image: ???-->
 </form>
 <button id="upload" onclick="">Upload</button>
 
+<!--
+	procedure:
+	get file input ->(parse as MidiFile ->load onto replayer)
+	//replayer is necessary not only to play midi file, but also to get its playtime. 
+	->play to see if it sounds okay
+	->write in title ->upload
+-->
 
 
+<script src="http://127.0.0.1:8080/socket.io/socket.io.js"> </script>
 <script>
+var uploadSocket = io.connect('http://127.0.0.1:8080/');
+
+uploadSocket.on('connect', function () {
+	uploadSocket.on('ready', function (socketID) {
+		console.log('Connected !');
+	});
+});
 
 function readMidi(evt) {
 	

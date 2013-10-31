@@ -145,6 +145,7 @@ var playlist = function(){
 	var list=[];
 	var numOfEntries = 0;
 	var entryNum = 0;
+	var nowPlaying;
 
 	function loadSong(){
 
@@ -155,7 +156,7 @@ var playlist = function(){
 	function loadPlaylistOnLogin(){
 
 		//list=
-		
+
 		for(int i=0; i<list.length; i++)
 		{
 			addToList(list[i]);
