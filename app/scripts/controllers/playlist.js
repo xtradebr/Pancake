@@ -98,7 +98,7 @@ angular.module('pancakeApp')
     // 부모 scope에 playlists라는 곡 목록을 저장한 후,
     // 해당 리스트의 요소들을 player라는 이름으로 interation 할 때,
     // playerComponent element 사용 가능
-    function link(scope, element) {
+    function link(scope) {
       scope.onLike = false;
       scope.onComments = false;
       scope.onSahre = false;
@@ -109,9 +109,19 @@ angular.module('pancakeApp')
         console.log("Play Fn is called");
       };
 
-      scope.list = function() {
-        console.log(scope);
-        console.log(scope.player.musicList);
+      scope.like = function() {
+        console.log("press Like It!");
+        console.log(scope.player);
+      };
+
+      scope.comment = function() {
+        console.log("press Comments!");
+        console.log(scope.player);
+      };
+
+      scope.share = function() {
+        console.log("press Share It!");
+        console.log(scope.player);
       };
     }
 
