@@ -97,13 +97,7 @@ root.setAnimation = function(config) {
 // helpers
 
 root.loadMidiFile = function() { // reads midi into javascript array of events
-	root.replayer = new Replayer(MidiFile(root.currentData), root.timeWarp);
-	root.data = root.replayer.getData();
-	root.endTime = getLength();
-};
-
-root.loadComposition = function() { //reads composition
-	root.replayer = new Replayer(CompositionFile(root.currentData), root.timeWarp);
+	root.replayer = new Replayer(root.currentData, root.timeWarp);
 	root.data = root.replayer.getData();
 	root.endTime = getLength();
 };
@@ -112,17 +106,24 @@ root.loadFile = function (file, callback) {
 	root.stop();
 	if (file.indexOf("base64,") !== -1) {
 		var data = window.atob(file.split(",")[1]);
-		root.currentData = data;
+		root.currentData = MidiFile(data);
 		root.loadMidiFile();
 		if (callback) callback(data);
 		return;
 	}
 
-	//insert here for non-base64 string handling
-	else if (typeof(file)==="object") {
+	else if (file.indexOf("MThd") !== -1){
 		var data = file;
-		root.currentData = data;
-		root.loadComposition();
+		root.currentData = MidiFile(data);
+		root.loadMidiFile();
+		if (callback) callback(data);
+		return;
+	}
+
+	else if (typeof(file)==='object') {
+		var data = file;
+		root.currentData = CompositionFile(data);
+		root.loadMidiFile();
 		if (callback) callback(data);
 		return;
 	}
