@@ -20,12 +20,11 @@
 
 
 <input type="file" id="files" name="file" ></input>
-<form>
-Title: <input type="text" id="title" name="title">
-<!--Image: ???-->
-</form>
-<button id="upload" onclick="">Upload</button>
+<input type="text" id="title" name="title">
 
+<button id="play" onclick="playstop(0);">Play</button>
+<button id="stop" onclick="playstop(1);">Stop</button>
+<button id="upload" onclick="upload();">Upload</button>
 <!--
 	procedure:
 	get file input ->(parse as MidiFile ->load onto replayer)
@@ -37,13 +36,32 @@ Title: <input type="text" id="title" name="title">
 
 <script src="http://127.0.0.1:8080/socket.io/socket.io.js"> </script>
 <script>
+
+//setting up socket
 var uploadSocket = io.connect('http://127.0.0.1:8080/');
 
 uploadSocket.on('connect', function () {
-	uploadSocket.on('ready', function (socketID) {
+	uploadSocket.on('ready', function () {
 		console.log('Connected !');
 	});
 });
+
+//setting up player
+var player;
+MIDI.loadPlugin(function () {
+    player = MIDI.Player;
+});
+
+var playstop = function(either){
+	if (either==0){
+		MIDI.Player.resume();
+	}
+	else if (either==1){
+		MIDI.Player.stop();
+	}
+};
+
+var myMidi;
 
 function readMidi(evt) {
 	
@@ -55,7 +73,6 @@ function readMidi(evt) {
 	
 	var file = files[0];
 	var reader = new FileReader();
-	var myMidi;
 	
 	var blob = file.slice(0, file.size-1)
 	reader.readAsBinaryString(blob);
@@ -64,10 +81,20 @@ function readMidi(evt) {
 		if (evt.target.readyState == FileReader.DONE) {
 			
 			var midiString = String(evt.target.result);
+			player.loadFile(midiString,player.start);
 			myMidi = MidiFile(midiString);
 		}
 	}
 }
+
+function upload(){
+	var data = 
+	{
+		'title': document.getElementById('title').value,
+		'midiData': myMidi
+	}
+	uploadSocket.emit('midiData',data);
+};
 
 document.getElementById('files').addEventListener('change', readMidi, false);
 
