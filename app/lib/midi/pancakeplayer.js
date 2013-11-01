@@ -11,8 +11,6 @@ MIDI.loadPlugin(function () {
 
 MIDIPlayerPercentage(player);
 
-MIDI.loader.stop();
-
 var MIDIPlayerPercentage = function(player) {
         
         var playtime = document.getElementById("playtime");
