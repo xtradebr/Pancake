@@ -21,6 +21,10 @@ io.sockets.on("connection", function(socket) {
 	while (key in client.get("keys")) {
 		key = randomString();
 	}
+	socket.on("sendFirstMessage", function(FirstMessage) {
+		socket.emit("ready");
+	});
+	/* in case modifying pre-composed files*/
 	socket.on("open", function(file_name) {
 		key = file_name;
 		if (client.keys.indexOf(key) < 0) {
@@ -33,8 +37,10 @@ io.sockets.on("connection", function(socket) {
 	socket.on("pop", function(index) {
 		client.pop(index);
 	});
+	socket.on("albumArt", function(name, buffer) {
+		/*something here*/
+	});
 	socket.on("save", function() {
-		socket.emit("file_name", key);
 		socket.on("file_name", function(file_name, meta) {
 			if (file_name != key) {
 				client.rename(key, file_name);
