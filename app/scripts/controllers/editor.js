@@ -19,16 +19,19 @@ app.controller('EditorCtrl', function($scope) {
     $scope.timeline.emit(event);
   };
 
-  $scope.startComposition = function() {
+  $scope.start = function() {
     noteList.removeAll();
     $scope.editor.startComposition();
     $scope.timeline.startComposition();
   };
-  $scope.endComposition = function() {
+  $scope.end = function() {
     // $scope.noteList의 데이터는 svg데이터와 pitch, startTime, endTime에 대한 데이터임
     // 실제 MIDI 파일을 만들기 위해 사용되는 데이터는 MidiController 내부에 들어있음.
     $scope.editor.endComposition();
     console.log("size: " + noteList.size());
+  };
+  $scope.save = function() {
+
   };
 });
 
