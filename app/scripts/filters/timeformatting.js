@@ -2,6 +2,8 @@
  * Created by ipark on 2013. 11. 5..
  */
 
+'use strict';
+
 angular.module('pancakeApp')
   .filter('secondToMMSS', function() {
 
@@ -20,5 +22,5 @@ angular.module('pancakeApp')
       s = toDoubleDigit(s);
 
       return (m+':'+s);
-    }
+    };
   });

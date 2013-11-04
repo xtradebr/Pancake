@@ -23,8 +23,30 @@ angular.module('pancakeApp')
         comment: 20,
         share: 'http://soundpancake.io/player/link/bruno-mars-lover/bruno-mars-player',
         musicList: [
-          { name: 'Marry You', time: 240, album: 'Doo-Wops & Hooligans' },
-          { name: 'Money Make Her Smile', time: 180, album: 'Unorthodox Jukebox' }
+          {
+            MidiFileID: 1,
+            title: 'Marry You',
+            description: 'i wanna marry you',
+            artist: 'Bruno Mars',
+            playtime: 240,
+            like: 10,
+            comment: 20,
+            albumArt: '/images/test01.jpg',
+            share: 'http://soundpancake.io/#!/id=1',
+            MidiObject: 1
+          },
+          {
+            MidiFileID: 12,
+            title: 'Money Make Her Smile',
+            description: 'Money Money Money',
+            artist: 'Bruno Mars',
+            playtime: 180,
+            like: 10,
+            comment: 20,
+            albumArt: '/images/test01.jpg',
+            share: 'http://soundpancake.io/#!/id=12',
+            MidiObject: 12
+          }
         ]
       },
       {
@@ -37,8 +59,30 @@ angular.module('pancakeApp')
         comment: 59,
         share: 'http://soundpancake.io/player/link/joker/dark-knights-player',
         musicList: [
-          { name: 'Why So Serious?', time: 554, album: 'Dark Knights O.S.T' },
-          { name: 'Like A Dog Chasing Cars', time: 303, album: 'Dark Knights O.S.T' }
+          {
+            MidiFileID: 21,
+            title: 'Why So Serious?',
+            description: 'Dark Knights O.S.T',
+            artist: 'Hans Zimmer',
+            playtime: 554,
+            like: 100,
+            comment: 200,
+            albumArt: '/images/test01.jpg',
+            share: 'http://soundpancake.io/#!/id=21',
+            MidiObject: 21
+          },
+          {
+            MidiFileID: 22,
+            title: 'Like A Dog Chasing Cars',
+            description: 'Dark Knights O.S.T',
+            artist: 'Hans Zimmer',
+            playtime: 303,
+            like: 100,
+            comment: 200,
+            albumArt: '/images/test01.jpg',
+            share: 'http://soundpancake.io/#!/id=22',
+            MidiObject: 22
+          }
         ]
       }
     ];

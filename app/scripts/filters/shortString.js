@@ -2,6 +2,8 @@
  * Created by ipark on 2013. 11. 5..
  */
 
+'use strict';
+
 angular.module('pancakeApp')
   .filter('shortString', function() {
 
@@ -15,5 +17,5 @@ angular.module('pancakeApp')
     } else {
       return string;
     }
-  }
+  };
 });

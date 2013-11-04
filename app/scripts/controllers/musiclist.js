@@ -75,7 +75,7 @@ angular.module('pancakeApp')
       $scope.show = true;
       $scope.music = music;
     });
-});
+  });
 
 angular.module('pancakeApp')
   .directive('musicComponent', function() {
@@ -107,5 +107,5 @@ angular.module('pancakeApp')
       restrict: 'E',
       link: link,
       templateUrl: '/views/music.html'
-    }
-});
+    };
+  });
