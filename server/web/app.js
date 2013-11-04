@@ -1,13 +1,50 @@
 var express = require("express");
-var io = require("socket.io").listen(80);
-//TODO: move socket.io code below express
-io.socket.on("connection", function(socket) {
-	/* for data income */
-	socket.on("income_event", function(data) {
-		/* push to redis */
+var redis = require("redis");
+var socketio = require("socket.io");
+var io = socketio.listen(80); //Warning: listen EACCES
+var redis_port = "27071";
+var redis_host = "54.249.9.214";
+
+function randomString() {
+	var chars = "ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz0123456789";
+	var rstring = "", len = 32;
+	for (var i = 0; i < len; i++) {
+		rstring += chars[(Math.floor(Math.random() * 62))];
+	}
+	return rstring;
+}
+
+io.sockets.on("connection", function(socket) {
+	var client = redis.createClient(redis_port, redis_host);
+	var redis_socket = socketio.connect(redis_host);
+	var key = randomString();
+	while (key in client.get("keys")) {
+		key = randomString();
+	}
+	socket.on("open", function(file_name) {
+		key = file_name;
+		if (client.keys.indexOf(key) < 0) {
+			redis_socket.emit("load", key);
+		}
 	});
-	/* else */
+	socket.on("put", function(data, index) {
+		client.linsert(key, index, data)
 	});
+	socket.on("pop", function(index) {
+		client.pop(index);
+	});
+	socket.on("save", function() {
+		socket.emit("file_name", key);
+		socket.on("file_name", function(file_name, meta) {
+			if (file_name != key) {
+				client.rename(key, file_name);
+				key = file_name;
+			}
+			client.lpush(key, meta);
+			redis_socket.emit("dump", key);
+		});
+	});
+});
 		
 var application_root = "/home/ubuntu/Pancake/app/";
 var app = express();
