@@ -9,12 +9,12 @@
         <div class="divider-horizontal"></div>
         <div class="social">
             <a class="fa fa-heart-o fa-4x" ng-click="like()" ng-mouseenter="onLike=true" ng-mouseleave="onLike=false">
-                <span class="social-act-text" ng-show="onLike">{{ player.likes }}</span>
+                <span class="social-act-text" ng-show="onLike">{{ player.like }}</span>
                 <div class="social-inform-text">Like</div>
             </a>
-            <a class="fa fa-comment-o fa-4x" ng-click="comment()"ng-mouseenter="onComments=true" ng-mouseleave="onComments=false">
-                <span class="social-act-text" ng-show="onComments">{{ player.comments }}</span>
-                <div class="social-inform-text">Comments</div>
+            <a class="fa fa-comment-o fa-4x" ng-click="comment()" ng-mouseenter="onComment=true" ng-mouseleave="onComment=false">
+                <span class="social-act-text" ng-show="onComment">{{ player.comment }}</span>
+                <div class="social-inform-text">Comment</div>
             </a>
             <a class="fa fa-share-square-o fa-4x" ng-click="share()">
                 <div class="social-inform-text">Share</div>
@@ -25,7 +25,7 @@
                 </a>
                 <ul class="dropdown-menu">
                     <li ng-repeat="music in player.musicList">
-                        <a>{{ music.name }}</a>
+                        <a>{{ music.title }}</a>
                     </li>
                 </ul>
             </div>
