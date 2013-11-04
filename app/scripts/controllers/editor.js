@@ -434,7 +434,7 @@ function TimelineEditor(svg, scope) {
       .style('stroke-width', barHeight);
   }
 
-  // make second to mm:ss formate
+  // make second to mm:ss format
   function timeFilter(second) {
     function toDoubleDigit(d) {
       return (d<10)? '0'+d : d;

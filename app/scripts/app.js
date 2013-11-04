@@ -16,6 +16,11 @@ app.config(function ($routeProvider, $locationProvider) {
       controller: 'EditorCtrl',
       title: 'Editor'
     })
+    .when('/musiclist', {
+      templateUrl: 'views/musiclist.html',
+      controller: 'MusicListCtrl',
+      title: 'Music List'
+    })
     .when('/playlist', {
       templateUrl: 'views/playlist.html',
       controller: 'PlayListCtrl',
