@@ -15,7 +15,7 @@ body {
 .container {
   width: auto;
   margin-left: 0px;
-  margin-right: 0px;}
+  margin-right: 0px; }
 
 .nav-container {
   padding-left: 20px; }
@@ -105,6 +105,16 @@ body {
 .bar {
   stroke: lightgreen; }
 
+.modal-body .music-item {
+  padding-right: 20px; }
+
+.modal-body > input, textarea {
+  padding-left: 10px;
+  margin-left: 10px; }
+
+.modal-body > input:focus {
+  outline: none; }
+
 /* Editor Styling End */
 /* Play List Styling Start */
 .list-search-area {
@@ -121,6 +131,9 @@ body {
   display: inline-block;
   margin-left: 15px;
   vertical-align: middle; }
+
+.search-query:focus {
+  outline: none; }
 
 .search-box .search-query {
   padding-left: 30px;

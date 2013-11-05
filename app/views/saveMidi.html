@@ -1,0 +1,17 @@
+<div class="modal-header">
+    <h3>Save Composition!</h3>
+</div>
+<div class="modal-body">
+    <div class="music-item">Title</div> :
+    <input type="text" ng-model="midiObject.title" placeholder="Music's Title" required/> <br/>
+    <div class="music-item">Description</div> :
+    <textarea ng-model="midiObject.description" placeholder="Music's Description"></textarea> <br/>
+    <div class="music-item">Artist</div> :
+    <input type="text" ng-model="midiObject.artist" placeholder="Artist's Name" required/> <br/>
+    <div class="music-item">Album Art</div> :
+    <input type="file" ng-model="albumArt" id="album-art" required />
+</div>
+<div class="modal-footer">
+    <button class="btn btn-success" ng-click="ok()">OK</button>
+    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+</div>
