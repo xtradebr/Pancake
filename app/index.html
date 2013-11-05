@@ -60,10 +60,9 @@
       </div>
     </header>
 
-    <!-- Add your site or application content here -->
     <div class="container" ng-view=""></div>
 
-    <footer>
+    <footer ng-hide="$root.isInEditor">
         <div class="player">
             <div class="time-controls">
                 <span id="capsule"><span id="cursor"></span></span>
