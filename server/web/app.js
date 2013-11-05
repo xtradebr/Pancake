@@ -1,4 +1,5 @@
 var express = require("express");
+var graph = require("fbgraph");
 var redis = require("redis");
 var socketio = require("socket.io");
 var io = socketio.listen(80); //Warning: listen EACCES
@@ -54,12 +55,52 @@ io.sockets.on("connection", function(socket) {
 		
 var application_root = "/home/ubuntu/Pancake/app/";
 var app = express();
+
+var conf = {
+	client_id:      'YOUR FACEBOOK APP ID',
+	client_secret:  'YOU FACEBOOK APP SECRET',
+	scope:          'email, user_about_me, user_birthday, user_location, publish_stream',
+	redirect_uri:   'http://localhost:3000/auth/facebook'
+};
+
 app.configure(function () {
 	app.use(express.bodyParser());
 	app.use(express.methodOverride());
 	app.use(app.router);
 	app.use(express.static(application_root));
 	app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
+});
+
+app.get("/auth/facebook", function(req, res) {
+	if(!req.query.code) {
+		var authUrl = graph.getOauthUrl({
+			"client_id": conf.client_id,
+			"redirect_uri": conf.redirect_uri,
+			"scope": conf.scope
+		});
+		if(!req.query.error) {
+			res.redirect(authUrl);
+		} else {
+			res.send("access denied");
+		}
+		return;
+	}
+	graph.authorize({
+		"client_id": conf.client_id,
+		"redirect_uri": conf.redirect_uri,
+		"client_secret": conf.client_secret,
+		"code": req.query.code
+	}, function(err, fbRes) {
+		res.redirect("/mypage");
+	});
+});
+
+app.get("/mypage", function(req, res) {
+	res.render("mypage", {id: "xarus"});
+});
+
+app.get("/api/filter", function(req, res) {
+	/*parse req.body.blah query to mongo*/
 });
 
 app.listen(3000);
