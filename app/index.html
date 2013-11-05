@@ -24,6 +24,7 @@
 
       <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css" />
       <link rel="stylesheet" href="styles/main.css" />
+      <link rel="stylesheet" href="pancakeplayer.css" />
       <!-- endbuild -->
 
     <title ng-bind="$root.title + ' by Sound Pancake'">Sound Pancake</title>
@@ -62,6 +63,24 @@
     <!-- Add your site or application content here -->
     <div class="container" ng-view=""></div>
 
+    <footer>
+        <div class="player">
+            <div class="time-controls">
+                <span id="capsule"><span id="cursor"></span></span>
+                <span id="playtime" class="time">0:00</span>
+                <span id="endtime" class="time">0:00</span>
+            </div>
+            <div class="buttons">
+                <i class="fa fa-stop" value="stop" onclick=""></i>
+                <i class="fa fa-play" value="play" onclick=""></i>
+                <i class="fa fa-pause" value="pause" onclick=""></i>
+                <i class="fa fa-backward" value="backward" onclick=""></i>
+                <i class="fa fa-forward" value="forward" onclick=""></i>
+                <i class="fa fa-eject" value="openlist" onclick=""></i>
+            </div>
+        </div>
+    </footer>
+
         <!-- build:js scripts/modules.js -->
         <script src="bower_components/jquery/jquery.js"></script>
         <script src="bower_components/angular/angular.js"></script>
@@ -93,6 +112,8 @@
         <script src="lib/midi/js/Window/DOMLoader.XMLHttp.js"></script>
         <script src="lib/midi/js/Window/Event.js"></script>
         <!-- endbuild -->
+
+        <script src="lib/midi/pancakeplayer.js"></script>
 
         <!-- build:js({.tmp,app}) scripts/scripts.js -->
         <script src="scripts/app.js"></script>
