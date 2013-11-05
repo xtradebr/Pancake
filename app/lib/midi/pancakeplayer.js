@@ -1,12 +1,8 @@
 "use strict";
 
-/*
-	player setup
-*/
-
 var player;
-MIDI.loadPlugin(function () {
-    player = MIDI.Player;
+MIDI.loadPlugin(function(){
+	player = MIDI.Player;
 });
 
 MIDIPlayerPercentage(player);
@@ -27,7 +23,7 @@ var MIDIPlayerPercentage = function(player) {
                         player.pause(true);
                 } else if (self.state === "up") {
                         player.resume();
-                }
+                };
         });
         //
         function timeFormatting(n) {
@@ -44,7 +40,7 @@ var MIDIPlayerPercentage = function(player) {
                 if (now === end) { // go to next song
 
                         player.loadFile(song, player.start); // load MIDI
-                }
+                };
                 // display the information to the user
                 timeCursor.style.width = (percent * 100) + "%";
                 playtime.innerHTML = timeFormatting(now);
@@ -58,37 +54,6 @@ var MIDIPlayerPercentage = function(player) {
 
 var composition = function(){
 
-	var formatType=1;
-	var trackCount=1; //단일트랙 파일인 경우만 생각함
-	var timeDivision=480; //Ticks per Beat;
-	var header = {
-		'formatType': formatType,
-		'trackCount': trackCount,
-		'ticksPerBeat': ticksPerBeat
-	}
-	var tracks=[];
-	tracks[0]=[];
-
-	function noteOn(deltaTime, noteNumber, velocity){
-		var event={};
-		event.deltaTime=deltaTime;
-		event.type='channel';
-		event.noteNumber=noteNumber;
-		event.velocity=velocity;
-		event.subType='noteOn';
-
-		tracks[0].push(event);
-	}
-
-	function noteOff(deltaTime, noteNumber){
-		var event={};
-		event.deltaTime=deltaTime;
-		event.type='channel';
-		event.noteNumber=noteNumber;
-
-		tracks[0].push(event);
-	}
-
 	composition.formatType=1;
 	composition.trackCount=1; //단일트랙 파일인 경우만 생각함
 	composition.timeDivision=480; //Ticks per Beat;
@@ -99,12 +64,13 @@ var composition = function(){
 	};
 	composition.tracks=[];
 
-	composition.noteOn = function(deltaTime, noteNumber, velocity){
+	composition.noteOn = function(deltaTime, noteNumber){
 		var event={};
 		event.deltaTime=deltaTime;
 		event.type='channel';
+		event.channel=1;
 		event.noteNumber=noteNumber;
-		event.velocity=velocity;
+		event.velocity=80;		//use fixed value for velocity (temporarily);
 		event.subType='noteOn';
 
 		composition.tracks[0].push(event);
@@ -114,18 +80,19 @@ var composition = function(){
 		var event={};
 		event.deltaTime=deltaTime;
 		event.type='channel';
+		event.channel=1;
 		event.noteNumber=noteNumber;
 
 		composition.tracks[0].push(event);
 	};
 
-}
+};
 
 function CompositionFile(){
 	return {
 		'header': composition.header,
 		'tracks': composition.tracks
-	}
+	};
 };
 
 //---playlist 데이터 관리---//
@@ -143,7 +110,7 @@ var playlist = function(){
 	var list=[];
 	var numOfEntries = 0;
 	var entryNum = 0;
-	var nowPlaying;
+	var nowPlaying = 0;
 
 	function loadSong(){
 
@@ -153,12 +120,14 @@ var playlist = function(){
 
 	function loadPlaylistOnLogin(){
 
-		//list=
+		//midiSocket.emit("loadPlaylistOnLogin", loginID);
+		//midiSocket.on("Playlist", templist);
+		//list=templist;
 
 		for(int i=0; i<list.length; i++)
 		{
 			addToList(list[i]);
-		}
+		};
 
 	};
 
@@ -171,3 +140,31 @@ var playlist = function(){
 	};
 
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
