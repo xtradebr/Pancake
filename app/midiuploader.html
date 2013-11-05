@@ -87,6 +87,26 @@ function readMidi(evt) {
 	}
 }
 
+function readAlbumArt(evt) {
+
+    var files = document.getElementById('album-art').files;
+    if (!files.length) {
+        alert('Please select a file!');
+        return;
+    }
+
+    var file = files[0];
+    var reader = new FileReader();
+    reader.readAsBinaryString(file);
+
+    reader.onloadend = function(evt) {
+        if (evt.target.readyState == FileReader.DONE) {
+            albumArt = String(evt.target.result);
+            albumArtName = file.name;
+        }
+    }
+}
+
 function upload(){
 	var data = 
 	{
