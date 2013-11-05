@@ -3,9 +3,9 @@
 var player;
 MIDI.loadPlugin(function(){
 	player = MIDI.Player;
-});
+})
 
-MIDIPlayerPercentage(player);
+//MIDIPlayerPercentage(player);
 
 var MIDIPlayerPercentage = function(player) {
         
@@ -23,15 +23,15 @@ var MIDIPlayerPercentage = function(player) {
                         player.pause(true);
                 } else if (self.state === "up") {
                         player.resume();
-                };
-        });
+                }
+        })
         //
         function timeFormatting(n) {
                 var minutes = n / 60 >> 0; 
                 var seconds = String(n - (minutes * 60) >> 0);
                 if (seconds.length == 1) seconds = "0" + seconds;
                 return minutes + ":" + seconds;
-        };
+        }
         
         player.setAnimation(function(data, element) {
                 var percent = data.now / data.end;
@@ -40,13 +40,13 @@ var MIDIPlayerPercentage = function(player) {
                 if (now === end) { // go to next song
 
                         player.loadFile(song, player.start); // load MIDI
-                };
+                }
                 // display the information to the user
                 timeCursor.style.width = (percent * 100) + "%";
                 playtime.innerHTML = timeFormatting(now);
                 endtime.innerHTML = timeFormatting(end);
-        });
-};
+        })
+}
 
 /*
 	composition data setup
@@ -61,7 +61,7 @@ var composition = function(){
 		'formatType': composition.formatType,
 		'trackCount': composition.trackCount,
 		'ticksPerBeat': composition.ticksPerBeat
-	};
+	}
 	composition.tracks=[];
 
 	composition.noteOn = function(deltaTime, noteNumber){
@@ -74,7 +74,7 @@ var composition = function(){
 		event.subType='noteOn';
 
 		composition.tracks[0].push(event);
-	};
+	}
 
 	composition.noteOff = function(deltaTime, noteNumber){
 		var event={};
@@ -84,16 +84,16 @@ var composition = function(){
 		event.noteNumber=noteNumber;
 
 		composition.tracks[0].push(event);
-	};
+	}
 
-};
+}
 
 function CompositionFile(){
 	return {
 		'header': composition.header,
 		'tracks': composition.tracks
-	};
-};
+	}
+}
 
 //---playlist 데이터 관리---//
 
@@ -116,7 +116,7 @@ var playlist = function(){
 
 		player.loadSong(song,callback);
 		//callback may include reloading playlist view etc
-	};
+	}
 
 	function loadPlaylistOnLogin(){
 
@@ -124,12 +124,12 @@ var playlist = function(){
 		//midiSocket.on("Playlist", templist);
 		//list=templist;
 
-		for(int i=0; i<list.length; i++)
+		for(var i=0; i<list.length; i++)
 		{
 			addToList(list[i]);
-		};
+		}
 
-	};
+	}
 
 	function addToList(midiID){
 		var entry={};
@@ -137,7 +137,7 @@ var playlist = function(){
 		numOfEntries++;
 		entry.entryNum=numOfEntries;
 		list.push(entry);
-	};
+	}
 
 };
 
