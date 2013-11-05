@@ -1,13 +1,18 @@
 "use strict";
 
+//var uploadSocket = io.connect('http://127.0.0.1:80/');
+//uploadSocket.on('connect', function () {
+//  uploadSocket.on('ready', function () {
+//    console.log('socket connected');
+//  })
+//});
+
 var player;
 MIDI.loadPlugin(function(){
 	player = MIDI.Player;
 })
 
-//MIDIPlayerPercentage(player);
-
-var MIDIPlayerPercentage = function(player) {
+var MIDIPlayerPercentage = function() {
         
         var playtime = document.getElementById("playtime");
         var endtime = document.getElementById("endtime");
@@ -24,8 +29,8 @@ var MIDIPlayerPercentage = function(player) {
                 } else if (self.state === "up") {
                         player.resume();
                 }
-        })
-        //
+        });
+
         function timeFormatting(n) {
                 var minutes = n / 60 >> 0; 
                 var seconds = String(n - (minutes * 60) >> 0);
@@ -52,47 +57,53 @@ var MIDIPlayerPercentage = function(player) {
 	composition data setup
 */
 
-var composition = function(){
+var composition = (function(){
 
-	composition.formatType=1;
-	composition.trackCount=1; //단일트랙 파일인 경우만 생각함
-	composition.timeDivision=480; //Ticks per Beat;
-	composition.header = {
-		'formatType': composition.formatType,
-		'trackCount': composition.trackCount,
-		'ticksPerBeat': composition.ticksPerBeat
-	}
-	composition.tracks=[];
+  var formatType=1;
+  var trackCount=1; //단일트랙 파일인 경우만 생각함
+	var timeDivision=480; //Ticks per Beat;
+	var header = {
+		'formatType': formatType,
+		'trackCount': trackCount,
+		'ticksPerBeat': timeDivision
+	};
+  var tracks=[];
+  tracks[0] = [];
 
-	composition.noteOn = function(deltaTime, noteNumber){
-		var event={};
-		event.deltaTime=deltaTime;
-		event.type='channel';
-		event.channel=1;
-		event.noteNumber=noteNumber;
-		event.velocity=80;		//use fixed value for velocity (temporarily);
-		event.subType='noteOn';
+  return {
+    noteOn: function(deltaTime, noteNumber){
+      var event={};
+      event.deltaTime=deltaTime;
+      event.type='channel';
+      event.channel=1;
+      event.noteNumber=noteNumber;
+      event.velocity=80;		//use fixed value for velocity (temporarily);
+      event.subType='noteOn';
 
-		composition.tracks[0].push(event);
-	}
+      tracks[0].push(event);
+    },
+    noteOff: function(deltaTime, noteNumber){
+      var event={};
+      event.deltaTime=deltaTime;
+      event.type='channel';
+      event.channel=1;
+      event.noteNumber=noteNumber;
 
-	composition.noteOff = function(deltaTime, noteNumber){
-		var event={};
-		event.deltaTime=deltaTime;
-		event.type='channel';
-		event.channel=1;
-		event.noteNumber=noteNumber;
-
-		composition.tracks[0].push(event);
-	}
-
-}
+      tracks[0].push(event);
+    },
+    show: function() {
+      console.log(tracks[0]);
+    },
+    header: header,
+    tracks: tracks
+  };
+})( );
 
 function CompositionFile(){
 	return {
 		'header': composition.header,
 		'tracks': composition.tracks
-	}
+	};
 }
 
 //---playlist 데이터 관리---//

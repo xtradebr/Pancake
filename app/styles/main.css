@@ -15,7 +15,7 @@ body {
 .container {
   width: auto;
   margin-left: 0px;
-  margin-right: 0px;}
+  margin-right: 0px; }
 
 .nav-container {
   padding-left: 20px; }
@@ -105,6 +105,16 @@ body {
 .bar {
   stroke: lightgreen; }
 
+.modal-body .music-item {
+  padding-right: 20px; }
+
+.modal-body > input, textarea {
+  padding-left: 10px;
+  margin-left: 10px; }
+
+.modal-body > input:focus {
+  outline: none; }
+
 /* Editor Styling End */
 /* Play List Styling Start */
 .list-search-area {
@@ -121,6 +131,9 @@ body {
   display: inline-block;
   margin-left: 15px;
   vertical-align: middle; }
+
+.search-query:focus {
+  outline: none; }
 
 .search-box .search-query {
   padding-left: 30px;
@@ -148,7 +161,8 @@ body {
   margin-top: 0px; }
 
 .playlist {
-  margin-top: 15px; }
+  margin-top: 15px;
+  width: 910px; }
 
 .playlist > ol {
   margin-left: 0px; }
@@ -234,7 +248,8 @@ player-component .divider-horizontal {
   display: block;
   font-size: 20px;
   margin-top: -40px;
-  margin-bottom: 20px; }
+  margin-bottom: 20px;
+  text-align: center; }
 
 .social .dropdown {
   display: inline-block; }
@@ -275,3 +290,69 @@ player-component .divider-horizontal {
   margin-top: 15px; }
 
 /* Play List Styling End */
+/* Music List Styling Start */
+.music {
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 20px;
+  padding-bottom: 5px; }
+
+.music-information {
+  display: inline-block; }
+
+.music-description {
+  margin-left: 20px;
+  padding-top: 10px;
+  font-size: 14px;
+  color: #a8a8a8; }
+
+.music-title {
+  font-size: 26px;
+  display: inline-block;
+  width: 350px; }
+
+.music-time {
+  padding-left: 20px;
+  font-size: 15px;
+  display: inline-block; }
+
+.music-artist {
+  font-size: 15px;
+  display: inline-block; }
+
+.music-control {
+  float: right;
+  display: inline-block; }
+
+.music-control > a {
+  padding-left: 12px;
+  color: black;
+  text-decoration: none;
+  display: inline-block; }
+
+.music-control > a:hover {
+  text-decoration: none;
+  color: cadetblue; }
+
+.music-control > a .social-act-text {
+  position: absolute;
+  width: 2.5em;
+  text-align: center; }
+
+.music-control .fa-heart-o {
+  position: relative; }
+
+.music-information-area {
+  padding: 30px 30px;
+  font-size: 14px; }
+
+.music-image {
+  margin-bottom: 20px; }
+
+.music-item {
+  width: 100px;
+  font-size: 20px;
+  display: inline-block;
+  padding: 10px 0px; }
+
+/* Music List Styling End */

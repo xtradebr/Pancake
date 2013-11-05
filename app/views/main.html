@@ -24,7 +24,7 @@
                     <div class="small-hero-unit">
                         <i class='{{ keyword.icon }}'><label>{{ keyword.name }}</label></i>
                         <div class="small-description">
-                            <p>{{ keyword.description }}</p>
+                            <p>{{ keyword.description | shortString:30 }}</p>
                         </div>
                     </div>
                 </div>

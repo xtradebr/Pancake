@@ -13,9 +13,9 @@
             <div class="playlist">
                 <h1><strong>Hot 3 Player</strong></h1>
                 <ol>
-                    <div ng-repeat="player in playerlists">
+                    <div ng-repeat="player in playerlist">
                         <li><span> {{ player.name }} </span></li>
-                        <span class="description"> {{ player.description }} </span>
+                        <span class="description"> {{ player.description | shortString:100 }} </span>
                         <player-component></player-component>
 
                         <div class="publishing">

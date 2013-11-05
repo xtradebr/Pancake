@@ -46,7 +46,10 @@
                       <li><a href="/#!/editor"><i class="icon-music icon-white"></i> Editor </a></li>
                       <li class="divider-vertical"></li>
 
-                      <li><a href="/#!/playlist"><i class="icon-cloud icon-white"></i> Plsy List </a></li>
+                      <li><a href="/#!/musiclist"><i class="fa fa-headphones icon-white"></i> Music List </a></li>
+                      <li class="divider-vertical"></li>
+
+                      <li><a href="/#!/playlist"><i class="icon-cloud icon-white"></i> Play List </a></li>
                       <li class="divider-vertical"></li>
 
                       <li><a href="/#!/about"><i class="icon-question-sign icon-white"></i> About </a></li>
@@ -57,10 +60,9 @@
       </div>
     </header>
 
-    <!-- Add your site or application content here -->
     <div class="container" ng-view=""></div>
 
-    <footer>
+    <footer ng-hide="$root.isInEditor">
         <div class="player">
             <div class="time-controls">
                 <span id="capsule"><span id="cursor"></span></span>
@@ -84,7 +86,8 @@
         <!-- endbuild -->
 
         <!-- build:js scripts/libraries.js -->
-        <script src="lib/ui-bootstrap-tpls-0.5.0.js"></script>
+        <!--<script src="lib/ui-bootstrap-tpls-0.5.0.js"></script>-->
+        <script src="lib/ui-bootstrap-tpls-0.6.0.js"></script>
         <script src="lib/d3/d3.js"></script>
         <script src="bower_components/stats.js/build/stats.min.js"></script>
         <script src="bower_components/linkedlist.js/LinkedList.min.js"></script>
@@ -116,8 +119,11 @@
         <script src="scripts/app.js"></script>
         <script src="scripts/controllers/main.js"></script>
         <script src="scripts/controllers/editor.js"></script>
+        <script src="scripts/controllers/musiclist.js"></script>
         <script src="scripts/controllers/playlist.js"></script>
         <script src="scripts/services/services.js"></script>
+        <script src="scripts/filters/timeformatting.js"></script>
+        <script src="scripts/filters/shortString.js"></script>
         <!-- endbuild -->
 </body>
 </html>

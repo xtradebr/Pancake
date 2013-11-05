@@ -10,7 +10,7 @@ angular.module('pancakeApp')
     $scope.playerName = '';
     $scope.showPublisher = false;
 
-    $scope.playerlists = [
+    $scope.playerlist = [
       {
         // id: server에서 참조하는 각 player의 고유 식별 번호
         id: 1,
@@ -18,12 +18,34 @@ angular.module('pancakeApp')
         description: 'Bruno Mars 이제 안 듣는뎅...',
         publisher: 'bruno mars lover',
         publisherImage: 'fa fa-apple fa-7x',
-        likes: 100,
-        comments: 20,
-        shareLink: 'http://soundpancake.io/player/link/bruno-mars-lover/bruno-mars-player',
+        like: 100,
+        comment: 20,
+        share: 'http://soundpancake.io/player/link/bruno-mars-lover/bruno-mars-player',
         musicList: [
-          { name: 'Marry You', time: 240, album: 'Doo-Wops & Hooligans' },
-          { name: 'Money Make Her Smile', time: 180, album: 'Unorthodox Jukebox' }
+          {
+            MidiFileID: 1,
+            title: 'Marry You',
+            description: 'i wanna marry you',
+            artist: 'Bruno Mars',
+            playtime: 240,
+            like: 10,
+            comment: 20,
+            albumArt: '/images/test01.jpg',
+            share: 'http://soundpancake.io/#!/id=1',
+            MidiObject: 1
+          },
+          {
+            MidiFileID: 12,
+            title: 'Money Make Her Smile',
+            description: 'Money Money Money',
+            artist: 'Bruno Mars',
+            playtime: 180,
+            like: 10,
+            comment: 20,
+            albumArt: '/images/test01.jpg',
+            share: 'http://soundpancake.io/#!/id=12',
+            MidiObject: 12
+          }
         ]
       },
       {
@@ -32,12 +54,34 @@ angular.module('pancakeApp')
         description: 'Movie Dark Knights O.S.T',
         publisher: 'Joker',
         publisherImage: 'fa fa-github-alt fa-7x',
-        likes: 500,
-        comments: 59,
-        shareLink: 'http://soundpancake.io/player/link/joker/dark-knights-player',
+        like: 500,
+        comment: 59,
+        share: 'http://soundpancake.io/player/link/joker/dark-knights-player',
         musicList: [
-          { name: 'Why So Serious?', time: 554, album: 'Dark Knights O.S.T' },
-          { name: 'Like A Dog Chasing Cars', time: 303, album: 'Dark Knights O.S.T' }
+          {
+            MidiFileID: 21,
+            title: 'Why So Serious?',
+            description: 'Dark Knights O.S.T',
+            artist: 'Hans Zimmer',
+            playtime: 554,
+            like: 100,
+            comment: 200,
+            albumArt: '/images/test01.jpg',
+            share: 'http://soundpancake.io/#!/id=21',
+            MidiObject: 21
+          },
+          {
+            MidiFileID: 22,
+            title: 'Like A Dog Chasing Cars',
+            description: 'Dark Knights O.S.T',
+            artist: 'Hans Zimmer',
+            playtime: 303,
+            like: 100,
+            comment: 200,
+            albumArt: '/images/test01.jpg',
+            share: 'http://soundpancake.io/#!/id=22',
+            MidiObject: 22
+          }
         ]
       }
     ];
@@ -110,7 +154,7 @@ angular.module('pancakeApp')
     // playerComponent element 사용 가능
     function link(scope) {
       scope.onLike = false;
-      scope.onComments = false;
+      scope.onComment = false;
       scope.onSahre = false;
       scope.showList = false;
 
@@ -127,6 +171,7 @@ angular.module('pancakeApp')
       scope.comment = function() {
         console.log("press Comments!");
         console.log(scope.player);
+        console.log(scope.onComment);
       };
 
       scope.share = function() {

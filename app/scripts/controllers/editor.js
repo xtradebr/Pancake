@@ -9,28 +9,97 @@
 
 // TODO: Integration with Master branch after MIDI module function correctly.
 var app = angular.module('pancakeApp');
-app.controller('EditorCtrl', function($scope) {
+app.controller('EditorCtrl', function($scope, $modal, $log) {
 
   // TODO: 작곡 완료 후, replay 기능 구현
   // noteList는 작곡을 완료한 후, 재생할 때 다시 보여줄 svg 객체들을 가지고 있다.
   var noteList = new LinkedList();
+  $scope.midiObject =
+    {
+      title: '',
+      description: '',
+      artist: '',
+      playtime: 0,
+      albumArt: '',
+      albumArtName: '',
+      MidiFile: ''
+    };
   $scope.emit = function(event) {
     noteList.addLast(event);
     $scope.timeline.emit(event);
   };
 
-  $scope.startComposition = function() {
+  $scope.start = function() {
     noteList.removeAll();
     $scope.editor.startComposition();
     $scope.timeline.startComposition();
   };
-  $scope.endComposition = function() {
+  $scope.end = function() {
     // $scope.noteList의 데이터는 svg데이터와 pitch, startTime, endTime에 대한 데이터임
     // 실제 MIDI 파일을 만들기 위해 사용되는 데이터는 MidiController 내부에 들어있음.
     $scope.editor.endComposition();
     console.log("size: " + noteList.size());
+    $log.info(Animator.currentTime());
+  };
+  $scope.save = function() {
+    var modalInstance = $modal.open({
+      templateUrl: '/views/saveMidi.html',
+      controller: SaveMidiCtrl,
+      resolve: {
+        midiObject: function() {
+          return $scope.midiObject;
+        }
+      }
+    });
+
+    modalInstance.result.then(function(midiObject) {
+      // save midiObject to MidiFile with noteList
+      $log.info("Save Modal modal");
+      $scope.midiObject = midiObject;
+      MidiController.makeMidiFile(midiObject);
+    }, function() {
+      $log.info("do not saved midi file");
+    });
   };
 });
+
+var SaveMidiCtrl = function($scope, $modalInstance, midiObject) {
+
+  $scope.midiObject = midiObject;
+
+  $scope.ok = function() {
+    // save all midi object's information
+    readAlbumArt($scope.midiObject);
+    $scope.midiObject.playtime = Animator.currentTime();
+    $modalInstance.close($scope.midiObject);
+  };
+
+  $scope.cancel = function() {
+    // clear midi object's information
+    $modalInstance.dismiss('cancel "Saving MIDI File"');
+    console.log("Cancel");
+  };
+
+  function readAlbumArt() {
+
+    var files = document.getElementById('album-art').files;
+    if (!files.length) {
+      alert('Please select a file!');
+      return;
+    }
+
+    var file = files[0];
+    var reader = new FileReader();
+    reader.readAsBinaryString(file);
+
+    reader.onloadend = function(evt) {
+      if (evt.target.readyState == FileReader.DONE) {
+        $scope.midiObject.albumArt = String(evt.target.result);
+        $scope.midiObject.albumArtName = file.name;
+      }
+    }
+  }
+};
 
 app.directive('editorVisualization', function() {
 
@@ -70,7 +139,7 @@ app.directive('timelineVisualization', function() {
 // TODO: Separation of Concerns은 자바스크립트에 대해 좀 더 이해한 후에 진행.
 function PanelEditor(svg, scope) {
   svg.on('mousedown', down)
-     .on('mousemove', move);
+    .on('mousemove', move);
   window.addEventListener('mouseup', function() {
     if( clicked ) {
       up();
@@ -81,15 +150,15 @@ function PanelEditor(svg, scope) {
 
   // TODO: need to re-calculate event when window size changed
   var svgWidth = DrawingUtility.getSVGWidth(svg),
-      svgHeight = DrawingUtility.getSVGHeight(svg),
-      xPos = svgWidth/2,
+    svgHeight = DrawingUtility.getSVGHeight(svg),
+    xPos = svgWidth/2,
 
-      pitch = DrawingUtility.getPitch(svgHeight),
-      midInPitch = DrawingUtility.getMiddleYInPitch(pitch),
-      currentPitch = 4,
+    pitch = DrawingUtility.getPitch(svgHeight),
+    midInPitch = DrawingUtility.getMiddleYInPitch(pitch),
+    currentPitch = 4,
 
-      mousePosition = [xPos, svgHeight/2],
-      barHeight = DrawingUtility.calcBarHeight(pitch);
+    mousePosition = [xPos, svgHeight/2],
+    barHeight = DrawingUtility.calcBarHeight(pitch);
 
   var clicked = false;
 
@@ -167,18 +236,18 @@ function PanelEditor(svg, scope) {
         }
 
         var floatingNote = new AnimatableObj(note,
-                                              NoteBarAnimManager.noteBarMovingReDraw,
-                                              NoteBarAnimManager.noteBarRemove);
+          NoteBarAnimManager.noteBarMovingReDraw,
+          NoteBarAnimManager.noteBarRemove);
         Animator.push(floatingNote);
 
         event = { data: note, pitch: note.currentPitch,
-                  startTime: note.clickedTime, endTime: Animator.currentTime() };
+          startTime: note.clickedTime, endTime: Animator.currentTime() };
         MidiController.pushEvent( event );
         scope.emit( event );
       },
       noteBarMovingReDraw: function(note) {
         var x1 = note.attr('x1'),
-            x2 = note.attr('x2');
+          x2 = note.attr('x2');
         note.transition()
           .attr('x1', x1-Animator.dx)
           .attr('x2', x2-Animator.dx)
@@ -279,16 +348,16 @@ function PanelEditor(svg, scope) {
     bar.currentPitch = currentPitch;
     bar.clickedTime = Animator.currentTime();
     var note = new AnimatableObj(bar,
-                                  NoteBarAnimManager.noteBarIncreasingReDraw,
-                                  NoteBarAnimManager.noteBarFlow);
+      NoteBarAnimManager.noteBarIncreasingReDraw,
+      NoteBarAnimManager.noteBarFlow);
     Animator.push(note);
     MidiController.noteOn(currentPitch);
   }
 
   function drawBeatBar() {
     var bar = new AnimatableObj(BeatBarManager.getBeatBar(),
-                                BeatBarManager.beatBarReDraw,
-                                BeatBarManager.beatBarRemove);
+      BeatBarManager.beatBarReDraw,
+      BeatBarManager.beatBarRemove);
     Animator.push(bar);
   }
 
@@ -327,27 +396,26 @@ function PanelEditor(svg, scope) {
     console.log("Animation Stop!");
     Animator.stop();
     recording.stop();
-    MidiController.makeMidiFile();
   };
 }
 
 // TODO #1 : when totalTime changed, existed notes have to be changed.
 function TimelineEditor(svg, scope) {
   var svgWidth = DrawingUtility.getSVGWidth(svg),
-      svgHeight = DrawingUtility.getSVGHeight(svg),
+    svgHeight = DrawingUtility.getSVGHeight(svg),
 
-      xBorder = d3.round(svgWidth*0.1),
-      yBorder = d3.round(svgHeight*0.3),
-      drawAreaWidth = svgWidth - xBorder,
+    xBorder = d3.round(svgWidth*0.1),
+    yBorder = d3.round(svgHeight*0.3),
+    drawAreaWidth = svgWidth - xBorder,
 
-      pitch = DrawingUtility.getPitch(svgHeight - yBorder - d3.round(svgHeight*0.03)),
-      midInPitch = DrawingUtility.getMiddleYInPitch(pitch),
-      barHeight = DrawingUtility.calcBarHeight(pitch);
+    pitch = DrawingUtility.getPitch(svgHeight - yBorder - d3.round(svgHeight*0.03)),
+    midInPitch = DrawingUtility.getMiddleYInPitch(pitch),
+    barHeight = DrawingUtility.calcBarHeight(pitch);
 
   var totalTime = 30, dt = 15,
-      EditorTotalLength = totalTime * Animator.fps * Animator.dx,
-      BarTransformRate = drawAreaWidth / EditorTotalLength,
-      noteList = [];
+    EditorTotalLength = totalTime * Animator.fps * Animator.dx,
+    BarTransformRate = drawAreaWidth / EditorTotalLength,
+    noteList = [];
 
   midInPitch.forEach(function(element, index, array) {
     array[index] += yBorder + d3.round(svgHeight*0.02);
@@ -421,9 +489,9 @@ function TimelineEditor(svg, scope) {
 
   function drawNoteBar(event) {
     var origin = event.data,
-        currentPitch = event.pitch,
-        originLen = d3.round(origin.attr('x1') - origin.attr('x2')),
-        x = xBorder + event.startTime * drawAreaWidth / totalTime;
+      currentPitch = event.pitch,
+      originLen = d3.round(origin.attr('x1') - origin.attr('x2')),
+      x = xBorder + event.startTime * drawAreaWidth / totalTime;
 
     return svg.append('line')
       .attr('x1', x)
@@ -434,7 +502,7 @@ function TimelineEditor(svg, scope) {
       .style('stroke-width', barHeight);
   }
 
-  // make second to mm:ss formate
+  // make second to mm:ss format
   function timeFilter(second) {
     function toDoubleDigit(d) {
       return (d<10)? '0'+d : d;
@@ -475,9 +543,9 @@ var DrawingUtility = (function() {
 // Observer 패턴을 구현했다고 봐도 무방하다. Observer의 update 함수가 reDraw와 remove 함수다.
 var Animator = (function() {
   var tick = 0,
-      fps = 36,
-      activeObjs = [],
-      animationId;
+    fps = 36,
+    activeObjs = [],
+    animationId;
 
   return {
     dx: 10,
@@ -525,8 +593,8 @@ var Animator = (function() {
 // animatableObj는 Animator가 조작하는 단순한 container
 var AnimatableObj = function(obj, reDrawFunc, removeFunc) {
   var object      = obj,
-      innerReDraw = reDrawFunc,
-      innerRemove = removeFunc;
+    innerReDraw = reDrawFunc,
+    innerRemove = removeFunc;
 
   this.reDraw = function() {
     return innerReDraw(object);
@@ -573,27 +641,21 @@ var MidiController = (function() {
   // 넘겨줄 데이터 = pitch, dt
   var pitch = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
   var pitchSound = [];
-  var eventList = new LinkedList();
+  var lastTime = 0;
 
   pitch.reverse();
   pitch.forEach(function(element, index, array) {
     pitchSound.push(59-index);
   });
 
-  var formatting = function(event) {
-    return {
-      pitch: pitchSound[event.pitch],
-      startTime: event.startTime,
-      dt: event.endTime-event.startTime
-    };
-  };
-
   return {
-    makeMidiFile: function() {
-      // TODO 강호에게 MIDI 이벤트들 넘겨주기
-//      module.sendEvent( eventList );
-      console.log("\n Make MIDI File!, size: " + eventList.size());
-      eventList.removeAll();
+    makeMidiFile: function(midiObject) {
+      console.log("Make MIDI File!");
+      midiObject.MidiFile = CompositionFile();
+//      uploadSocket.emit('saveMidiFile');
+//      uploadSocket.on('startSave', function () {
+//        uploadSocket.emit('midiData',midiObject);
+//      });
     },
     noteOn: function(note) {
       // when people access editor directly, editor needs time for load plugin.
@@ -608,7 +670,9 @@ var MidiController = (function() {
       } catch (e) {}
     },
     pushEvent: function(event) {
-      eventList.add( formatting(event) );
+      // event = { data, pitch, st, et }
+      composition.noteOn(event.startTime - lastTime, pitchSound[event.pitch]);
+      composition.noteOff(event.endTime - event.startTime, pitchSound[event.pitch]);
     }
   };
 }( ));
