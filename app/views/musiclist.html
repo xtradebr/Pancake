@@ -7,16 +7,18 @@
         </div>
     </div>
     <div class="divider-horizontal"></div>
-    <div class="row-fluid">
+    <div class="row-fluid max-height">
         <!-- Music List Area -->
         <div class="span9">
-            <div ng-repeat="music in musiclist">
-                <music-component></music-component>
-                <div class="divider-horizontal"></div>
+            <div class="scrollable">
+                <div ng-repeat="music in musiclist">
+                    <music-component></music-component>
+                    <div class="divider-horizontal"></div>
+                </div>
             </div>
         </div>
         <!-- Music Information Area -->
-        <div class="span3">
+        <div class="span3 max-height">
             <div class="divider-vertical">
                 <div class="music-information-area" ng-show="show">
                     <img class="music-image" ng-src="{{music.albumArt}}" />
