@@ -1,10 +1,3 @@
-<<<<<<< HEAD
-'use strict';
-
-angular.module('pancakeApp')
-  .contoller('LoginCtrl', function ($scope) {
-  });
-=======
 /**
  * Created by ipark on 2013. 11. 8..
  */
@@ -56,4 +49,3 @@ angular.module('pancakeApp')
       });
     }
   });
->>>>>>> 63e8f77bedf8afb376daf5863e6e1b76ea273bdb
