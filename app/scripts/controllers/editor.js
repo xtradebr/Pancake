@@ -84,7 +84,7 @@ var SaveMidiCtrl = function($scope, $modalInstance, midiObject) {
 
     var files = document.getElementById('album-art').files;
     if (!files.length) {
-      alert('Please select a file!');
+//      alert('Please select a file!');
       return;
     }
 
@@ -93,11 +93,11 @@ var SaveMidiCtrl = function($scope, $modalInstance, midiObject) {
     reader.readAsBinaryString(file);
 
     reader.onloadend = function(evt) {
-      if (evt.target.readyState == FileReader.DONE) {
+      if (evt.target.readyState === FileReader.DONE) {
         $scope.midiObject.albumArt = String(evt.target.result);
         $scope.midiObject.albumArtName = file.name;
       }
-    }
+    };
   }
 };
 

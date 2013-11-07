@@ -20,8 +20,10 @@ body {
 
 .container {
   width: auto;
-  margin-left: 0px;
-  margin-right: 0px;
+  height: auto;
+  margin-left: 20px;
+  margin-right: 20px;
+  padding-bottom: 27px;
 }
 
 .nav-container {
@@ -30,8 +32,9 @@ body {
 
 /* Main Styling Start */
 .main-container {
-  margin: 40 auto;
+  margin: 40px auto;
   width: 700;
+  overflow: hidden;
 }
 .main-container .hero-unit {
   line-height: 30px;
@@ -135,7 +138,7 @@ body {
 
 /* Play List Styling Start */
 .list-search-area {
-  margin: 15px 0;
+  padding: 15px 0;
 }
 .list-search-area > label {
   cursor: default;
@@ -168,7 +171,7 @@ body {
 }
 
 .divider-horizontal {
-  margin-top: 15px;
+  //margin-top: 15px;
   border-bottom: 2px solid #4894B9;
 }
 
@@ -185,14 +188,14 @@ body {
 }
 
 .playlist {
-  margin-top: 15px;
-  width: 910px;
+  //margin-top: 15px;
+  //width: 910px;
 }
 .playlist > ol {
   margin-left: 0px;
 }
 .playlist ol > div > li {
-  margin: 10px 0 10px 35px;
+  margin: 20px 0 10px 35px;
   font-size: 22px;
 }
 .playlist .description {
@@ -390,3 +393,24 @@ player-component .divider-horizontal {
 }
 
 /* Music List Styling End */
+
+.scrollable {
+  overflow-y: auto;
+  height: 100%;
+}
+.scrollable .divider-horizontal {
+  margin-top: 15px;
+}
+.max-height {
+  height: 100%;
+}
+.no-overflow {
+  overflow: hidden;
+}
+
+::-webkit-scrollbar {
+  width: 0px;
+}
+::-moz-scrollbar {
+  width: 0px;
+}
