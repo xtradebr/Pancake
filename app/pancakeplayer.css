@@ -10,48 +10,49 @@ body {
   background: #fafafa;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #333;
+  /*margin-bottom:25px;*/
+}
+
+footer{
+    border: 1px solid;
+    border-color: #438eb9;
+    vertical-align: bottom;
+    bottom: 0;
+    position: fixed;
+    width: 100%;
+    height: 25px;
+    background:#fff;
+    z-index: 100;
 }
 
 div.player {
-        background-image: -webkit-gradient(linear,left top,left bottom,from(rgba(66,66,66,1)),to(rgba(22,22,22,1)));
-        background-image: -webkit-linear-gradient(top, rgba(66, 66, 66, 1) 0%, rgba(22, 22, 22, 1) 100%);
-        background-image: -moz-linear-gradient(top, rgba(66, 66, 66, 1) 0%, rgba(22, 22, 22, 1) 100%);
-        background-image: -ms-gradient(top, rgba(66, 66, 66, 1) 0%, rgba(22, 22, 22, 1) 100%);
-        background-image: -o-gradient(top, rgba(66, 66, 66, 1) 0%, rgba(22, 22, 22, 1) 100%);
-        background-image: linear-gradient(top, rgba(66, 66, 66, 1) 0%, rgba(22, 22, 22, 1) 100%);
-        padding: 15px 20px;
-        border: 1px solid #000;
-        box-shadow: 0 0 10px #fff;
-        -moz-box-shadow: 0 0 10px #fff;
-        -webkit-box-shadow: 0 0 10px #fff;
-        border-radius: 10px;
-        -moz-border-radius: 10px;
-        -webkit-border-radius: 10px;
-        color: #FFFFFF;
-        color: rgba(255, 255, 255, 0.8);
-        text-shadow: 1px 1px 2px #000;
-        -moz-text-shadow: 1px 1px 2px #000;
-        margin-bottom: 15px;
+        /**********player box size 조정***********/
+        width: 640px;
+        height: 25px;
+        margin-left: auto;
+        margin-right: auto;
 }
 div.player #capsule {
         border: 1px solid #000;
-        box-shadow: 0 0 10px #555;
-        -moz-box-shadow: 0 0 10px #555;
-        -webkit-box-shadow: 0 0 10px #555;
-        background: #000;
-        background-image: -webkit-gradient(linear, left top, left bottom, color-stop(1, rgba(0,0,0,0.5)), color-stop(0, #333));
-        background-image: -webkit-linear-gradient(top, rgba(0, 0, 0, 0.5) 1, #333 0);
-        background-image: -moz-linear-gradient(top, rgba(0, 0, 0, 0.5) 1, #333 0);
-        background-image: -ms-gradient(top, rgba(0, 0, 0, 0.5) 1, #333 0);
-        background-image: -o-gradient(top, rgba(0, 0, 0, 0.5) 1, #333 0);
-        background-image: linear-gradient(top, rgba(0, 0, 0, 0.5) 1, #333 0);
+        background: #959595; /* Old browsers */
+        background: -moz-linear-gradient(top,  #959595 0%, #0d0d0d 46%, #010101 50%, #0a0a0a 53%, #4e4e4e 76%, #383838 87%, #1b1b1b 100%); /* FF3.6+ */
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#959595), color-stop(46%,#0d0d0d), color-stop(50%,#010101), color-stop(53%,#0a0a0a), color-stop(76%,#4e4e4e), color-stop(87%,#383838), color-stop(100%,#1b1b1b)); /* Chrome,Safari4+ */
+        background: -webkit-linear-gradient(top,  #959595 0%,#0d0d0d 46%,#010101 50%,#0a0a0a 53%,#4e4e4e 76%,#383838 87%,#1b1b1b 100%); /* Chrome10+,Safari5.1+ */
+        background: -o-linear-gradient(top,  #959595 0%,#0d0d0d 46%,#010101 50%,#0a0a0a 53%,#4e4e4e 76%,#383838 87%,#1b1b1b 100%); /* Opera 11.10+ */
+        background: -ms-linear-gradient(top,  #959595 0%,#0d0d0d 46%,#010101 50%,#0a0a0a 53%,#4e4e4e 76%,#383838 87%,#1b1b1b 100%); /* IE10+ */
+        background: linear-gradient(to bottom,  #959595 0%,#0d0d0d 46%,#010101 50%,#0a0a0a 53%,#4e4e4e 76%,#383838 87%,#1b1b1b 100%); /* W3C */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#959595', endColorstr='#1b1b1b',GradientType=0 ); /* IE6-9 */
+
         overflow: hidden;
         border-radius: 5px;
         -moz-border-radius: 5px;
         -webkit-border-radius: 5px;
-        width: 420px;
         display: inline-block;
-        height: 30px;
+
+        /********플레이어의 내비게이션 캡슐 사이즈 조정*******/
+        width: 420px;
+        height: 15px;
+        margin-top: 4px;
 }
 div.player #capsule #cursor {
         border-radius: 5px;
@@ -59,39 +60,48 @@ div.player #capsule #cursor {
         -webkit-border-radius: 5px;
         border-top-right-radius: 0;
         border-bottom-right-radius: 0;
-        background: #003b96;
-        background-image: -webkit-gradient(linear, left top, left bottom, color-stop(1, #003b96), color-stop(0, #0088e9));
-        background-image: -webkit-linear-gradient(top, #003b96 1, #0088e9 0);
-        background-image: -moz-linear-gradient(top, #003b96 1, #0088e9 0);
-        background-image: -ms-gradient(top, #003b96 1, #0088e9 0);
-        background-image: -o-gradient(top, #003b96 1, #0088e9 0);
-        background-image: linear-gradient(top, #003b96 1, #0088e9 0);
+
+        background: #d0e4f7; /* Old browsers */
+        background: -moz-linear-gradient(top,  #d0e4f7 0%, #73b1e7 24%, #0a77d5 50%, #539fe1 79%, #87bcea 100%); /* FF3.6+ */
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#d0e4f7), color-stop(24%,#73b1e7), color-stop(50%,#0a77d5), color-stop(79%,#539fe1), color-stop(100%,#87bcea)); /* Chrome,Safari4+ */
+        background: -webkit-linear-gradient(top,  #d0e4f7 0%,#73b1e7 24%,#0a77d5 50%,#539fe1 79%,#87bcea 100%); /* Chrome10+,Safari5.1+ */
+        background: -o-linear-gradient(top,  #d0e4f7 0%,#73b1e7 24%,#0a77d5 50%,#539fe1 79%,#87bcea 100%); /* Opera 11.10+ */
+        background: -ms-linear-gradient(top,  #d0e4f7 0%,#73b1e7 24%,#0a77d5 50%,#539fe1 79%,#87bcea 100%); /* IE10+ */
+        background: linear-gradient(to bottom,  #d0e4f7 0%,#73b1e7 24%,#0a77d5 50%,#539fe1 79%,#87bcea 100%); /* W3C */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d0e4f7', endColorstr='#87bcea',GradientType=0 ); /* IE6-9 */
+        
         width: 0;
         display: inline-block;
         height: 100%;
 }
-div.player span.time {
-        position: relative;
-        top: -9px;
-        padding: 0 10px;
-        width: 40px;
+div.player span.time {        
         display: inline-block;
-        text-align: right;
+        margin-left: 5px;
+        margin-right:5px;
+        margin-bottom: 5px;
 }
 div.player div.time-controls {
-        width: 560px;
-        margin: 10px auto 0;
+        float: left;
+        color: #0099CC;
+
 }
-input[type="image"]:hover {
-        opacity: 1;
+
+div.player div.buttons {
+        float: left;
+        margin-left: 5px;
+        margin-right:5px;
+        margin-top: 5px;
+        color: #438eb9;
 }
-input[type="image"]:active {
+
+div.player div.buttons i:hover{
         opacity: 0.85;
 }
-input[type="image"] {
-        opacity: 0.7;
+div.player div.buttons i:active{
+        opacity: 1;
 }
-p {
-        margin: 15px 0 0 15px;
-        color: #403522;
+div.player div.buttons i {
+        opacity: 0.7;
+        margin-right: 3px;
+        margin-left: 3px;
 }

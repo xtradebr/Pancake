@@ -1,1 +1,34 @@
-외부 플레이어 템플릿이 들어가야 하는 자리
+<div class="row-fluid">
+    <div class="span4">
+        <div class="play-control">
+            <a class="fa fa-play-circle-o fa-9x" ng-click="play()"></a>
+        </div>
+    </div>
+    <div class="span8">
+        <label class="inform-text"> {{ player.musicList[0].title }} </label>
+        <div class="divider-horizontal"></div>
+        <div class="social">
+            <a class="fa fa-heart-o fa-4x" ng-click="like()" ng-mouseenter="onLike=true" ng-mouseleave="onLike=false">
+                <span class="social-act-text" ng-show="onLike">{{ player.like }}</span>
+                <div class="social-inform-text">Like</div>
+            </a>
+            <a class="fa fa-comment-o fa-4x" ng-click="comment()" ng-mouseenter="onComment=true" ng-mouseleave="onComment=false">
+                <span class="social-act-text" ng-show="onComment">{{ player.comment }}</span>
+                <div class="social-inform-text">Comment</div>
+            </a>
+            <a class="fa fa-share-square-o fa-4x" ng-click="share()">
+                <div class="social-inform-text">Share</div>
+            </a>
+            <div class="dropdown">
+                <a class="fa fa-list fa-4x dropdown-toggle">
+                    <div class="social-inform-text">List</div>
+                </a>
+                <ul class="dropdown-menu">
+                    <li ng-repeat="music in player.musicList">
+                        <a>{{ music.title }}</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
