@@ -84,6 +84,79 @@ angular.module('pancakeApp')
             MidiObject: 22
           }
         ]
+      },
+      {
+        // id: server에서 참조하는 각 player의 고유 식별 번호
+        id: 1,
+        name: 'Bruno Mars Player',
+        description: 'Bruno Mars 이제 안 듣는뎅...',
+        publisher: 'bruno mars lover',
+        publisherImage: 'fa fa-apple fa-7x',
+        like: 100,
+        comment: 20,
+        share: 'http://soundpancake.io/player/link/bruno-mars-lover/bruno-mars-player',
+        musicList: [
+          {
+            MidiFileID: 1,
+            title: 'Marry You',
+            description: 'i wanna marry you',
+            artist: 'Bruno Mars',
+            playtime: 240,
+            like: 10,
+            comment: 20,
+            albumArt: '/images/test01.jpg',
+            share: 'http://soundpancake.io/#!/id=1',
+            MidiObject: 1
+          },
+          {
+            MidiFileID: 12,
+            title: 'Money Make Her Smile',
+            description: 'Money Money Money',
+            artist: 'Bruno Mars',
+            playtime: 180,
+            like: 10,
+            comment: 20,
+            albumArt: '/images/test01.jpg',
+            share: 'http://soundpancake.io/#!/id=12',
+            MidiObject: 12
+          }
+        ]
+      },
+      {
+        id: 2,
+        name: 'Dark Knights Player',
+        description: 'Movie Dark Knights O.S.T',
+        publisher: 'Joker',
+        publisherImage: 'fa fa-github-alt fa-7x',
+        like: 500,
+        comment: 59,
+        share: 'http://soundpancake.io/player/link/joker/dark-knights-player',
+        musicList: [
+          {
+            MidiFileID: 21,
+            title: 'Why So Serious?',
+            description: 'Dark Knights O.S.T',
+            artist: 'Hans Zimmer',
+            playtime: 554,
+            like: 100,
+            comment: 200,
+            albumArt: '/images/test01.jpg',
+            share: 'http://soundpancake.io/#!/id=21',
+            MidiObject: 21
+          },
+          {
+            MidiFileID: 22,
+            title: 'Like A Dog Chasing Cars',
+            description: 'Dark Knights O.S.T',
+            artist: 'Hans Zimmer',
+            playtime: 303,
+            like: 100,
+            comment: 200,
+            albumArt: '/images/test01.jpg',
+            share: 'http://soundpancake.io/#!/id=22',
+            MidiObject: 22
+          }
+        ]
       }
     ];
 
@@ -96,9 +169,7 @@ angular.module('pancakeApp')
       ];
       $scope.socialAction = [
         { name: '좋아요', checked: false },
-        { name: '댓글', checked: false },
-        { name: '공유', checked: false },
-        { name: '작곡', checked: false }
+        { name: '댓글', checked: false }
       ];
       $scope.moods.hasFilter = function(filter) {
         for(var i=0; i<$scope.moods.length; i++) {
