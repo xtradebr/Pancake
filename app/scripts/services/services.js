@@ -67,7 +67,7 @@ angular.module('pancakeApp')
   });
 
 angular.module('pancakeApp')
-.service('loginHandler', function($FB, $log) {
+  .service('loginHandler', function($FB, $rootScope, $log) {
 
     var loginStatus;
     var apiMe;
@@ -78,10 +78,10 @@ angular.module('pancakeApp')
       $log.info("Try Login!");
 
       $FB.login( function(res) {
-        $log.info("Get Response in Try Login!");
         if(res.authResponse) {
           updateLoginStatus(updateApiMe);
           alert("Login success!");
+          $rootScope.isLogged = true;
         }
       });
     };
@@ -91,6 +91,8 @@ angular.module('pancakeApp')
 
       $FB.logout(function () {
         updateLoginStatus(updateApiMe);
+        $rootScope.isLogged = false;
+        alert("Logout success!");
       });
     };
 
@@ -100,17 +102,18 @@ angular.module('pancakeApp')
 
         (more || angular.noop)();
 
-        $log.info("In Update Login Status!");
-        $log.info(JSON.stringify(res));
+//        $log.info("In Update Login Status!");
+//        $log.info(JSON.stringify(res));
       });
     }
 
     function updateApiMe () {
       $FB.api('/me', function (res) {
         apiMe = res;
+        $rootScope.loginInfo = " " + (apiMe.name || ' Log In');
 
-        $log.info("In Api ME!");
-        $log.info(JSON.stringify(res));
+//        $log.info("In Api ME!");
+//        $log.info(JSON.stringify(res));
       });
     }
 

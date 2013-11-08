@@ -3,10 +3,15 @@
  */
 
 angular.module('pancakeApp')
-  .controller('LoginCtrl', function($scope, $FB, $log, $rootScope, loginHandler) {
+  .controller('LoginCtrl', function($scope, $modalInstance, loginHandler) {
 
     $scope.login = function() {
       loginHandler.login();
-      $rootScope.isLogged = true;
+      $modalInstance.close();
     };
+
+    $scope.cancel = function() {
+      $modalInstance.dismiss();
+    };
+
   });

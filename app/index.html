@@ -58,7 +58,9 @@
                     <div class="login">
                         <div class="dropdown">
                             <div class="divider-vertical"></div>
-                            <a href="" class="login-btn dropdown-toggle fa fa-smile-o icon-white" ng-click="login()"> Login </a>
+                            <a href="" class="login-btn dropdown-toggle fa fa-smile-o icon-white" ng-click="login()">
+                                {{ $root.loginInfo }}
+                            </a>
                             <ul class="dropdown-menu" ng-show="$root.isLogged">
                                 <li><a href="/#!/dashboard">Dash Board</a></li>
                                 <li><a href="/#!/account">Account</a></li>
