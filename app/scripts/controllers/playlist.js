@@ -228,8 +228,8 @@ angular.module('pancakeApp')
           }
         });
 
-        console.log(body);
-//        query(body);
+//        console.log(body);
+        query(body);
       };
 
       $scope.social = function() {
@@ -243,8 +243,8 @@ angular.module('pancakeApp')
           }
         });
 
-        console.log(body);
-//        query(body);
+//        console.log(body);
+        query(body);
       };
 
       function query(body) {

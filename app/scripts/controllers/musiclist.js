@@ -159,7 +159,7 @@ angular.module('pancakeApp')
         .error(function(data, status) {
           console.log("fetching list fails from server.");
         });
-    }
+    };
   });
 
 angular.module('pancakeApp')
