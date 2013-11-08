@@ -25,6 +25,8 @@ angular.module('pancakeApp')
 
     var items = [];
     var dummy = [];
+    var url = '';
+    var isReachEnd = false;
 
     return {
       items: items,
@@ -39,6 +41,9 @@ angular.module('pancakeApp')
       setDummy: function(d) {
         dummy = d;
       },
+      setUrl: function(u) {
+        url = u;
+      },
       nextPage: function() {
         var that = this;
 
@@ -51,10 +56,14 @@ angular.module('pancakeApp')
         dummy.forEach(function(item) {
           that.items.push(item);
         });
-//      var url = '';
+
+        // TODO: implement to get elements list of next page depend on url.
 //      $http.get(url)
 //        .success(function(data) {
-//
+//          if( data.isReachEnd ) {
+//            that.isReachEnd = data.isReachEnd;
+//            return;
+//          }
 //          //push data.data.chlidren to this.items
 //
 //          // this.after = next page or next element's id
