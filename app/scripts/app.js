@@ -17,36 +17,36 @@ app.config(function ($routeProvider, $locationProvider, $FBProvider) {
       templateUrl: 'views/main.html',
       controller: 'MainCtrl',
       title: 'Home',
-      isInEditor: false,
-      isLogged: false
+      isInEditor: false
     })
     .when('/editor', {
       templateUrl: 'views/editor.html',
       controller: 'EditorCtrl',
       title: 'Editor',
-      isInEditor: true,
-      isLogged: false
+      isInEditor: true
     })
     .when('/musiclist', {
       templateUrl: 'views/musiclist.html',
       controller: 'MusicListCtrl',
       title: 'Music List',
-      isInEditor: false,
-      isLogged: false
+      isInEditor: false
     })
     .when('/playlist', {
       templateUrl: 'views/playlist.html',
       controller: 'PlayListCtrl',
       title: 'Play List',
-      isInEditor: false,
-      isLogged: false
+      isInEditor: false
     })
     .when('/about', {
       templateUrl: 'views/about.html',
-//      controller: 'AboutCtrl',
       title: 'About',
-      isInEditor: false,
-      isLogged: false
+      isInEditor: false
+    })
+    .when('/dashboard', {
+      templateUrl: 'views/dashboard.html',
+      controller: 'DashboardCtrl',
+      title: 'Dashboard',
+      isInEditor: false
     })
     .otherwise({
       redirectTo: '/home'
@@ -250,7 +250,9 @@ app.controller('ImageSliderCtrl', function($rootScope) {
     function timeFormatting(n) {
       var minutes = n / 60 >> 0;
       var seconds = String(n - (minutes * 60) >> 0);
-      if (seconds.length == 1) seconds = "0" + seconds;
+      if (seconds.length === 1) {
+        seconds = "0" + seconds;
+      }
       return minutes + ":" + seconds;
     }
 
@@ -266,6 +268,6 @@ app.controller('ImageSliderCtrl', function($rootScope) {
       timeCursor.style.width = (percent * 100) + "%";
       playtime.innerHTML = timeFormatting(now);
       endtime.innerHTML = timeFormatting(end);
-    })
-  }
+    });
+  };
 });

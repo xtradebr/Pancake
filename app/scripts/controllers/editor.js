@@ -55,11 +55,11 @@ app.controller('EditorCtrl', function($scope, $modal, $notification) {
 
     modalInstance.result.then(function(midiObject) {
       // save midiObject to MidiFile with noteList
-      $log.info("Save Modal modal");
+      console.log("Save Modal modal");
       $scope.midiObject = midiObject;
       MidiController.makeMidiFile(midiObject);
     }, function() {
-      $log.info("do not saved midi file");
+      console.log.info("do not saved midi file");
     });
   };
 });

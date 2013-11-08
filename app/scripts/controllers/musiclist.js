@@ -154,7 +154,7 @@ angular.module('pancakeApp')
           console.log("fetching success!");
           console.log(data);
           $scope.listhandler.clear();
-          $scope.listhandler.setItems(data);
+          $scope.listhandler.setItems(data.list);
         })
         .error(function(data, status) {
           console.log("fetching list fails from server.");
