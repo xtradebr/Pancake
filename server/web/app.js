@@ -69,18 +69,9 @@ io.sockets.on("connection", function(socket) {
 var application_root = "/home/ubuntu/Pancake/app/";
 var app = express();
 
-var conf = {
-	client_id:      'YOUR FACEBOOK APP ID',
-	client_secret:  'YOU FACEBOOK APP SECRET',
-	scope:          'email, user_about_me, user_birthday, user_location, publish_stream',
-	redirect_uri:   'http://localhost:3000/auth/facebook'
-};
-
 app.configure(function () {
 	app.use(express.bodyParser());
 	app.use(express.methodOverride());
-//	app.use(express.cookieParser("123456789asdfkoolkat");
-//	app.use(express.session({secret: '1234567890QWERTY'}));
 	app.use(app.router);
 	app.use(express.static(application_root));
 	app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
@@ -95,40 +86,18 @@ app.get("/api/query/filter", function(req, res) {
 });
 
 app.post("/api/auth/login", function(req, res) {
-	console.log(req.id);
-	console.log(req.passwd);
+	console.log(JSON.stringify(req));
 	res.redirect('/');
 });
 
-app.get('/api/auth/facebook', function(req, res) {
+app.post("/api/auth/fb-session", function(req, res) {
+	console.log(JSON.stringify(req));
+	res.redirect('/');
+});
 
-	// we don't have a code yet
-	// so we'll redirect to the oauth dialog
-	if (!req.query.code) {
-		var authUrl = graph.getOauthUrl({
-			"client_id":	conf.client_id
-			, "redirect_uri":	conf.redirect_uri
-			, "scope":	 conf.scope
-		});
-
-		if (!req.query.error) { //checks whether a user denied the app facebook login/permissions
-			res.redirect(authUrl);
-		} else {	//req.query.error == 'access_denied'
-			res.send('access denied');
-		}
-		return;
-	}
-
-	// code is set
-	// we'll send that and get the access token
-	graph.authorize({
-			"client_id":	conf.client_id
-		, "redirect_uri":	conf.redirect_uri
-		, "client_secret":	conf.client_secret
-		, "code":	req.query.code
-	}, function (err, facebookRes) {
-		res.redirect('/mypage');
-	});
+app.post("/api/auth/fb", function(req, res) {
+	console.log(JSON.stringify(req));
+	res.redirect('/');
 });
 
 app.listen(3000);

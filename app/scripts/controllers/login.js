@@ -3,7 +3,7 @@
  */
 
 angular.module('pancakeApp')
-  .controller('LoginCtrl', function($scope, $FB, $log) {
+  .controller('LoginCtrl', function($scope, $FB, $http, $log) {
 
     $scope.login = function() {
       $log.info("Try Login!");
@@ -34,7 +34,7 @@ angular.module('pancakeApp')
         $scope.loginStatus = res;
 
         (more || angular.noop)();
-
+        $http.post('/api/auth/fb-session', res).success();
         $log.info("In Update Login Status!");
         $log.info(JSON.stringify(res));
       });
@@ -43,7 +43,7 @@ angular.module('pancakeApp')
     function updateApiMe () {
       $FB.api('/me', function (res) {
         $scope.apiMe = res;
-
+        $http.post('/api/auth/fb', res).success();
         $log.info("In Api ME!");
         $log.info(JSON.stringify(res));
       });
