@@ -1,6 +1,6 @@
 'use strict';
 
-var app = angular.module('pancakeApp', ['ui.bootstrap', 'ezfb', 'infinite-scroll', 'ui.keypress']);
+var app = angular.module('pancakeApp', ['ui.bootstrap', 'ezfb', 'infinite-scroll', 'ui.keypress', 'notifications']);
 
 //socket that stays open from entering the site until leaving the site
 //var uploadSocket = io.connect('http://127.0.0.1:80/');
