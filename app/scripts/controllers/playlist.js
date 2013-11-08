@@ -203,17 +203,18 @@ angular.module('pancakeApp')
           this.filter = '';
         }
       };
-
-      $scope.$watch("[moods|filter:{selected:true}, socialAction|filter:{selected:true}]", function (checked) {
-        ch = [];
+      /* got problem here*/
+      /*
+      $scope.$watch("moods|filter:{selected:true}", function (checked) {
+        var ch = [];
         for(i in checked) { ch.append(i.name); }
         $http.post("/api/filter/", JSON.stringify(ch)).
           success(function(data) {
             /*convert data to object
              *$scope.playerlists.push()
-            */
+            /
           });
-      });
+      });*/
     };
   });
 
