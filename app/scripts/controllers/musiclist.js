@@ -163,7 +163,7 @@ angular.module('pancakeApp')
   });
 
 angular.module('pancakeApp')
-  .directive('musicComponent', function() {
+  .directive('musicComponent', function($rootScope) {
 
     function link(scope) {
       scope.onLike = false;
@@ -171,6 +171,8 @@ angular.module('pancakeApp')
       scope.play = function() {
         console.log("Play!");
         console.log(scope.music);
+        $rootScope.appendtolist(scope.music);
+
       };
 
       scope.like = function() {

@@ -108,7 +108,7 @@
 		base.update = function(flag){
 			var t;
 			// Set up panes & content sizes; default: panelWidth = 50% of entire width
-			base.$panels = base.$el.children()
+      base.$panels = base.$el.children()
 				.addClass('mb-panel')
 				.css({ width : 110, margin: 0 })
 				// BEFORE FIX // width : base.options.width * base.options.panelWidth
@@ -169,7 +169,7 @@
 				hiddenText = parseInt( base.$nav.find('.mb-testing').css('text-indent'), 10) < 0;
 				base.$panels.each(function(i) {
 					j = i + 1;
-					a += '<a href="#" class="mb-panel' + j;
+					a += '<a href="" class="mb-panel' + j;
 					// If a formatter function is present, use it
 					if (navFormat) {
 						var tmp = base.options.navFormatter(j, $(this));

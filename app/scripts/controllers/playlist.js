@@ -5,12 +5,8 @@
 'use strict';
 
 angular.module('pancakeApp')
-<<<<<<< HEAD
   .controller('PlayListCtrl', function($scope, listhandler) {
 
-=======
-  .controller('PlayListCtrl', function($scope) {
->>>>>>> midi
     // TODO: dummy (empty) data. 실제론 서버에 쿼리를 날림
     $scope.playerName = '';
     $scope.showPublisher = false;
@@ -216,21 +212,21 @@ angular.module('pancakeApp')
         }
       };
 
-      $scope.$watch("[moods|filter:{selected:true}, socialAction|filter:{selected:true}]", function (checked) {
-        ch = [];
-        for(i in checked) { ch.append(i.name); }
-        $http.post("/api/filter/", JSON.stringify(ch)).
-          success(function(data) {
-            /*convert data to object
-             *$scope.playerlists.push()
-            */
-          });
-      });
+//      $scope.$watch("[moods|filter:{selected:true}, socialAction|filter:{selected:true}]", function (checked) {
+//        ch = [];
+//        for(i in checked) { ch.append(i.name); }
+//        $http.post("/api/filter/", JSON.stringify(ch)).
+//          success(function(data) {
+//            /*convert data to object
+//             *$scope.playerlists.push()
+//             */
+//          });
+//      });
     };
   });
 
 angular.module('pancakeApp')
-  .directive('playerComponent', function($http) {
+  .directive('playerComponent', function($rootScope) {
 
     // 부모 scope에 playlists라는 곡 목록을 저장한 후,
     // 해당 리스트의 요소들을 player라는 이름으로 iteration 할 때,
@@ -244,6 +240,9 @@ angular.module('pancakeApp')
       scope.play = function() {
         // add music info to inside player
         console.log("Play Fn is called");
+        scope.player.musicList.forEach( function(item) {
+          $rootScope.appendtolist(item);
+        });
       };
 
       scope.like = function() {
