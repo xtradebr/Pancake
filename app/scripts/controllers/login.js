@@ -5,6 +5,8 @@
 angular.module('pancakeApp')
   .controller('LoginCtrl', function($scope, $FB, $log) {
 
+
+
     $scope.login = function() {
       $log.info("Try Login!");
 

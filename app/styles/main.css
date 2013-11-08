@@ -16,8 +16,7 @@ body {
   width: auto;
   height: auto;
   margin-left: 20px;
-  margin-right: 20px;
-  padding-bottom: 27px; }
+  margin-right: 20px; }
 
 .nav-container {
   padding-left: 20px; }
@@ -166,7 +165,7 @@ body {
   margin-left: 0px; }
 
 .playlist ol > div > li {
-  margin: 20px 0 10px 35px;
+  margin: 20px 0 10px 45px;
   font-size: 22px; }
 
 .playlist .description {

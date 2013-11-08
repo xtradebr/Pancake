@@ -1,6 +1,6 @@
 'use strict';
 
-var app = angular.module('pancakeApp', ['ui.bootstrap', 'ezfb']);
+var app = angular.module('pancakeApp', ['ui.bootstrap', 'ezfb', 'infinite-scroll']);
 
 app.config(function ($routeProvider, $locationProvider, $FBProvider) {
   $locationProvider.html5Mode(false).hashPrefix('!');
@@ -69,4 +69,5 @@ app.run(function ($rootScope, $location) {
     }
   };
 
+  $rootScope.isLogged = true;
 });

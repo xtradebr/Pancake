@@ -9,25 +9,27 @@
 <div class="row-fluid">
     <!-- Play List Area -->
     <div class="span9">
-        <div class="playlist scrollable">
-            <h1><strong>Hot 3 Player</strong></h1>
-            <ol>
-                <div ng-repeat="player in playerlist">
-                    <li><span> {{ player.name }} </span></li>
-                    <span class="description"> {{ player.description | shortString:100 }} </span>
-                    <player-component></player-component>
+        <div infinite-scroll="listhandler.nextPage()" infinite-scroll-disabled="listhandler.busy">
+            <div class="playlist scrollable">
+                <h1><strong>Hot 3 Player</strong></h1>
+                <ol>
+                    <div ng-repeat="player in listhandler.items">
+                        <li><span> {{ player.name }} </span></li>
+                        <span class="description"> {{ player.description | shortString:100 }} </span>
+                        <player-component></player-component>
 
-                    <div class="publishing">
-                        published by
-                        <div class="publisher-inform">
-                            <div class="publisher-name" ng-show="showPublisher">{{ player.publisher }}</div>
+                        <div class="publishing">
+                            published by
+                            <div class="publisher-inform">
+                                <div class="publisher-name" ng-show="showPublisher">{{ player.publisher }}</div>
                                 <span class="{{ player.publisherImage }} publisher"
                                       ng-mouseenter="showPublisher=true" ng-mouseleave="showPublisher=false"></span>
+                            </div>
                         </div>
+                        <div class="divider-horizontal"></div>
                     </div>
-                    <div class="divider-horizontal"></div>
-                </div>
-            </ol>
+                </ol>
+            </div>
         </div>
     </div>
     <!-- Filter Area -->
