@@ -23,6 +23,7 @@
     "angular": false,
     "d3": false,
     "MIDI": false,
-    "LinkedList": false
+    "LinkedList": false,
+    "alert": false
   }
 }

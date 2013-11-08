@@ -1,6 +1,6 @@
 'use strict';
 
-var app = angular.module('pancakeApp', ['ui.bootstrap', 'ezfb', 'infinite-scroll']);
+var app = angular.module('pancakeApp', ['ui.bootstrap', 'ezfb', 'infinite-scroll', 'ui.keypress']);
 
 app.config(function ($routeProvider, $locationProvider, $FBProvider) {
   $locationProvider.html5Mode(false).hashPrefix('!');

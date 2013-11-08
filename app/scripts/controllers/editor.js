@@ -729,10 +729,3 @@ function CompositionFile(){
     'tracks': composition.tracks
   };
 }
-
-//var uploadSocket = io.connect('http://127.0.0.1:80/');
-//uploaderSocket.on('connect', function() {
-//  uploadSocket.on('ready', function() {
-//    console.log('scokect good');s
-//  });
-//});

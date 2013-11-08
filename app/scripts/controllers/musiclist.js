@@ -5,9 +5,10 @@
 'use strict';
 
 angular.module('pancakeApp')
-  .controller('MusicListCtrl', function($scope, listhandler) {
+  .controller('MusicListCtrl', function($scope, $http, listhandler) {
 
     $scope.show = false;
+    $scope.musicName = '';
 
     var list = [
       {
@@ -143,6 +144,22 @@ angular.module('pancakeApp')
       $scope.show = true;
       $scope.music = music;
     });
+
+    $scope.search = function($event) {
+      $event.preventDefault();
+
+      var url = 'http://www.soundpancake.io/api/query/musiclist?name=' + $scope.musicName;
+      $http.get(url)
+        .success(function(data, status) {
+          console.log("fetching success!");
+          console.log(data);
+          $scope.listhandler.clear();
+          $scope.listhandler.setItems(data);
+        })
+        .error(function(data, status) {
+          console.log("fetching list fails from server.");
+        });
+    }
   });
 
 angular.module('pancakeApp')

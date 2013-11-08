@@ -2,7 +2,7 @@
     <label class="btn btn-primary">Music Name</label>
     <div class="search-box">
         <i class="fa fa-search"></i>
-        <input class="search-query" placeholder="Search..." ng-model="musicName"/>
+        <input class="search-query" placeholder="Search..." ng-model="musicName" ui-keypress="{'enter':'search($event)'}"/>
     </div>
 </div>
 <div class="divider-horizontal"></div>

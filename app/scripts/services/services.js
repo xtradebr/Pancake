@@ -101,9 +101,6 @@ angular.module('pancakeApp')
         loginStatus = res;
 
         (more || angular.noop)();
-
-//        $log.info("In Update Login Status!");
-//        $log.info(JSON.stringify(res));
       });
     }
 
@@ -111,9 +108,6 @@ angular.module('pancakeApp')
       $FB.api('/me', function (res) {
         apiMe = res;
         $rootScope.loginInfo = " " + (apiMe.name || ' Log In');
-
-//        $log.info("In Api ME!");
-//        $log.info(JSON.stringify(res));
       });
     }
 
