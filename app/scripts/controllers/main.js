@@ -11,12 +11,9 @@ angular.module('pancakeApp')
       {icon: 'fa fa-headphones fa-3x', name: '쉬움', description: '마우스 클릭만 하면 됨 ㅎㅎㅎ'}
     ];
 
-    $scope.DemoCtrl = function ($location, sharedProperties) {
+    $scope.DemoCtrl = function ($location) {
 
       $scope.start = function () {
-        sharedProperties.setProperty(
-          { score: { title: 'Demo', beat: '4/4', bpm: '보통' }
-        });
         $location.path('/editor');
       };
     };

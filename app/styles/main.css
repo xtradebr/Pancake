@@ -16,8 +16,7 @@ body {
   width: auto;
   height: auto;
   margin-left: 20px;
-  margin-right: 20px;
-  padding-bottom: 27px; }
+  margin-right: 20px; }
 
 .nav-container {
   padding-left: 20px; }
@@ -166,7 +165,7 @@ body {
   margin-left: 0px; }
 
 .playlist ol > div > li {
-  margin: 20px 0 10px 35px;
+  margin: 20px 0 10px 45px;
   font-size: 22px; }
 
 .playlist .description {
@@ -372,3 +371,39 @@ player-component .divider-horizontal {
 
 ::-moz-scrollbar {
   width: 0px; }
+
+/* Login Styling Area Start */
+.login {
+  display: inline-block;
+  float: right;
+  height: 40px;
+  width: auto;
+  padding-right: 15px; }
+
+.login .divider-vertical {
+  display: inline-block;
+  height: 40px; }
+
+.login .dropdown {
+  max-height: 40px; }
+
+.login .dropdown > a {
+  text-decoration: none; }
+
+.login .dropdown > a:hover {
+  text-decoration: none;
+  color: #aeffca !important; }
+
+.login .dropdown > a:focus {
+  font-size: 13px;
+  text-shadow: none;
+  color: #ffffff; }
+
+.login-btn {
+  padding: 0px 10px;
+  vertical-align: top;
+  margin-top: 11.5px;
+  color: #ffffff;
+  font-size: 15px; }
+
+/* Login Styling Area End */

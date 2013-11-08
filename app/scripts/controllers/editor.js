@@ -652,6 +652,7 @@ var MidiController = (function() {
     makeMidiFile: function(midiObject) {
       console.log("Make MIDI File!");
       midiObject.MidiFile = CompositionFile();
+      // TODO: send midiObject to server
 //      uploadSocket.emit('saveMidiFile');
 //      uploadSocket.on('startSave', function () {
 //        uploadSocket.emit('midiData',midiObject);
@@ -676,3 +677,55 @@ var MidiController = (function() {
     }
   };
 }( ));
+
+/*
+ composition data setup
+ */
+var composition = (function(){
+
+  var formatType=1;
+  var trackCount=1; //단일트랙 파일인 경우만 생각함
+  var timeDivision=480; //Ticks per Beat;
+  var header = {
+    'formatType': formatType,
+    'trackCount': trackCount,
+    'ticksPerBeat': timeDivision
+  };
+  var tracks=[];
+  tracks[0] = [];
+
+  return {
+    noteOn: function(deltaTime, noteNumber){
+      var event={};
+      event.deltaTime=deltaTime;
+      event.type='channel';
+      event.channel=1;
+      event.noteNumber=noteNumber;
+      event.velocity=80;		//use fixed value for velocity (temporarily);
+      event.subType='noteOn';
+
+      tracks[0].push(event);
+    },
+    noteOff: function(deltaTime, noteNumber){
+      var event={};
+      event.deltaTime=deltaTime;
+      event.type='channel';
+      event.channel=1;
+      event.noteNumber=noteNumber;
+
+      tracks[0].push(event);
+    },
+    show: function() {
+      console.log(tracks[0]);
+    },
+    header: header,
+    tracks: tracks
+  };
+})( );
+
+function CompositionFile(){
+  return {
+    'header': composition.header,
+    'tracks': composition.tracks
+  };
+}
