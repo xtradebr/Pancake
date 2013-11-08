@@ -2,17 +2,19 @@
     <label class="btn btn-primary">Music Name</label>
     <div class="search-box">
         <i class="fa fa-search"></i>
-        <input class="search-query" placeholder="Search..." ng-model="musicName"/>
+        <input class="search-query" placeholder="Search..." ng-model="musicName" ui-keypress="{'enter':'search($event)'}"/>
     </div>
 </div>
 <div class="divider-horizontal"></div>
 <div class="row-fluid max-height">
     <!-- Music List Area -->
     <div class="span9">
-        <div class="scrollable">
-            <div ng-repeat="music in musiclist">
-                <music-component></music-component>
-                <div class="divider-horizontal"></div>
+        <div infinite-scroll="listhandler.nextPage()" infinite-scroll-disabled="listhandler.busy" infinite-scroll-distance="1">
+            <div class="scrollable">
+                <div ng-repeat="music in listhandler.items">
+                    <music-component></music-component>
+                    <div class="divider-horizontal"></div>
+                </div>
             </div>
         </div>
     </div>

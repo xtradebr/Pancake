@@ -23,7 +23,7 @@ body {
   height: auto;
   margin-left: 20px;
   margin-right: 20px;
-  padding-bottom: 27px;
+  //padding-bottom: 27px;
 }
 
 .nav-container {
@@ -195,7 +195,7 @@ body {
   margin-left: 0px;
 }
 .playlist ol > div > li {
-  margin: 20px 0 10px 35px;
+  margin: 20px 0 10px 45px;
   font-size: 22px;
 }
 .playlist .description {
@@ -420,7 +420,8 @@ player-component .divider-horizontal {
   display: inline-block;
   float: right;
   height: 40px;
-  width: 120px;
+  width: auto;
+  padding-right: 15px;
 }
 .login .divider-vertical {
   display: inline-block;

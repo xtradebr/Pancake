@@ -1,6 +1,6 @@
 'use strict';
 
-var app = angular.module('pancakeApp', ['ui.bootstrap', 'ezfb']);
+var app = angular.module('pancakeApp', ['ui.bootstrap', 'ezfb', 'infinite-scroll', 'ui.keypress']);
 
 app.config(function ($routeProvider, $locationProvider, $FBProvider) {
   $locationProvider.html5Mode(false).hashPrefix('!');
@@ -45,28 +45,44 @@ app.config(function ($routeProvider, $locationProvider, $FBProvider) {
       isInEditor: false,
       isLogged: false
     })
-    .when('/login', {
-      templateUrl: 'views/login.html',
-      controller: 'LoginCtrl',
-      title: 'Login',
-      isInEditor: false,
-      isLogged: false
-    })
     .otherwise({
       redirectTo: '/home'
     });
 });
 
-app.run(function ($rootScope, $location) {
+app.run(function ($rootScope, $location, $modal, loginHandler) {
   $rootScope.$on('$routeChangeSuccess', function(event, currentRoute) {
     $rootScope.title = currentRoute.title;
     $rootScope.isInEditor = currentRoute.isInEditor;
+    $rootScope.isLogged = currentRoute.isLogged;
   });
 
   $rootScope.login = function() {
+
     if(!$rootScope.isLogged) {
-      $location.path('/login');
+      var modalInstance = $modal.open({
+          templateUrl: '/views/login.html',
+          controller: 'LoginCtrl'
+        }
+      );
+
+      modalInstance.result.then(function() {
+        console.log("Is Login Successed?");
+        // no there is possible that user doesn't logged in facebook.
+      }, function() {
+        console.log("Login cancel");
+      });
     }
   };
 
+<<<<<<< HEAD
 });
+=======
+  $rootScope.logout = function() {
+    loginHandler.logout();
+  };
+
+  $rootScope.loginInfo = ' Log In';
+  $rootScope.isLogged = false;
+});
+>>>>>>> dd3c208bfb6e568f546c5c023e280ed9de8e1de7
