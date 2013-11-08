@@ -75,9 +75,6 @@ app.run(function ($rootScope, $location, $modal, loginHandler) {
     }
   };
 
-<<<<<<< HEAD
-});
-=======
   $rootScope.logout = function() {
     loginHandler.logout();
   };
@@ -85,4 +82,3 @@ app.run(function ($rootScope, $location, $modal, loginHandler) {
   $rootScope.loginInfo = ' Log In';
   $rootScope.isLogged = false;
 });
->>>>>>> dd3c208bfb6e568f546c5c023e280ed9de8e1de7

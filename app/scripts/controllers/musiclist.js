@@ -148,8 +148,8 @@ angular.module('pancakeApp')
     $scope.search = function($event) {
       $event.preventDefault();
 
-      var url = 'http://www.soundpancake.io/api/query/musiclist?name=' + $scope.musicName;
-      $http.get(url)
+      var url = 'http://www.soundpancake.io/api/query/musiclist';
+      $http.post(url, {name: $scope.musicName})
         .success(function(data, status) {
           console.log("fetching success!");
           console.log(data);

@@ -1,14 +1,10 @@
-/*
-require.paths.unshift(__dirname + '/../../lib')
-require.paths.unshift(__dirname + '/../../lib/support/express/lib')
-require.paths.unshift(__dirname + '/../../lib/support/hashlib/build/default')
-require.("express/plugins")
-*/
 var express = require("express");
 var graph = require("fbgraph");
 var redis = require("redis");
 var socketio = require("socket.io");
 var io = socketio.listen(80); //Warning: listen EACCES
+var MongoClient = require("mongodb"), MongoClient;
+
 var redis_port = "27071";
 var redis_host = "54.249.9.214";
 var fs = require("fs");
@@ -103,7 +99,7 @@ io.sockets.on("connection", function(socket) {
 			redis_socket.emit("dump", key);
 		});
 	});
-});
+})
 		
 var application_root = "/home/ubuntu/Pancake/app/";
 var app = express();
@@ -120,7 +116,10 @@ app.configure(function () {
 app.get("/mypage", function(req, res) {
 	res.render("mypage", {id: "xarus"});
 });
-
+/*
+app.post("/api/query/playlist" //TODO
+)
+*/
 app.post("/api/query/musiclist", function(req, res) {
 	console.log("hello world");
 	/*parse req.body.blah query to mongo*/
@@ -132,12 +131,31 @@ app.post("/api/auth/login", function(req, res) {
 });
 
 app.post("/api/auth/fb-session", function(req, res) {
-	console.log(JSON.stringify(req));
+//	TODO
+//	console.log(JSON.stringify(req));
+	data = JSON.parse(req);
+	MongoClient.connect("mongodb://blah/dbname", function (err, db) {
+		if(err) throw err;
+		var collection = db.collection("fb-session");
+		dump = collection.find({"UserID": data.authResponse.UserID})
+		if(dump.toArray().length = 0 || ) {
+			collection.insert(data.authResponse);
+		}
+	});
+
 	res.redirect('/');
 });
 
 app.post("/api/auth/fb", function(req, res) {
-	console.log(JSON.stringify(req));
+//	console.log(JSON.stringify(req));
+	data = JSON.parse(req);
+	MongoClient.connect("mongodb://blah/dbname", function (err, db) {
+		if(err) throw err;
+		var collection = db.collection("fb");
+		if(collection.find({"id": data.id}).toArray().length = 0) {
+			collection.insert(data);
+		}
+	});
 	res.redirect('/');
 });
 
