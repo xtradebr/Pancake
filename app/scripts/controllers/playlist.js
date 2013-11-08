@@ -215,10 +215,10 @@ angular.module('pancakeApp')
   });
 
 angular.module('pancakeApp')
-  .directive('playerComponent', function() {
+  .directive('playerComponent', function($http) {
 
     // 부모 scope에 playlists라는 곡 목록을 저장한 후,
-    // 해당 리스트의 요소들을 player라는 이름으로 interation 할 때,
+    // 해당 리스트의 요소들을 player라는 이름으로 iteration 할 때,
     // playerComponent element 사용 가능
     function link(scope) {
       scope.onLike = false;

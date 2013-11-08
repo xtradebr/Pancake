@@ -61,7 +61,58 @@ angular.module('pancakeApp')
 //        }).bind(this);
         $timeout(function() {
           that.busy = false;
-        }, 1000);
+        }, 500);
       }
     };
+  });
+
+angular.module('pancakeApp')
+.service('loginHandler', function($FB, $log) {
+
+    var loginStatus;
+    var apiMe;
+
+    $log.info("In Login Handler Service");
+
+    this.login = function() {
+      $log.info("Try Login!");
+
+      $FB.login( function(res) {
+        $log.info("Get Response in Try Login!");
+        if(res.authResponse) {
+          updateLoginStatus(updateApiMe);
+          alert("Login success!");
+        }
+      });
+    };
+
+    this.logout = function() {
+      $log.info("Try Logout!");
+
+      $FB.logout(function () {
+        updateLoginStatus(updateApiMe);
+      });
+    };
+
+    function updateLoginStatus (more) {
+      $FB.getLoginStatus(function (res) {
+        loginStatus = res;
+
+        (more || angular.noop)();
+
+        $log.info("In Update Login Status!");
+        $log.info(JSON.stringify(res));
+      });
+    }
+
+    function updateApiMe () {
+      $FB.api('/me', function (res) {
+        apiMe = res;
+
+        $log.info("In Api ME!");
+        $log.info(JSON.stringify(res));
+      });
+    }
+
+    return this;
   });

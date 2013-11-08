@@ -57,7 +57,7 @@ app.config(function ($routeProvider, $locationProvider, $FBProvider) {
     });
 });
 
-app.run(function ($rootScope, $location) {
+app.run(function ($rootScope, $location, loginHandler) {
   $rootScope.$on('$routeChangeSuccess', function(event, currentRoute) {
     $rootScope.title = currentRoute.title;
     $rootScope.isInEditor = currentRoute.isInEditor;
@@ -69,5 +69,7 @@ app.run(function ($rootScope, $location) {
     }
   };
 
-  $rootScope.isLogged = true;
+  $rootScope.logout = function() {
+    loginHandler.logout();
+  };
 });

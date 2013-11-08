@@ -9,7 +9,7 @@
 <div class="row-fluid max-height">
     <!-- Music List Area -->
     <div class="span9">
-        <div infinite-scroll="listhandler.nextPage()" infinite-scroll-disabled="listhandler.busy">
+        <div infinite-scroll="listhandler.nextPage()" infinite-scroll-disabled="listhandler.busy" infinite-scroll-distance="1">
             <div class="scrollable">
                 <div ng-repeat="music in listhandler.items">
                     <music-component></music-component>
