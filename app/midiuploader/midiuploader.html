@@ -21,29 +21,30 @@
 midi file  <input type="file" id="files" name="file" placeholder="midi file"></input>
 <button id="play" onclick="playstop(0);">Play</button>
 <button id="stop" onclick="playstop(1);">Stop</button><br>
-title  <input type="text" id="title" name="title"></input><br>
-artist  <input type="text" id="artist" name="artist"></input><br>
-album art  <input type="file" id="albumArt" name="albumArt" placeholder="album art"></input>
-
+title  <input type="text" id="title" name="title"><br>
+artist  <input type="text" id="artist" name="artist"><br>
+owner  <input type="text" id="owner" name="owner"></br>
+album art  <input type="file" id="albumArt" name="albumArt"><br>
+description <input type="text" id="description" name="description"></br>
 <button id="upload" onclick="upload();">Upload</button>
 
 <script src="http://127.0.0.1:8080/socket.io/socket.io.js"> </script>
 <script>
 
 //setting up socket
-var uploadSocket = io.connect('http://127.0.0.1:8080/');
+var uploadSocket = io.connect('http://127.0.0.1:80/');
 
 uploadSocket.on('connect', function () {
 	uploadSocket.on('ready', function () {
 		console.log('Connected !');
 	});
-});
+})
 
 //setting up player
 var player;
 MIDI.loadPlugin(function () {
     player = MIDI.Player;
-});
+})
 
 var playstop = function(either){
 	if (either==0){
@@ -52,7 +53,7 @@ var playstop = function(either){
 	else if (either==1){
 		MIDI.Player.stop();
 	}
-};
+}
 
 var myMidi;
 
@@ -108,12 +109,18 @@ function upload(){
 	{
 		'title': document.getElementById('title').value,
 		'artist': document.getElementById('artist').value,
+		'owner': document.getElementById('owner').value,
 		'playtime': player.endTime,
-		'midiData': myMidi
+		'description': document.getElementById('description').value,
+		'MidiFile': myMidi //CompositionFile();
+		'albumArt': albumArt;
+		'albumArtName': albumArtName;
 	}
-	uploadSocket.emit('midiData',data);
-	uploadSocket.emit('albumArt', albumArtName, albumArt);
-};
+	uploadSocket.emit('saveMidiFile');
+	uploadSocket.on('startSave', function () {
+		uploadSocket.emit('midiData',data);
+	}
+}
 
 document.getElementById('files').addEventListener('change', readMidi, false);
 document.getElementById('albumArt').addEventListener('change', readAlbumArt, false);

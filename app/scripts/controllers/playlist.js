@@ -5,8 +5,12 @@
 'use strict';
 
 angular.module('pancakeApp')
+<<<<<<< HEAD
   .controller('PlayListCtrl', function($scope, listhandler) {
 
+=======
+  .controller('PlayListCtrl', function($scope) {
+>>>>>>> midi
     // TODO: dummy (empty) data. 실제론 서버에 쿼리를 날림
     $scope.playerName = '';
     $scope.showPublisher = false;
@@ -167,7 +171,7 @@ angular.module('pancakeApp')
     listhandler.setDummy(dummy);
     $scope.listhandler = listhandler;
 
-    $scope.FilterCtrl = function($scope, $timeout) {
+    $scope.FilterCtrl = function($scope, $http, $timeout) {
 
       $scope.moods = [
         { name: '신나는', checked: false },
@@ -211,6 +215,17 @@ angular.module('pancakeApp')
           this.filter = '';
         }
       };
+
+      $scope.$watch("[moods|filter:{selected:true}, socialAction|filter:{selected:true}]", function (checked) {
+        ch = [];
+        for(i in checked) { ch.append(i.name); }
+        $http.post("/api/filter/", JSON.stringify(ch)).
+          success(function(data) {
+            /*convert data to object
+             *$scope.playerlists.push()
+            */
+          });
+      });
     };
   });
 

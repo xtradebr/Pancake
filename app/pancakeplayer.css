@@ -10,7 +10,11 @@ body {
   background: #fafafa;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #333;
+<<<<<<< HEAD
   /*margin-bottom:25px;*/
+=======
+  margin-bottom: 25px; /*25px without fancymoves*/
+>>>>>>> midi
 }
 
 footer{
@@ -20,7 +24,7 @@ footer{
     bottom: 0;
     position: fixed;
     width: 100%;
-    height: 25px;
+    height: 25px; /*25px without fancymoves*/
     background:#fff;
     z-index: 100;
 }
