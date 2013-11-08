@@ -2,6 +2,10 @@
 
 var app = angular.module('pancakeApp', ['ui.bootstrap']);
 
+//socket that stays open from entering the site until leaving the site
+//var uploadSocket = io.connect('http://127.0.0.1:80/');
+
+
 app.config(function ($routeProvider, $locationProvider) {
   $locationProvider.html5Mode(false).hashPrefix('!');
 
@@ -45,7 +49,12 @@ app.run(function ($rootScope) {
   $rootScope.$on('$routeChangeSuccess', function(event, currentRoute) {
     $rootScope.title = currentRoute.title;
     $rootScope.isInEditor = currentRoute.isInEditor;
-
+      if($rootScope.isInEditor){
+        $('body').css('margin-bottom',0);
+      }
+      else{
+        $('body').css('margin-bottom',$('footer').css('height'));
+      }
   });
 });
 
@@ -178,8 +187,10 @@ app.controller('ImageSliderCtrl', function($rootScope) {
       function loadSong(MidiFileId) {
 
         //TODO:get corresponding midiObject from server
-        
-        player.loadMidiFileObject(midiFileObject);    
+        uploadSocket.emit('requestMidiFile',MidiFileId);
+        uploadSocket.on('sendMidiFile',function(midiFileObject){
+          player.loadMidiFileObject(midiFileObject);
+        });
       }
 
 
