@@ -148,8 +148,8 @@ angular.module('pancakeApp')
     $scope.search = function($event) {
       $event.preventDefault();
 
-      var url = 'http://www.soundpancake.io/api/query/musiclist?name=' + $scope.musicName;
-      $http.get(url)
+      var url = 'http://www.soundpancake.io/api/query/musiclist';
+      $http.post(url, {'name': $scope.musicName})
         .success(function(data, status) {
           console.log("fetching success!");
           console.log(data);
@@ -163,7 +163,9 @@ angular.module('pancakeApp')
   });
 
 angular.module('pancakeApp')
-  .directive('musicComponent', function() {
+  .directive('musicComponent', function($rootScope, $http, $notification) {
+
+    var url = 'http://soundpancake.io/api/query/musiclist';
 
     function link(scope) {
       scope.onLike = false;
@@ -171,11 +173,21 @@ angular.module('pancakeApp')
       scope.play = function() {
         console.log("Play!");
         console.log(scope.music);
+        $rootScope.appendtolist(scope.music);
       };
 
       scope.like = function() {
         console.log("Like!");
-        console.log(scope.music);
+
+        $http.post(url, {'id': scope.music.id, 'like': true})
+          .success(function(data, status) {
+            // TODO: 실제로는 서버의 like 수를 response로 받아서 그것을 업데이트 해야한다.
+            scope.music.like++;
+            $notification.success('Like It!', scope.music.title);
+          })
+          .error(function(data, status) {
+            $notification.error('error occur !', 'try it again few second later...');
+          });
       };
 
       scope.share = function() {

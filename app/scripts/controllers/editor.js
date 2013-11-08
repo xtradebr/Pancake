@@ -9,7 +9,9 @@
 
 // TODO: Integration with Master branch after MIDI module function correctly.
 var app = angular.module('pancakeApp');
-app.controller('EditorCtrl', function($scope, $modal, $log) {
+app.controller('EditorCtrl', function($scope, $modal, $notification) {
+
+  $notification.smile('Press Start!', 'and wait a second.. then you can composite your own music');
 
   // TODO: 작곡 완료 후, replay 기능 구현
   // noteList는 작곡을 완료한 후, 재생할 때 다시 보여줄 svg 객체들을 가지고 있다.
@@ -39,7 +41,6 @@ app.controller('EditorCtrl', function($scope, $modal, $log) {
     // 실제 MIDI 파일을 만들기 위해 사용되는 데이터는 MidiController 내부에 들어있음.
     $scope.editor.endComposition();
     console.log("size: " + noteList.size());
-    $log.info(Animator.currentTime());
   };
   $scope.save = function() {
     var modalInstance = $modal.open({
@@ -63,7 +64,7 @@ app.controller('EditorCtrl', function($scope, $modal, $log) {
   };
 });
 
-var SaveMidiCtrl = function($scope, $modalInstance, midiObject) {
+var SaveMidiCtrl = function($scope, $modalInstance, midiObject, $notification) {
 
   $scope.midiObject = midiObject;
 
@@ -72,12 +73,12 @@ var SaveMidiCtrl = function($scope, $modalInstance, midiObject) {
     readAlbumArt($scope.midiObject);
     $scope.midiObject.playtime = Animator.currentTime();
     $modalInstance.close($scope.midiObject);
+    $notification.success('Composition Saved !', 'composition is successfully saved.');
   };
 
   $scope.cancel = function() {
     // clear midi object's information
     $modalInstance.dismiss('cancel "Saving MIDI File"');
-    console.log("Cancel");
   };
 
   function readAlbumArt() {

@@ -67,7 +67,7 @@ angular.module('pancakeApp')
   });
 
 angular.module('pancakeApp')
-  .service('loginHandler', function($FB, $rootScope, $log) {
+  .service('loginHandler', function($FB, $rootScope, $log, $notification) {
 
     var loginStatus;
     var apiMe;
@@ -80,8 +80,8 @@ angular.module('pancakeApp')
       $FB.login( function(res) {
         if(res.authResponse) {
           updateLoginStatus(updateApiMe);
-          alert("Login success!");
           $rootScope.isLogged = true;
+          $notification.success('Login Success!', 'have a good time with us :)');
         }
       });
     };
@@ -92,7 +92,7 @@ angular.module('pancakeApp')
       $FB.logout(function () {
         updateLoginStatus(updateApiMe);
         $rootScope.isLogged = false;
-        alert("Logout success!");
+        $notification.info('Logout Successfully!', 'come again~ :)');
       });
     };
 
