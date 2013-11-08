@@ -62,7 +62,7 @@
 
     <div class="container" ng-view=""></div>
 
-    <footer ng-hide="$root.isInEditor">
+    <footer ng-controller="ImageSliderCtrl" ng-hide="$root.isInEditor">
         <div class="player">
             <div class="time-controls">
                 <span id="capsule"><span id="cursor"></span></span>
@@ -70,14 +70,34 @@
                 <span id="endtime" class="time">0:00</span>
             </div>
             <div class="buttons">
-                <i class="fa fa-stop" value="stop" onclick=""></i>
-                <i class="fa fa-play" value="play" onclick=""></i>
-                <i class="fa fa-pause" value="pause" onclick=""></i>
-                <i class="fa fa-backward" value="backward" onclick=""></i>
-                <i class="fa fa-forward" value="forward" onclick=""></i>
-                <i class="fa fa-eject" value="openlist" onclick=""></i>
+                <i class="fa fa-stop" value="stop" ng-click="stopbutton()"></i>
+                <i class="fa fa-play" value="play" ng-click="playbutton()"></i>
+                <i class="fa fa-pause" value="pause" ng-click="pausebutton()"></i>
+                <i class="fa fa-backward" value="backward" ng-click="prevbutton()"></i>
+                <i class="fa fa-forward" value="forward" ng-click="nextbutton()"></i>
+                <i class="fa fa-eject" value="openlist" ng-click="openlist()"></i>
             </div>
         </div>
+
+      <!--FancyMoves-->
+        <!-- Required CSS -->
+        <link type="text/css" href="fancymoves/fancymoves.css" media="screen" charset="utf-8" rel="stylesheet"  />
+        <link rel="stylesheet" type="text/css" href="fancymoves/fancybox/jquery.fancybox-1.3.4.css" media="screen" />
+
+        <div id="wrapper">
+           <!--Slider -->
+            <div id="slider-one">
+            
+                    <div ng-repeat="entry in list">
+                        <img ng-src="{{entry.albumArt}}" />
+                        <p>{{entry.title}}</p>
+                    </div>
+
+            </div>
+            <!-- /Slider -->
+        </div>
+        <!-- /Wrapper -->
+      <!--/FancyMoves-->
     </footer>
 
         <!-- build:js scripts/modules.js -->
@@ -125,5 +145,15 @@
         <script src="scripts/filters/timeformatting.js"></script>
         <script src="scripts/filters/shortString.js"></script>
         <!-- endbuild -->
+
+        <!-- Required script -->
+        <script type="text/javascript" src="fancymoves/slider.js" charset="utf-8"></script>
+
+        <!-- Demo only -->
+        <script type="text/javascript" src="fancymoves/demo.js"></script>
+
+        <!-- FancyBox scripts -->
+        <script type="text/javascript" src="fancymoves/fancybox/jquery.mousewheel-3.0.4.pack.js"></script>
+        <script type="text/javascript" src="fancymoves/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
 </body>
 </html>
