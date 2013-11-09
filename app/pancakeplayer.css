@@ -112,9 +112,11 @@ div #imageSlider {
 
 div #window {
     width: 900px;
-    height: 150px;
+    height: 130px;
     border-style: solid;
     border-width: 1px;
+    border-radius: 10px;
+    padding-top: 5px;
     margin: 0 auto;
     position: relative;
     overflow: hidden;
@@ -130,7 +132,7 @@ div .panel img {
     height: 80px;
     margin-top: 10px;
     transition: width 0.5s, height 0.5s, margin-top 0.5s;
-    -webkit-transition: width 0.5s, height 0.5s, margin-top .5s;
+    -webkit-transition: width 0.5s, height 0.5s, margin-top .5sgit ;
 }
 div .panel p {
     /*css for text below album art*/
@@ -155,6 +157,12 @@ div #scroll {
 div #sliderNav {
     height: 20px;
     border-style: none;
-    margin: 0;
+    margin: 0 auto;
     padding: 0;
+}
+
+div .navDot a {
+    float: left;
+    color: #777;
+    margin: 0 5px;
 }

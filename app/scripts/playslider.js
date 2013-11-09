@@ -31,7 +31,7 @@ app.controller('PlaySliderCtrl', function($rootScope) {
       'artist': 'ABBA',
       'owner': undefined,
       'playtime': 300,
-      'likes': 234,
+      'like': 234,
       'comment': 20,
       'description': 'if theres mamma mia then is there pappa pia?',
       'albumArt': 'images/mamma mia.png',
@@ -44,7 +44,7 @@ app.controller('PlaySliderCtrl', function($rootScope) {
       'artist': 'somebody idunno',
       'owner': undefined,
       'playtime': 300,
-      'likes': 345,
+      'like': 345,
       'comment': 30,
       'description': 'a common theme song',
       'albumArt': 'images/james bond.png',
@@ -185,8 +185,10 @@ app.controller('PlaySliderCtrl', function($rootScope) {
 
   $rootScope.moveToPanel = function (panelNum) {
 
-      if(panelNum ===($rootScope.nowSelected)){ //play if same panel is clicked again
+      //play if same panel is clicked again
+      if(panelNum ===($rootScope.nowSelected)){ 
         loadSong(($rootScope.list[panelNum].MidiFileId));
+        $rootScope.playSelect(panelNum);
         return;
       }
       
@@ -201,7 +203,11 @@ app.controller('PlaySliderCtrl', function($rootScope) {
   }
 
   $rootScope.playSelect = function (panelNum) {
-
+      //gets the old playing panel and make it normal
+      $('#scroll').find('.playing').removeClass('playing').find('img').css({'border-style': 'none'});
+      //gets the new panel to enlarge and do the operation
+      $('#scroll').find('.panel:eq('+panelNum+')').addClass('playing').find('img').css({'border-style': 'dotted', 'border-width': 2, 'border-color': 'black'});
+      //set the nowSelected to the selected panel number
   }
 
 
