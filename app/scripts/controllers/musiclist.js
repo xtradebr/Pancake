@@ -172,7 +172,6 @@ angular.module('pancakeApp')
         console.log("Play!");
         console.log(scope.music);
         $rootScope.appendtolist(scope.music);
-
       };
 
       scope.like = function() {
