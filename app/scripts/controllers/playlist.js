@@ -5,7 +5,7 @@
 'use strict';
 
 angular.module('pancakeApp')
-  .controller('PlayListCtrl', function($scope, listhandler) {
+  .controller('PlayListCtrl', function($scope, $http, listhandler) {
 
     // TODO: dummy (empty) data. 실제론 서버에 쿼리를 날림
     $scope.playerName = '';
@@ -167,16 +167,34 @@ angular.module('pancakeApp')
     listhandler.setDummy(dummy);
     $scope.listhandler = listhandler;
 
-    $scope.FilterCtrl = function($scope, $http, $timeout) {
+    $scope.search = function($event) {
+      $event.preventDefault();
+
+      var url = 'http://www.soundpancake.io/api/query/playlist';
+      $http.post(url, {'name': $scope.playerName})
+        .success(function(data, status) {
+          console.log("fetching success!");
+          console.log(data);
+          $scope.listhandler.clear();
+          $scope.listhandler.setItems(data);
+        })
+        .error(function(data, status) {
+          console.log("fetching list fails from server.");
+        });
+    };
+
+    $scope.FilterCtrl = function($scope, $http, $notification) {
+
+      var url = 'http://soundpancake.io/api/query/playlist';
 
       $scope.moods = [
-        { name: '신나는', checked: false },
-        { name: '인기있는', checked: false },
-        { name: '웅장한', checked: false }
+        { name: 'Funny', checked: false },
+        { name: 'Hot', checked: false },
+        { name: 'Peaceful', checked: false }
       ];
       $scope.socialAction = [
-        { name: '좋아요', checked: false },
-        { name: '댓글', checked: false }
+        { name: 'Like', checked: false },
+        { name: 'Comment', checked: false }
       ];
       $scope.moods.hasFilter = function(filter) {
         for(var i=0; i<$scope.moods.length; i++) {
@@ -187,46 +205,67 @@ angular.module('pancakeApp')
         return false;
       };
 
-      $scope.showAlert = false;
-      $scope.alerts = [];
-
       $scope.addMoodFilter = function() {
         if(this.filter) {
           if(this.moods.hasFilter(this.filter)) {
-            $scope.showAlert = !$scope.showAlert;
-
-            // show alert if typed filter already exist in moods list
-            if( $scope.showAlert && $scope.alerts.length < 1 ) {
-              console.log("Alert 추가됨~");
-              $scope.alerts.push( { msg: "이미 목록에 존재하는 필터입니다." } );
-            }
-            // hide alert after 3s
-            $timeout(function() {
-              $scope.showAlert = !$scope.showAlert;
-              $scope.alerts.splice(0, 1);
-            }, 3000);
+            $notification.error('typed mood is already exists!');
           } else {
             this.moods.push( {name: this.filter, checked: true} );
+            $scope.checked();
           }
           this.filter = '';
         }
       };
 
-//      $scope.$watch("[moods|filter:{selected:true}, socialAction|filter:{selected:true}]", function (checked) {
-//        ch = [];
-//        for(i in checked) { ch.append(i.name); }
-//        $http.post("/api/filter/", JSON.stringify(ch)).
-//          success(function(data) {
-//            /*convert data to object
-//             *$scope.playerlists.push()
-//             */
-//          });
-//      });
+      $scope.checked = function() {
+        var body = {
+          mood: []
+        };
+
+        $scope.moods.forEach(function(item) {
+          if( item.checked ) {
+            body.mood.push(item.name);
+          }
+        });
+
+//        console.log(body);
+        query(body);
+      };
+
+      $scope.social = function() {
+        var body = {
+          id: 'User ID',
+          action: []
+        };
+        $scope.socialAction.forEach(function(item) {
+          if( item.checked ) {
+            body.action.push(item.name);
+          }
+        });
+
+//        console.log(body);
+        query(body);
+      };
+
+      function query(body) {
+        $http.post(url, body)
+          .success(function(data, status) {
+            // response data is play list
+            listhandler.clear();
+            listhandler.setItems(data.playlist);
+            $notification.info('Get List Number is', data.playlist.length);
+          })
+          .error(function(data, status) {
+            $notification.error("Error occurs !", "fail to fetch list from server.");
+          });
+      }
     };
   });
 
 angular.module('pancakeApp')
-  .directive('playerComponent', function($rootScope) {
+  .directive('playerComponent', function($rootScope, $http, $notification) {
+
+    var url = 'http://soundpancake.io/api/query/playlist';
 
     // 부모 scope에 playlists라는 곡 목록을 저장한 후,
     // 해당 리스트의 요소들을 player라는 이름으로 iteration 할 때,
@@ -247,18 +286,40 @@ angular.module('pancakeApp')
 
       scope.like = function() {
         console.log("press Like It!");
-        console.log(scope.player);
+
+        $http.post(url, { 'id': scope.player.id, 'like': true } )
+          .success(function(data, status) {
+            // TODO: Music List의 Like와 동일하게 서버쪽의 Like 수와 동기화 필요
+            scope.player.like++;
+            $notification.success('Like It!', scope.player.name);
+          })
+          .error(function(data, status) {
+            $notification.error('error occur !', 'try it again few second later...');
+          });
       };
 
       scope.comment = function() {
         console.log("press Comments!");
-        console.log(scope.player);
-        console.log(scope.onComment);
+        $notification.error('Not Available!', 'Comment Function is not available now...');
+
+        // TODO: add commenting function.
+//        $http.post(url, { 'id': scope.player.id, 'comment': true } )
+//          .success(function(data, status) {
+//            scope.player.comment++;
+//            $notification.info('Comment It!', scope.player.name);
+//          })
+//          .error(function(data, status) {
+//            $notification.error('error occur !', 'try it again few second later...');
+//          });
       };
 
       scope.share = function() {
         console.log("press Share It!");
         console.log(scope.player);
+      };
+
+      scope.addMusic = function(item) {
+        $rootScope.appendtolist(scope.player.musicList[item]);
       };
     }
 

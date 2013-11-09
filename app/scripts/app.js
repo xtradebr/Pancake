@@ -1,6 +1,6 @@
 'use strict';
 
-var app = angular.module('pancakeApp', ['ui.bootstrap', 'ezfb', 'infinite-scroll', 'ui.keypress']);
+var app = angular.module('pancakeApp', ['ui.bootstrap', 'ezfb', 'infinite-scroll', 'ui.keypress', 'notifications']);
 
 //socket that stays open from entering the site until leaving the site
 //var uploadSocket = io.connect('http://127.0.0.1:80/');
@@ -17,36 +17,36 @@ app.config(function ($routeProvider, $locationProvider, $FBProvider) {
       templateUrl: 'views/main.html',
       controller: 'MainCtrl',
       title: 'Home',
-      isInEditor: false,
-      isLogged: false
+      isInEditor: false
     })
     .when('/editor', {
       templateUrl: 'views/editor.html',
       controller: 'EditorCtrl',
       title: 'Editor',
-      isInEditor: true,
-      isLogged: false
+      isInEditor: true
     })
     .when('/musiclist', {
       templateUrl: 'views/musiclist.html',
       controller: 'MusicListCtrl',
       title: 'Music List',
-      isInEditor: false,
-      isLogged: false
+      isInEditor: false
     })
     .when('/playlist', {
       templateUrl: 'views/playlist.html',
       controller: 'PlayListCtrl',
       title: 'Play List',
-      isInEditor: false,
-      isLogged: false
+      isInEditor: false
     })
     .when('/about', {
       templateUrl: 'views/about.html',
-//      controller: 'AboutCtrl',
       title: 'About',
-      isInEditor: false,
-      isLogged: false
+      isInEditor: false
+    })
+    .when('/dashboard', {
+      templateUrl: 'views/dashboard.html',
+      controller: 'DashboardCtrl',
+      title: 'Dashboard',
+      isInEditor: false
     })
     .otherwise({
       redirectTo: '/home'

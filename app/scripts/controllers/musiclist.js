@@ -148,13 +148,13 @@ angular.module('pancakeApp')
     $scope.search = function($event) {
       $event.preventDefault();
 
-      var url = 'http://www.soundpancake.io/api/query/musiclist?name=' + $scope.musicName;
-      $http.get(url)
+      var url = 'http://www.soundpancake.io/api/query/musiclist';
+      $http.post(url, {'name': $scope.musicName})
         .success(function(data, status) {
           console.log("fetching success!");
           console.log(data);
           $scope.listhandler.clear();
-          $scope.listhandler.setItems(data);
+          $scope.listhandler.setItems(data.list);
         })
         .error(function(data, status) {
           console.log("fetching list fails from server.");
@@ -163,7 +163,9 @@ angular.module('pancakeApp')
   });
 
 angular.module('pancakeApp')
-  .directive('musicComponent', function($rootScope) {
+  .directive('musicComponent', function($rootScope, $http, $notification) {
+
+    var url = 'http://soundpancake.io/api/query/musiclist';
 
     function link(scope) {
       scope.onLike = false;
@@ -176,7 +178,16 @@ angular.module('pancakeApp')
 
       scope.like = function() {
         console.log("Like!");
-        console.log(scope.music);
+
+        $http.post(url, {'id': scope.music.id, 'like': true})
+          .success(function(data, status) {
+            // TODO: 실제로는 서버의 like 수를 response로 받아서 그것을 업데이트 해야한다.
+            scope.music.like++;
+            $notification.success('Like It!', scope.music.title);
+          })
+          .error(function(data, status) {
+            $notification.error('error occur !', 'try it again few second later...');
+          });
       };
 
       scope.share = function() {

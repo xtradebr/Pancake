@@ -24,7 +24,7 @@
                     <div class="social-inform-text">List</div>
                 </a>
                 <ul class="dropdown-menu">
-                    <li ng-repeat="music in player.musicList">
+                    <li ng-repeat="music in player.musicList" ng-click="addMusic($index)">
                         <a>{{ music.title }}</a>
                     </li>
                 </ul>

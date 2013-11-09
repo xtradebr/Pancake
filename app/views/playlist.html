@@ -2,7 +2,7 @@
     <label class="btn btn-primary">Play List Name</label>
     <div class="search-box">
         <i class="fa fa-search"></i>
-        <input class="search-query" placeholder="Search..." ng-model="playerName"/>
+        <input class="search-query" placeholder="Search..." ng-model="playerName" ui-keypress="{'enter':'search($event)'}"/>
     </div>
 </div>
 <div class="divider-horizontal"></div>
@@ -42,7 +42,7 @@
                     <tbody>
                     <tr ng-repeat="mood in moods">
                         <td>
-                            <input type="checkbox" class="filter-checkbox" ng-model="mood.checked" />
+                            <input type="checkbox" class="filter-checkbox" ng-model="mood.checked" ng-change="checked()"/>
                             <span class="filter-name">{{ mood.name }}</span>
                         </td>
                     </tr>
@@ -51,7 +51,6 @@
                 <form class="search-box" ng-submit="addMoodFilter()">
                     <i class="fa fa-search"></i>
                     <input class="search-query" placeholder="Search..." ng-model="filter" name="filter"/>
-                    <alert class="filter-alert" ng-repeat="alert in alerts">{{ alert.msg }}</alert>
                 </form>
                 <br/><br/>
                 <h4>Social Action</h4>
@@ -59,7 +58,7 @@
                     <tbody>
                     <tr ng-repeat="action in socialAction">
                         <td>
-                            <input class="filter-checkbox" type="checkbox" ng-model="action.checked" />
+                            <input class="filter-checkbox" type="checkbox" ng-model="action.checked" ng-change="social()"/>
                             <span class="filter-name">{{ action.name }}</span>
                         </td>
                     </tr>

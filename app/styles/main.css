@@ -407,3 +407,33 @@ player-component .divider-horizontal {
   font-size: 15px; }
 
 /* Login Styling Area End */
+.list-selection {
+  padding: 15px 0; }
+
+.list-selection > label {
+  margin-right: 15px; }
+
+.btn-primary.disabled,
+.btn-primary[disabled] {
+  border-color: lightblue !important;
+  background-color: lightblue !important; }
+
+.row-fluid .span9 {
+  margin-left: 0px; }
+
+.information-of-me {
+  padding: 40px 30px 30px 30px;
+  font-size: 25px; }
+
+.user-information {
+  margin-top: 10px;
+  margin-bottom: 20px;
+  font-size: 16px; }
+
+.user-information-item {
+  width: 100px;
+  display: inline-block;
+  padding: 5px 0px; }
+
+.user-name {
+  font-size: 25px; }
