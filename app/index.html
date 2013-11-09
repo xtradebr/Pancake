@@ -76,7 +76,7 @@
     <div notifications="right"></div>
     <div class="container" ng-view=""></div>
 
-    <footer ng-controller="ImageSliderCtrl" ng-hide="$root.isInEditor">
+    <footer ng-controller="PlaySliderCtrl" ng-hide="$root.isInEditor">
         <div class="player">
             <div class="time-controls">
                 <span id="capsule"><span id="cursor"></span></span>
@@ -93,25 +93,24 @@
             </div>
         </div>
 
-      <!--FancyMoves-->
-        <!-- Required CSS -->
-        <link type="text/css" href="fancymoves/fancymoves.css" media="screen" charset="utf-8" rel="stylesheet"  />
-        <link rel="stylesheet" type="text/css" href="fancymoves/fancybox/jquery.fancybox-1.3.4.css" media="screen" />
-
-        <div id="wrapper">
-           <!--Slider -->
-            <div id="slider-one">
-            
-                    <div ng-repeat="entry in list">
-                        <img ng-src="{{entry.albumArt}}" />
+        <div id="imageSlider">
+            <div id="scroll-left"></div>
+            <div id="window">
+                <div id="scroll">
+                    <div class="panel" ng-repeat="entry in list" ng-click="moveToPanel($index)">
+                        <img ng-src="{{entry.albumArt}}"/>
                         <p>{{entry.title}}</p>
                     </div>
-
+                </div>
+                <!--<div id="sliderNav">
+                    <div class="navDot"ng-repeat="entry in list" ng-click="function($index)">
+                        <a href="">&#9679;</a>
+                    </div>
+                </div>-->
             </div>
-            <!-- /Slider -->
+            <div id="scroll-right"></div>
         </div>
-        <!-- /Wrapper -->
-      <!--/FancyMoves-->
+
     </footer>
 
         <!-- build:js scripts/modules.js -->
@@ -151,6 +150,7 @@
 
         <!-- build:js({.tmp,app}) scripts/scripts.js -->
         <script src="scripts/app.js"></script>
+        <script src="scripts/playslider.js"></script>
         <script src="scripts/controllers/main.js"></script>
         <script src="scripts/controllers/editor.js"></script>
         <script src="scripts/controllers/musiclist.js"></script>
@@ -160,15 +160,6 @@
         <script src="scripts/services/services.js"></script>
         <script src="scripts/filters/timeformatting.js"></script>
         <script src="scripts/filters/shortString.js"></script>
-        <!-- Required script -->
-        <script type="text/javascript" src="fancymoves/slider.js" charset="utf-8"></script>
 
-        <!-- Demo only -->
-        <script type="text/javascript" src="fancymoves/demo.js"></script>
-
-        <!-- FancyBox scripts -->
-        <script type="text/javascript" src="fancymoves/fancybox/jquery.mousewheel-3.0.4.pack.js"></script>
-        <script type="text/javascript" src="fancymoves/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
-        <!-- endbuild -->
     </body>
 </html>
