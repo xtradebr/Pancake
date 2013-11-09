@@ -13,7 +13,7 @@ angular.module('pancakeApp')
     var list = [
       {
         id: 1,
-        MidiFileID: 1,
+        MidiFileId: 1,
         title: '우린 지금 어디로 가는걸까',
         description: '랄라스윗 노래 같지만 우리 심정임',
         artist: '랄라스윗',
@@ -25,7 +25,7 @@ angular.module('pancakeApp')
       },
       {
         id: 1,
-        MidiFileID: 2,
+        MidiFileId: 2,
         title: '테스트 데이터',
         description: '힝 속았지?',
         artist: '테스터',
@@ -37,7 +37,7 @@ angular.module('pancakeApp')
       },
       {
         id: 1,
-        MidiFileID: 3,
+        MidiFileId: 3,
         title: '오픈 쏘오스',
         description: '오픈 쏘스를 빙자한 소스 테러',
         artist: 'VReality64',
@@ -49,7 +49,7 @@ angular.module('pancakeApp')
       },
       {
         id: 1,
-        MidiFileID: 4,
+        MidiFileId: 4,
         title: '대쉬 보드야~',
         description: '나대쉬보드',
         artist: 'DashBoard',
@@ -61,7 +61,7 @@ angular.module('pancakeApp')
       },
       {
         id: 1,
-        MidiFileID: 3,
+        MidiFileId: 3,
         title: '??z',
         description: 'ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ',
         artist: '???',
@@ -74,7 +74,7 @@ angular.module('pancakeApp')
     ];
     var dummy = [
       {
-        MidiFileID: 1,
+        MidiFileId: 1,
         title: '우린 지금 어디로 가는걸까',
         description: '랄라스윗 노래 같지만 우리 심정임',
         artist: '랄라스윗',
@@ -86,7 +86,7 @@ angular.module('pancakeApp')
         MidiObject: 1
       },
       {
-        MidiFileID: 2,
+        MidiFileId: 2,
         title: '테스트 데이터',
         description: '힝 속았지?',
         artist: '테스터',
@@ -98,7 +98,7 @@ angular.module('pancakeApp')
         MidiObject: 2
       },
       {
-        MidiFileID: 3,
+        MidiFileId: 3,
         title: '오픈 쏘오스',
         description: '오픈 쏘스를 빙자한 소스 테러',
         artist: 'VReality64',
@@ -110,7 +110,7 @@ angular.module('pancakeApp')
         MidiObject: 3
       },
       {
-        MidiFileID: 4,
+        MidiFileId: 4,
         title: '대쉬 보드야~',
         description: '나대쉬보드',
         artist: 'DashBoard',
@@ -122,7 +122,7 @@ angular.module('pancakeApp')
         MidiObject: 4
       },
       {
-        MidiFileID: 3,
+        MidiFileId: 3,
         title: '??z',
         description: 'ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ',
         artist: '???',

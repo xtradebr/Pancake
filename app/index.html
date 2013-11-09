@@ -94,21 +94,21 @@
         </div>
 
         <div id="imageSlider">
-            <div id="scroll-left"></div>
+            <div class="scrollbutton" id="scroll-left"></div>
             <div id="window">
                 <div id="scroll">
                     <div class="panel" ng-repeat="entry in list" ng-click="moveToPanel($index)">
-                        <img ng-src="{{entry.albumArt}}"/>
+                        <img tooltip-placement="left" tooltip="({{entry.like}} likes) {{entry.description}}" ng-src="{{entry.albumArt}}"/>
                         <p>{{entry.title}}</p>
                     </div>
                 </div>
                 <!--<div id="sliderNav">
-                    <div class="navDot"ng-repeat="entry in list" ng-click="function($index)">
+                    <div class="navDot"ng-repeat="entry in list" ng-click="moveToPanel($index)">
                         <a href="">&#9679;</a>
                     </div>
                 </div>-->
             </div>
-            <div id="scroll-right"></div>
+            <div class="scrollbutton" id="scroll-right"></div>
         </div>
 
     </footer>
