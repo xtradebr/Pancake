@@ -60,13 +60,17 @@ io.sockets.on("connection", function(socket) {
 			MidiObject.owner = data.owner; //console.log(data.owner);
 			MidiObject.artist = data.artist; //console.log(data.artist);
 			MidiObject.description = data.description; //console.log(data.description);
+
 			client.rpush(key, data.MidiFile);
 			redis_socket.emit("dump", MidiObject.id);
 			//console.dir(data.MidiFile);
 			MidiObject.MidiFileId = MidiObject.id;
 
+
+			//TODO: save data.MidiFile into DB and pass its Id
+			//console.dir(data.MidiFile);
+			
 			//code to upload album art file and get its URL
-			var fs = require('fs');
 			//path to store uploaded files (NOTE: presumed you have created the folders)
 			//NOTE: data.albumArtName may collide with existing file;
 			var fileName = __dirname + '/tmp/albumArt/' + data.albumArtName;

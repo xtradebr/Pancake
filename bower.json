@@ -12,7 +12,8 @@
     "linkedlist.js": "~1.0.3",
     "stats.js": "master",
     "angular-easyfb": "~0.2.0",
-    "angular-ui-utils": "~0.0.4"
+    "angular-ui-utils": "~0.0.4",
+    "test-angular-notifications": "~0.1.1"
   },
   "devDependencies": {
     "angular-mocks": "~1.0.7",
