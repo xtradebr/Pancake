@@ -190,10 +190,18 @@ angular.module('pancakeApp')
 
     function getURL() {
       if($scope.showMusic) {
-        return'http://soundpancake.io/api/query/musiclist';
+        return'http://www.soundpancake.io/api/query/musiclist';
       } else {
-        return'http://soundpancake.io/api/query/playlist';
+        return'http://www.soundpancake.io/api/query/playlist';
       }
     }
+
+    $scope.MusicCtrl = function() {
+
+    };
+
+    $scope.PlayListCtrl = function() {
+
+    };
 
   });

@@ -174,6 +174,7 @@ angular.module('pancakeApp')
         console.log("Play!");
         console.log(scope.music);
         $rootScope.appendtolist(scope.music);
+        $notification.info("'" + scope.music.title + "' Added!", 'check music list');
       };
 
       scope.like = function() {
@@ -192,7 +193,7 @@ angular.module('pancakeApp')
 
       scope.share = function() {
         console.log("Share!");
-        console.log(scope.music);
+        $notification.error('Not Available!', 'Share Function is not available now...');
       };
 
       scope.info = function() {

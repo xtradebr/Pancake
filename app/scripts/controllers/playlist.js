@@ -185,7 +185,7 @@ angular.module('pancakeApp')
 
     $scope.FilterCtrl = function($scope, $http, $notification) {
 
-      var url = 'http://soundpancake.io/api/query/playlist';
+      var url = 'http://www.soundpancake.io/api/query/playlist';
 
       $scope.moods = [
         { name: 'Funny', checked: false },
@@ -265,7 +265,7 @@ angular.module('pancakeApp')
 angular.module('pancakeApp')
   .directive('playerComponent', function($rootScope, $http, $notification) {
 
-    var url = 'http://soundpancake.io/api/query/playlist';
+    var url = 'http://www.soundpancake.io/api/query/playlist';
 
     // 부모 scope에 playlists라는 곡 목록을 저장한 후,
     // 해당 리스트의 요소들을 player라는 이름으로 iteration 할 때,
@@ -282,6 +282,7 @@ angular.module('pancakeApp')
         scope.player.musicList.forEach( function(item) {
           $rootScope.appendtolist(item);
         });
+        $notification.info("'" + scope.player.name + "' Added", 'check music list');
       };
 
       scope.like = function() {
@@ -315,11 +316,12 @@ angular.module('pancakeApp')
 
       scope.share = function() {
         console.log("press Share It!");
-        console.log(scope.player);
+        $notification.error('Not Available!', 'Share Function is not available now...');
       };
 
       scope.addMusic = function(item) {
         $rootScope.appendtolist(scope.player.musicList[item]);
+        $notification.info("'" + scope.player.musicList[item].title + "' Added", 'check music list');
       };
     }
 
