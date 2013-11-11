@@ -43,7 +43,7 @@ io.sockets.on("connection", function(socket) {
 	});
 
 	socket.on("requestMidiFile", function(key) {
-		/*get it from redis*/
+		var file = client.get(key);
 		socket.emit("sendMidiFile", file);
 	});
 
@@ -61,14 +61,10 @@ io.sockets.on("connection", function(socket) {
 			MidiObject.artist = data.artist; //console.log(data.artist);
 			MidiObject.description = data.description; //console.log(data.description);
 
-			client.rpush(key, data.MidiFile);
+			client.rpush(MidiObject.id, data.MidiFile);
 			redis_socket.emit("dump", MidiObject.id);
 			//console.dir(data.MidiFile);
 			MidiObject.MidiFileId = MidiObject.id;
-
-
-			//TODO: save data.MidiFile into DB and pass its Id
-			//console.dir(data.MidiFile);
 			
 			//code to upload album art file and get its URL
 			//path to store uploaded files (NOTE: presumed you have created the folders)
@@ -86,10 +82,11 @@ io.sockets.on("connection", function(socket) {
 	            		});
 	        	});	
 		});
-
-		//TODO: code to push MidiObject into DB
-
-
+		MongoClient.connect("mongodb://blah/dbname", function (err, db) {
+			if(err) throw err;
+			var collection = db.collection("MidiObject");
+			collection.insert(MidiObject);
+		});
 	});
 	//--------------------------------------------------------------------------
 
@@ -141,10 +138,10 @@ app.post("/api/auth/fb-session", function(req, res) {
 	MongoClient.connect("mongodb://blah/dbname", function (err, db) {
 		if(err) throw err;
 		var collection = db.collection("fb-session");
-		dump = collection.find({"UserID": data.authResponse.UserID})
-		if(dump.toArray().length = 0 || ) {
-			collection.insert(data.authResponse);
-		}
+		dump = collection.find({"UserID": data.authResponse.UserID});
+//		if(dump.toArray().length = 0 || ) {
+//			collection.insert(data.authResponse);
+//		}
 	});
 
 	res.redirect('/');
