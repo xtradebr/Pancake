@@ -9,13 +9,14 @@
 
 // TODO: Integration with Master branch after MIDI module function correctly.
 var app = angular.module('pancakeApp');
-app.controller('EditorCtrl', function($scope, $modal, $notification) {
+app.controller('EditorCtrl', function($scope, $modal, $notification, $timeout, loginHandler) {
 
   $notification.smile('Press Start!', 'and wait a second.. then you can composite your own music');
 
   // TODO: 작곡 완료 후, replay 기능 구현
   // noteList는 작곡을 완료한 후, 재생할 때 다시 보여줄 svg 객체들을 가지고 있다.
   var noteList = new LinkedList();
+  var isRecording = false;
   $scope.midiObject =
     {
       title: '',
@@ -24,7 +25,8 @@ app.controller('EditorCtrl', function($scope, $modal, $notification) {
       playtime: 0,
       albumArt: '',
       albumArtName: '',
-      MidiFile: ''
+      MidiFile: '',
+      ownder: ''
     };
   $scope.emit = function(event) {
     noteList.addLast(event);
@@ -32,6 +34,11 @@ app.controller('EditorCtrl', function($scope, $modal, $notification) {
   };
 
   $scope.start = function() {
+    if( isRecording ) {
+      $notification.info('already Started!', 'already you start recording!');
+      return;
+    }
+    isRecording = true;
     noteList.removeAll();
     $scope.editor.startComposition();
     $scope.timeline.startComposition();
@@ -39,6 +46,7 @@ app.controller('EditorCtrl', function($scope, $modal, $notification) {
   $scope.end = function() {
     // $scope.noteList의 데이터는 svg데이터와 pitch, startTime, endTime에 대한 데이터임
     // 실제 MIDI 파일을 만들기 위해 사용되는 데이터는 MidiController 내부에 들어있음.
+    isRecording = false;
     $scope.editor.endComposition();
     console.log("size: " + noteList.size());
   };
@@ -57,11 +65,20 @@ app.controller('EditorCtrl', function($scope, $modal, $notification) {
       // save midiObject to MidiFile with noteList
       console.log("Save Modal modal");
       $scope.midiObject = midiObject;
+      $scope.midiObject.owner = loginHandler.getName();
       MidiController.makeMidiFile(midiObject);
     }, function() {
       console.log.info("do not saved midi file");
     });
   };
+
+  $scope.composingTime = 0;
+
+  function updateTime() {
+    $scope.composingTime = Animator.currentTime();
+    $timeout(updateTime, 100);
+  }
+  updateTime();
 });
 
 var SaveMidiCtrl = function($scope, $modalInstance, midiObject, $notification) {
@@ -522,7 +539,7 @@ function TimelineEditor(svg, scope) {
 }
 
 var DrawingUtility = (function() {
-  var pitchCount = 12;
+  var pitchCount = 13;
   return {
     getSVGWidth: function(svg) { return parseInt(svg.style('width'), 10); },
     getSVGHeight: function(svg) { return parseInt(svg.style('height'), 10); },
@@ -580,7 +597,7 @@ var Animator = (function() {
         }
 
         console.log("Nothing is in activeObjs");
-        tick = 0;
+//        tick = 0;
         clearInterval(animationId);
         clearInterval(id);
 
@@ -640,7 +657,7 @@ var MidiController = (function() {
   });
   // 48 = C, 49 = C#, ..., B = 59
   // 넘겨줄 데이터 = pitch, dt
-  var pitch = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+  var pitch = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B', 'C'];
   var pitchSound = [];
   var lastTime = 0;
 
@@ -653,6 +670,7 @@ var MidiController = (function() {
     makeMidiFile: function(midiObject) {
       console.log("Make MIDI File!");
       midiObject.MidiFile = CompositionFile();
+      console.log(midiObject);
       // TODO: send midiObject to server
 //      uploadSocket.emit('saveMidiFile');
 //      uploadSocket.on('startSave', function () {
