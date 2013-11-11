@@ -121,5 +121,9 @@ angular.module('pancakeApp')
       });
     }
 
+    this.getName = function() {
+      return (apiMe.name || 'guest');
+    };
+
     return this;
   });

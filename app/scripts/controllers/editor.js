@@ -9,7 +9,7 @@
 
 // TODO: Integration with Master branch after MIDI module function correctly.
 var app = angular.module('pancakeApp');
-app.controller('EditorCtrl', function($scope, $modal, $notification, $timeout) {
+app.controller('EditorCtrl', function($scope, $modal, $notification, $timeout, loginHandler) {
 
   $notification.smile('Press Start!', 'and wait a second.. then you can composite your own music');
 
@@ -25,7 +25,8 @@ app.controller('EditorCtrl', function($scope, $modal, $notification, $timeout) {
       playtime: 0,
       albumArt: '',
       albumArtName: '',
-      MidiFile: ''
+      MidiFile: '',
+      ownder: ''
     };
   $scope.emit = function(event) {
     noteList.addLast(event);
@@ -64,6 +65,7 @@ app.controller('EditorCtrl', function($scope, $modal, $notification, $timeout) {
       // save midiObject to MidiFile with noteList
       console.log("Save Modal modal");
       $scope.midiObject = midiObject;
+      $scope.midiObject.owner = loginHandler.getName();
       MidiController.makeMidiFile(midiObject);
     }, function() {
       console.log.info("do not saved midi file");
@@ -668,6 +670,7 @@ var MidiController = (function() {
     makeMidiFile: function(midiObject) {
       console.log("Make MIDI File!");
       midiObject.MidiFile = CompositionFile();
+      console.log(midiObject);
       // TODO: send midiObject to server
 //      uploadSocket.emit('saveMidiFile');
 //      uploadSocket.on('startSave', function () {

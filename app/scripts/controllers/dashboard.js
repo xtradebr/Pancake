@@ -3,7 +3,7 @@
  */
 
 angular.module('pancakeApp')
-  .controller('DashboardCtrl', function($scope, $rootScope, $http, listhandler) {
+  .controller('DashboardCtrl', function($scope, $rootScope, $http, listhandler, $notification) {
     $scope.showMusic = true;
     $scope.name = ($rootScope.loginInfo || 'No One');
 
@@ -150,28 +150,31 @@ angular.module('pancakeApp')
     // TODO: needs to composition with server side
     (function getLists() {
 
-      $http.post(getURL(), {'id': 'User ID'})
+      $http.post('/api/query/musiclist', {'id': 'User ID'}, {timeout:3000})
         .success(function(data, status) {
-          console.log(data);
+          $scope.musiclist = data.list;
+//          console.log(data);
           $scope.listhandler.clear();
           $scope.listhandler.setItems(data.list);
+          $scope.listhandler.setUrl('/api/query/musiclist');
         })
         .error(function(data, status) {
-          console.log("fetching list fails from server.");
+          $notification.error("Error occurs !", "fail to fetch list from server.");
         });
 
-      $http.post(getURL(), {'id': 'User ID'})
+      $http.post('/api/query/playlist', {'id': 'User ID'}, {timeout:3000})
         .success(function(data, status) {
-          $scope.musiclist = data.playlist;
-          console.log(data);
+          $scope.playlist = data.list;
+//          console.log(data);
           $scope.listhandler.clear();
           $scope.listhandler.setItems(data.list);
+          $scope.listhandler.setUrl('/api/query/playlist');
         })
         .error(function(data, status) {
-
+          $notification.error("Error occurs !", "fail to fetch list from server.");
         });
-    });
-//    })( );
+//    });
+    })( );
 
     $scope.change = function() {
       $scope.showMusic = !$scope.showMusic;
@@ -183,25 +186,18 @@ angular.module('pancakeApp')
       $scope.listhandler = listhandler;
       if($scope.showMusic) {
         $scope.listhandler.setItems($scope.musiclist);
+        $scope.listhandler.setUrl(getURL());
       } else {
         $scope.listhandler.setItems($scope.playlist);
+        $scope.listhandler.setUrl(getURL());
       }
     }
 
     function getURL() {
       if($scope.showMusic) {
-        return'http://www.soundpancake.io/api/query/musiclist';
+        return '/api/query/musiclist';
       } else {
-        return'http://www.soundpancake.io/api/query/playlist';
+        return '/api/query/playlist';
       }
     }
-
-    $scope.MusicCtrl = function() {
-
-    };
-
-    $scope.PlayListCtrl = function() {
-
-    };
-
   });

@@ -11,6 +11,7 @@ angular.module('pancakeApp')
     $scope.playerName = '';
     $scope.showPublisher = false;
 
+    var url = '/api/query/playlist';
     var list = [
       {
         // id: server에서 참조하는 각 player의 고유 식별 번호
@@ -165,18 +166,17 @@ angular.module('pancakeApp')
 
     listhandler.setItems(list);
     listhandler.setDummy(dummy);
+    listhandler.setUrl(url);
     $scope.listhandler = listhandler;
 
     $scope.search = function($event) {
       $event.preventDefault();
 
-      var url = 'http://www.soundpancake.io/api/query/playlist';
-      $http.post(url, {'name': $scope.playerName})
+      $http.post(url, {'name': $scope.playerName}, {timeout: 3000})
         .success(function(data, status) {
           console.log("fetching success!");
-          console.log(data);
           $scope.listhandler.clear();
-          $scope.listhandler.setItems(data);
+          $scope.listhandler.setItems(data.list);
         })
         .error(function(data, status) {
           console.log("fetching list fails from server.");
@@ -243,16 +243,15 @@ angular.module('pancakeApp')
           }
         });
 
-//        console.log(body);
         query(body);
       };
 
       function query(body) {
-        $http.post(url, body)
+        $http.post(url, body, {timeout:3000})
           .success(function(data, status) {
             // response data is play list
             listhandler.clear();
-            listhandler.setItems(data.playlist);
+            listhandler.setItems(data.list);
             $notification.info('Get List Number is', data.playlist.length);
           })
           .error(function(data, status) {
@@ -265,7 +264,7 @@ angular.module('pancakeApp')
 angular.module('pancakeApp')
   .directive('playerComponent', function($rootScope, $http, $notification) {
 
-    var url = 'http://www.soundpancake.io/api/query/playlist';
+    var url = '/api/query/playlist';
 
     // 부모 scope에 playlists라는 곡 목록을 저장한 후,
     // 해당 리스트의 요소들을 player라는 이름으로 iteration 할 때,
@@ -288,7 +287,7 @@ angular.module('pancakeApp')
       scope.like = function() {
         console.log("press Like It!");
 
-        $http.post(url, { 'id': scope.player.id, 'like': true } )
+        $http.post(url, { 'id': scope.player.id, 'like': true }, {timeout: 3000} )
           .success(function(data, status) {
             // TODO: Music List의 Like와 동일하게 서버쪽의 Like 수와 동기화 필요
             scope.player.like++;

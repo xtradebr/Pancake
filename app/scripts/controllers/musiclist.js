@@ -10,6 +10,7 @@ angular.module('pancakeApp')
     $scope.show = false;
     $scope.musicName = '';
 
+    var url = '/api/query/musiclist';
     var list = [
       {
         id: 1,
@@ -136,9 +137,10 @@ angular.module('pancakeApp')
     ];
     listhandler.clear();
 
-    $scope.listhandler = listhandler;
-    $scope.listhandler.setItems(list);
+    listhandler.setItems(list);
     listhandler.setDummy(dummy);
+    listhandler.setUrl(url);
+    $scope.listhandler = listhandler;
 
     $scope.$on('showMusicInfo', function(event, music) {
       $scope.show = true;
@@ -148,11 +150,9 @@ angular.module('pancakeApp')
     $scope.search = function($event) {
       $event.preventDefault();
 
-      var url = 'http://www.soundpancake.io/api/query/musiclist';
-      $http.post(url, {'name': $scope.musicName})
+      $http.post(url, {'name': $scope.musicName}, {timeout: 3000})
         .success(function(data, status) {
           console.log("fetching success!");
-          console.log(data);
           $scope.listhandler.clear();
           $scope.listhandler.setItems(data.list);
         })
@@ -165,14 +165,14 @@ angular.module('pancakeApp')
 angular.module('pancakeApp')
   .directive('musicComponent', function($rootScope, $http, $notification) {
 
-    var url = 'http://soundpancake.io/api/query/musiclist';
+    var url = '/api/query/musiclist';
 
     function link(scope) {
       scope.onLike = false;
 
       scope.play = function() {
         console.log("Play!");
-        console.log(scope.music);
+//        console.log(scope.music);
         $rootScope.appendtolist(scope.music);
         $notification.info("'" + scope.music.title + "' Added!", 'check music list');
       };
@@ -180,7 +180,7 @@ angular.module('pancakeApp')
       scope.like = function() {
         console.log("Like!");
 
-        $http.post(url, {'id': scope.music.id, 'like': true})
+        $http.post(url, {'id': scope.music.id, 'like': true}, {timeout: 3000})
           .success(function(data, status) {
             // TODO: 실제로는 서버의 like 수를 response로 받아서 그것을 업데이트 해야한다.
             scope.music.like++;
