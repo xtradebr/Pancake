@@ -148,11 +148,11 @@ angular.module('pancakeApp')
     $scope.search = function($event) {
       $event.preventDefault();
 
-      var url = 'http://www.soundpancake.io/api/query/musiclist';
-      $http.post(url, {'name': $scope.musicName})
+      var url = '/api/query/musiclist';
+      $http.post(url, {'name': $scope.musicName}, {timeout: 3000})
         .success(function(data, status) {
           console.log("fetching success!");
-          console.log(data);
+	  console.log(data);
           $scope.listhandler.clear();
           $scope.listhandler.setItems(data.list);
         })
@@ -165,7 +165,7 @@ angular.module('pancakeApp')
 angular.module('pancakeApp')
   .directive('musicComponent', function($rootScope, $http, $notification) {
 
-    var url = 'http://soundpancake.io/api/query/musiclist';
+    var url = '/api/query/musiclist';
 
     function link(scope) {
       scope.onLike = false;

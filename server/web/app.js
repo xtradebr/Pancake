@@ -1,10 +1,16 @@
 var express = require("express");
 var graph = require("fbgraph");
 var redis = require("redis");
-var socketio = require("socket.io");
-var io = socketio.listen(80); //Warning: listen EACCES
-var MongoClient = require("mongodb"), MongoClient;
+var application_root = "/home/ubuntu/Pancake/app/";
 
+var app = express();
+var server = require('http').createServer(app);
+var socketio = require('socket.io');
+var io = socketio.listen(server);
+
+server.listen(3000);
+
+var MongoClient = require("mongodb"), MongoClient;
 var redis_port = "27071";
 var redis_host = "54.249.9.214";
 var fs = require("fs");
@@ -21,6 +27,7 @@ function randomString() {
 }
 
 io.sockets.on("connection", function(socket) {
+	console.log("a connection created!");
 	var client = redis.createClient(redis_port, redis_host);
 	var redis_socket = socketio.connect(redis_host);
 	var key = randomString();
@@ -102,8 +109,7 @@ io.sockets.on("connection", function(socket) {
 	});
 })
 		
-var application_root = "/home/ubuntu/Pancake/app/";
-var app = express();
+
 
 app.configure(function () {
 	app.use(express.bodyParser());
@@ -114,8 +120,8 @@ app.configure(function () {
 	app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 });
 
-app.get("/mypage", function(req, res) {
-	res.render("mypage", {id: "xarus"});
+app.get("/dashboard", function(req, res) {
+	res.render("dashboard", {id: "xarus"});
 });
 /*
 app.post("/api/query/playlist" //TODO
@@ -124,6 +130,7 @@ app.post("/api/query/playlist" //TODO
 app.post("/api/query/musiclist", function(req, res) {
 	console.log("hello world");
 	/*parse req.body.blah query to mongo*/
+	res.send(200, {list:[{id:1, MidiFileID: 2, title: '서버에서 날아옴', description: '이것도 더미라능', artist: 'tester', playtime: 305, like: 30, comment: 25, albumArt: '/images/test01.jps', share:'http://...'}]});
 });
 
 app.post("/api/auth/login", function(req, res) {
@@ -160,5 +167,4 @@ app.post("/api/auth/fb", function(req, res) {
 	res.redirect('/');
 });
 
-app.listen(3000);
-console.log("listening on port 3000");
+console.log("listening on port 80/3000");

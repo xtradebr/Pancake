@@ -1,4 +1,4 @@
-/**
+/*
  * MIDI File Editor Script.
  *
  * User: ipark
@@ -654,10 +654,10 @@ var MidiController = (function() {
       console.log("Make MIDI File!");
       midiObject.MidiFile = CompositionFile();
       // TODO: send midiObject to server
-//      uploadSocket.emit('saveMidiFile');
-//      uploadSocket.on('startSave', function () {
-//        uploadSocket.emit('midiData',midiObject);
-//      });
+      uploadSocket.emit('saveMidiFile');
+      uploadSocket.on('startSave', function () {
+        uploadSocket.emit('midiData',midiObject);
+      });
     },
     noteOn: function(note) {
       // when people access editor directly, editor needs time for load plugin.
