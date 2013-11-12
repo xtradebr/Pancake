@@ -5,7 +5,7 @@
 <div class="divider-horizontal"></div>
 <div class="row-fluid max-height">
     <!-- Music List Area -->
-    <div class="span9" ng-show="showMusic">
+    <div class="span9" ng-show="showMusic" ng-controller="MusicCtrl">
         <div infinite-scroll="listhandler.nextPage()" infinite-scroll-disabled="listhandler.busy" infinite-scroll-distance="1">
             <div class="scrollable">
                 <div ng-repeat="music in listhandler.items">
@@ -15,7 +15,7 @@
             </div>
         </div>
     </div>
-    <div class="span9" ng-show="!showMusic">
+    <div class="span9" ng-show="!showMusic" ng-click="PlayListCtrl">
         <div infinite-scroll="listhandler.nextPage()" infinite-scroll-disabled="listhandler.busy" infinite-scroll-distance="1">
             <div class="playlist scrollable">
                 <ol>
@@ -45,9 +45,9 @@
                 <i class="fa fa-smile-o fa-4x"></i>
                 <div class="user-information">
                     <div class="user-name"> {{ name }}  </div> <br/>
-                    <div class="user-information-item">Total</div> : {{ musiclist.length + playlist.length }}
-                    <div class="user-information-item">Music List</div> : {{ musiclist.length }}
-                    <div class="user-information-item">Play List</div> : {{ playlist.length }}
+                    <div class="user-information-item">Total</div> : {{ musiclist.length + playlist.length }}<br/>
+                    <div class="user-information-item">Music List</div> : {{ musiclist.length }}<br/>
+                    <div class="user-information-item">Play List</div> : {{ playlist.length }}<br/>
                 </div>
             </div>
         </div>
