@@ -10,7 +10,7 @@ var io = socketio.listen(server);
 
 server.listen(3000);
 
-var MongoClient = require("mongodb"), MongoClient;
+var MongoClient = require("mongodb").MongoClient;
 var redis_port = "27071";
 var redis_host = "54.249.9.214";
 var fs = require("fs");
@@ -69,13 +69,9 @@ io.sockets.on("connection", function(socket) {
 			MidiObject.description = data.description; //console.log(data.description);
 
 			client.rpush(MidiObject.id, data.MidiFile);
-			redis_socket.emit("dump", MidiObject.id);
-			//console.dir(data.MidiFile);
-			MidiObject.MidiFileId = MidiObject.id;
-			
-			//code to upload album art file and get its URL
-			//path to store uploaded files (NOTE: presumed you have created the folders)
-			//NOTE: data.albumArtName may collide with existing file;
+			client.rename(key, data.MidiFile);
+			redis_socket.emit("dump", key);
+			MidiObject.MidiFileId = key;
 			var fileName = __dirname + '/tmp/albumArt/' + data.albumArtName;
 
 			fs.open(fileName, 'a', 0755, function(err, fd) {
@@ -88,13 +84,14 @@ io.sockets.on("connection", function(socket) {
 	                		});
 	            		});
 	        	});	
-		});
-		MongoClient.connect("mongodb://blah/dbname", function (err, db) {
+		MongoClient.connect("mongodb://54.250.177.173/soundpancake", function (err, db) {
 			if(err) throw err;
 			var collection = db.collection("MidiObject");
 			collection.insert(MidiObject);
+			db.close();
 		});
 	});
+});
 	//--------------------------------------------------------------------------
 
 	socket.on("save", function() {
@@ -107,7 +104,7 @@ io.sockets.on("connection", function(socket) {
 			redis_socket.emit("dump", key);
 		});
 	});
-})
+});
 		
 
 
@@ -130,7 +127,18 @@ app.post("/api/query/playlist" //TODO
 app.post("/api/query/musiclist", function(req, res) {
 	console.log("hello world");
 	/*parse req.body.blah query to mongo*/
-	res.send(200, {list:[{id:1, MidiFileID: 2, title: '서버에서 날아옴', description: '이것도 더미라능', artist: 'tester', playtime: 305, like: 30, comment: 25, albumArt: '/images/test01.jps', share:'http://...'}]});
+	var res_send = [];
+	var MC = MongoClient.connect("mongodb://54.250.177.173/soundpancake", function(err, db) {
+		if(err) throw err;
+		var collection = db.collection("MIDIobject");
+		collection.find({title: req.name}).toArray(function(err, re) {
+			res_send = re;
+			db.close();
+		});
+	});
+	console.log(res_send);
+	res.send(200, {list: res_send});
+//	res.send(200, {list:[{id:1, MidiFileID: 2, title: '서버에서 날아옴', description: '이것도 더미라능', artist: 'tester', playtime: 305, like: 30, comment: 25, albumArt: '/images/test01.jps', share:'http://...'}]});
 });
 
 app.post("/api/auth/login", function(req, res) {
@@ -139,10 +147,8 @@ app.post("/api/auth/login", function(req, res) {
 });
 
 app.post("/api/auth/fb-session", function(req, res) {
-//	TODO
-//	console.log(JSON.stringify(req));
 	data = JSON.parse(req);
-	MongoClient.connect("mongodb://blah/dbname", function (err, db) {
+	MongoClient.connect("mongodb://54.250.177.173/soundpancake", function (err, db) {
 		if(err) throw err;
 		var collection = db.collection("fb-session");
 		dump = collection.find({"UserID": data.authResponse.UserID});
