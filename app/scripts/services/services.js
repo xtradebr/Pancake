@@ -118,6 +118,7 @@ angular.module('pancakeApp')
       $FB.api('/me', function (res) {
         apiMe = res;
         $rootScope.loginInfo = " " + (apiMe.name || ' Log In');
+        $log.info(apiMe);
       });
     }
 

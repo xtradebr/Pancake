@@ -3,6 +3,9 @@
 angular.module('notifications', []).
   factory('$notification', ['$timeout',function($timeout){
 
+    // used for show only one noti during x time;
+    var checked = false;
+
     console.log('notification service online');
     var notifications = JSON.parse(localStorage.getItem('$notifications')) || [],
         queue = [];
@@ -113,8 +116,16 @@ angular.module('notifications', []).
       /* ============== NOTIFICATION METHODS ==============*/
 
       info: function(title, content, userData){
-        console.log(title, content);
         return this.awesomeNotify('info','info', title, content, userData);
+      },
+
+      checkInfo: function(title, content, userData) {
+        if(!checked) {
+          checked = true;
+          return this.awesomeNotify('info','info', title, content, userData);
+        } else {
+          // do nothing
+        }
       },
 
       error: function(title, content, userData){
@@ -176,6 +187,9 @@ angular.module('notifications', []).
           queue.push(notification);
           $timeout(function removeFromQueueTimeout(){
             queue.splice(queue.indexOf(notification), 1);
+            if(checked) {
+              checked = false;
+            }
           }, settings[type].duration);
 
         }
@@ -217,7 +231,6 @@ angular.module('notifications', []).
      * Finally, the directive should have its own controller for
      * handling all of the notifications from the notification service
      */
-    console.log('this is a new directive');
     var html =
       '<div class="dr-notification-wrapper" ng-repeat="noti in queue">' +
         '<div class="dr-notification-close-btn" ng-click="removeNotification(noti)">' +

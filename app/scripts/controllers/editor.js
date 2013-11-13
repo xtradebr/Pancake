@@ -26,7 +26,7 @@ app.controller('EditorCtrl', function($scope, $modal, $notification, $timeout, l
       albumArt: '',
       albumArtName: '',
       MidiFile: '',
-      ownder: ''
+      ownder: 'guest'
     };
   $scope.emit = function(event) {
     noteList.addLast(event);
@@ -35,20 +35,27 @@ app.controller('EditorCtrl', function($scope, $modal, $notification, $timeout, l
 
   $scope.start = function() {
     if( isRecording ) {
-      $notification.info('already Started!', 'already you start recording!');
+      $notification.checkInfo('already Started!', 'already you start recording!');
       return;
     }
+    $notification.success('Start Recording!');
     isRecording = true;
     noteList.removeAll();
     $scope.editor.startComposition();
     $scope.timeline.startComposition();
   };
   $scope.end = function() {
+    if( !isRecording ) {
+      $notification.checkInfo('already Stoped!', 'already you stop recording!');
+      return;
+    }
+    $notification.success('Finish Recording!', 'wait saving is done!');
     // $scope.noteList의 데이터는 svg데이터와 pitch, startTime, endTime에 대한 데이터임
     // 실제 MIDI 파일을 만들기 위해 사용되는 데이터는 MidiController 내부에 들어있음.
     isRecording = false;
     $scope.editor.endComposition();
     console.log("size: " + noteList.size());
+    Animator.clear();
   };
   $scope.save = function() {
     var modalInstance = $modal.open({
@@ -603,6 +610,12 @@ var Animator = (function() {
 
       }, Math.floor(1000/fps));
 
+    },
+    clear: function() {
+      activeObjs.forEach(function(item) {
+        item.remove();
+      });
+      activeObjs = [];
     }
   };
 }( ));

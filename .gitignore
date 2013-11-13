@@ -1,8 +1,8 @@
-node_modules
-dist
-.tmp
-.sass-cache
+node_modules/
+dist/
+.tmp/
+.sass-cache/
 .DS_Store
 .idea*
-app/custom_bootstrap
-app/bower_components
+app/custom_bootstrap/
+app/bower_components/
