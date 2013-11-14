@@ -6,6 +6,8 @@
         <a class="btn btn-info" ng-click="start()">Start</a>
         <a class="btn btn-success" ng-click="end()">Finish</a>
         <a class="btn btn-inverse" ng-click="save()">Save</a>
+        <label style="display: inline-block; position: absolute; right: 150px; bottom: 21%;">
+            Composing Time: {{ composingTime | secondToMMSS }}</label>
     </p>
 </div>
 <div class="timeline_panel">

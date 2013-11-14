@@ -117,7 +117,7 @@ div #window {
     border-width: 1px;
     border-radius: 10px;
     padding-top: 5px;
-    margin: 0 auto;
+    margin: 0;
     position: relative;
     overflow: hidden;
 }
@@ -155,14 +155,25 @@ div #scroll {
 }
 
 div #sliderNav {
+    position: absolute;
     height: 20px;
+    width: 900px;
     border-style: none;
     margin: 0 auto;
     padding: 0;
+    bottom: 0px;
+    text-align: center;
 }
 
-div .navDot a {
-    float: left;
+.navDot {
     color: #777;
     margin: 0 5px;
+}
+
+div .scrollbutton {
+    color: black;
+    width: 50px;
+    height: 50px;
+    margin-top: 50px;
+    text-align: center;
 }

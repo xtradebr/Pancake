@@ -11,6 +11,7 @@ angular.module('pancakeApp')
     $scope.playerName = '';
     $scope.showPublisher = false;
 
+    var url = '/api/query/playlist';
     var list = [
       {
         // id: server에서 참조하는 각 player의 고유 식별 번호
@@ -18,7 +19,7 @@ angular.module('pancakeApp')
         name: 'Bruno Mars Player',
         description: 'Bruno Mars 이제 안 듣는뎅...',
         publisher: 'bruno mars lover',
-        publisherImage: 'fa fa-apple fa-7x',
+        publisherImage: 'fa fa-apple fa-5x',
         like: 100,
         comment: 20,
         share: 'http://soundpancake.io/player/link/bruno-mars-lover/bruno-mars-player',
@@ -54,7 +55,7 @@ angular.module('pancakeApp')
         name: 'Dark Knights Player',
         description: 'Movie Dark Knights O.S.T',
         publisher: 'Joker',
-        publisherImage: 'fa fa-github-alt fa-7x',
+        publisherImage: 'fa fa-github-alt fa-5x',
         like: 500,
         comment: 59,
         share: 'http://soundpancake.io/player/link/joker/dark-knights-player',
@@ -93,7 +94,7 @@ angular.module('pancakeApp')
         name: 'Bruno Mars Player',
         description: 'Bruno Mars 이제 안 듣는뎅...',
         publisher: 'bruno mars lover',
-        publisherImage: 'fa fa-apple fa-7x',
+        publisherImage: 'fa fa-apple fa-5x',
         like: 100,
         comment: 20,
         share: 'http://soundpancake.io/player/link/bruno-mars-lover/bruno-mars-player',
@@ -129,7 +130,7 @@ angular.module('pancakeApp')
         name: 'Dark Knights Player',
         description: 'Movie Dark Knights O.S.T',
         publisher: 'Joker',
-        publisherImage: 'fa fa-github-alt fa-7x',
+        publisherImage: 'fa fa-github-alt fa-5x',
         like: 500,
         comment: 59,
         share: 'http://soundpancake.io/player/link/joker/dark-knights-player',
@@ -165,27 +166,26 @@ angular.module('pancakeApp')
 
     listhandler.setItems(list);
     listhandler.setDummy(dummy);
+    listhandler.setUrl(url);
     $scope.listhandler = listhandler;
 
     $scope.search = function($event) {
       $event.preventDefault();
 
-      var url = 'http://www.soundpancake.io/api/query/playlist';
       $http.post(url, {'name': $scope.playerName})
         .success(function(data, status) {
           console.log("fetching success!");
-          console.log(data);
           $scope.listhandler.clear();
-          $scope.listhandler.setItems(data);
+          $scope.listhandler.setItems(data.list);
         })
         .error(function(data, status) {
           console.log("fetching list fails from server.");
         });
     };
 
-    $scope.FilterCtrl = function($scope, $http, $notification) {
+    $scope.FilterCtrl = function($scope, $http, $notification, loginHandler) {
 
-      var url = 'http://soundpancake.io/api/query/playlist';
+      var url = 'http://www.soundpancake.io/api/query/playlist';
 
       $scope.moods = [
         { name: 'Funny', checked: false },
@@ -234,7 +234,7 @@ angular.module('pancakeApp')
 
       $scope.social = function() {
         var body = {
-          id: 'User ID',
+          userid: loginHandler.getID(),
           action: []
         };
         $scope.socialAction.forEach(function(item) {
@@ -243,7 +243,6 @@ angular.module('pancakeApp')
           }
         });
 
-//        console.log(body);
         query(body);
       };
 
@@ -252,7 +251,7 @@ angular.module('pancakeApp')
           .success(function(data, status) {
             // response data is play list
             listhandler.clear();
-            listhandler.setItems(data.playlist);
+            listhandler.setItems(data.list);
             $notification.info('Get List Number is', data.playlist.length);
           })
           .error(function(data, status) {
@@ -265,7 +264,7 @@ angular.module('pancakeApp')
 angular.module('pancakeApp')
   .directive('playerComponent', function($rootScope, $http, $notification) {
 
-    var url = 'http://soundpancake.io/api/query/playlist';
+    var url = '/api/query/playlist';
 
     // 부모 scope에 playlists라는 곡 목록을 저장한 후,
     // 해당 리스트의 요소들을 player라는 이름으로 iteration 할 때,
@@ -282,6 +281,7 @@ angular.module('pancakeApp')
         scope.player.musicList.forEach( function(item) {
           $rootScope.appendtolist(item);
         });
+        $notification.info("'" + scope.player.name + "' Added", 'check music list');
       };
 
       scope.like = function() {
@@ -315,11 +315,12 @@ angular.module('pancakeApp')
 
       scope.share = function() {
         console.log("press Share It!");
-        console.log(scope.player);
+        $notification.error('Not Available!', 'Share Function is not available now...');
       };
 
       scope.addMusic = function(item) {
         $rootScope.appendtolist(scope.player.musicList[item]);
+        $notification.info("'" + scope.player.musicList[item].title + "' Added", 'check music list');
       };
     }
 

@@ -171,7 +171,7 @@ app.controller('PlaySliderCtrl', function($rootScope) {
       playtime.innerHTML = timeFormatting(now);
       endtime.innerHTML = timeFormatting(end);
     })
-  }
+  };
 
   //init function
   $(function ($rootScope){
@@ -181,7 +181,7 @@ app.controller('PlaySliderCtrl', function($rootScope) {
 
   $rootScope.reload = function ($rootScope) {
     $('#scroll').css('width', 120 * ($rootScope.list.length));
-  }
+  };
 
   $rootScope.moveToPanel = function (panelNum) {
 
@@ -200,7 +200,7 @@ app.controller('PlaySliderCtrl', function($rootScope) {
       $rootScope.nowSelected = panelNum;
       //scroll the scroll
       $('#scroll').css('left', 390 - 100 * panelNum); 
-  }
+  };
 
   $rootScope.playSelect = function (panelNum) {
       //gets the old playing panel and make it normal
@@ -208,7 +208,7 @@ app.controller('PlaySliderCtrl', function($rootScope) {
       //gets the new panel to enlarge and do the operation
       $('#scroll').find('.panel:eq('+panelNum+')').addClass('playing').find('img').css({'border-style': 'dotted', 'border-width': 2, 'border-color': 'black'});
       //set the nowSelected to the selected panel number
-  }
+  };
 
 
 });

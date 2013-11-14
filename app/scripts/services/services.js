@@ -76,10 +76,13 @@ angular.module('pancakeApp')
   });
 
 angular.module('pancakeApp')
-  .service('loginHandler', function($FB, $rootScope, $log, $notification) {
+  .service('loginHandler', function($FB, $rootScope, $log, $notification, $location) {
 
     var loginStatus;
-    var apiMe;
+    var apiMe = {
+      name: 'guest',
+      username: 'guest'
+    };
 
     $log.info("In Login Handler Service");
 
@@ -101,6 +104,7 @@ angular.module('pancakeApp')
       $FB.logout(function () {
         updateLoginStatus(updateApiMe);
         $rootScope.isLogged = false;
+        $location.place('/');
         $notification.info('Logout Successfully!', 'come again~ :)');
       });
     };
@@ -117,8 +121,16 @@ angular.module('pancakeApp')
       $FB.api('/me', function (res) {
         apiMe = res;
         $rootScope.loginInfo = " " + (apiMe.name || ' Log In');
+        $log.info(apiMe);
       });
     }
+
+    this.getName = function() {
+      return (apiMe.name || 'guest');
+    };
+    this.getID = function() {
+      return (apiMe.username || 'guest');
+    };
 
     return this;
   });
