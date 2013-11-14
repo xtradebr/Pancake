@@ -22,7 +22,8 @@
             <div ng-repeat="keyword in keywordList">
                 <div class="span4">
                     <div class="small-hero-unit">
-                        <i class='{{ keyword.icon }}'><label>{{ keyword.name }}</label></i>
+                        <!--<i class='{{ keyword.icon }}'><label>{{ keyword.name }}</label></i>-->
+                        <img src="{{ keyword.image }}" alt="{{ keyword.alt }}">
                         <div class="small-description">
                             <p>{{ keyword.description | shortString:30 }}</p>
                         </div>

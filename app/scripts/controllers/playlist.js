@@ -19,7 +19,7 @@ angular.module('pancakeApp')
         name: 'Bruno Mars Player',
         description: 'Bruno Mars 이제 안 듣는뎅...',
         publisher: 'bruno mars lover',
-        publisherImage: 'fa fa-apple fa-7x',
+        publisherImage: 'fa fa-apple fa-5x',
         like: 100,
         comment: 20,
         share: 'http://soundpancake.io/player/link/bruno-mars-lover/bruno-mars-player',
@@ -55,7 +55,7 @@ angular.module('pancakeApp')
         name: 'Dark Knights Player',
         description: 'Movie Dark Knights O.S.T',
         publisher: 'Joker',
-        publisherImage: 'fa fa-github-alt fa-7x',
+        publisherImage: 'fa fa-github-alt fa-5x',
         like: 500,
         comment: 59,
         share: 'http://soundpancake.io/player/link/joker/dark-knights-player',
@@ -94,7 +94,7 @@ angular.module('pancakeApp')
         name: 'Bruno Mars Player',
         description: 'Bruno Mars 이제 안 듣는뎅...',
         publisher: 'bruno mars lover',
-        publisherImage: 'fa fa-apple fa-7x',
+        publisherImage: 'fa fa-apple fa-5x',
         like: 100,
         comment: 20,
         share: 'http://soundpancake.io/player/link/bruno-mars-lover/bruno-mars-player',
@@ -130,7 +130,7 @@ angular.module('pancakeApp')
         name: 'Dark Knights Player',
         description: 'Movie Dark Knights O.S.T',
         publisher: 'Joker',
-        publisherImage: 'fa fa-github-alt fa-7x',
+        publisherImage: 'fa fa-github-alt fa-5x',
         like: 500,
         comment: 59,
         share: 'http://soundpancake.io/player/link/joker/dark-knights-player',
@@ -172,7 +172,7 @@ angular.module('pancakeApp')
     $scope.search = function($event) {
       $event.preventDefault();
 
-      $http.post(url, {'name': $scope.playerName}, {timeout: 3000})
+      $http.post(url, {'name': $scope.playerName})
         .success(function(data, status) {
           console.log("fetching success!");
           $scope.listhandler.clear();
@@ -183,7 +183,7 @@ angular.module('pancakeApp')
         });
     };
 
-    $scope.FilterCtrl = function($scope, $http, $notification) {
+    $scope.FilterCtrl = function($scope, $http, $notification, loginHandler) {
 
       var url = 'http://www.soundpancake.io/api/query/playlist';
 
@@ -234,7 +234,7 @@ angular.module('pancakeApp')
 
       $scope.social = function() {
         var body = {
-          id: 'User ID',
+          userid: loginHandler.getID(),
           action: []
         };
         $scope.socialAction.forEach(function(item) {
@@ -247,7 +247,7 @@ angular.module('pancakeApp')
       };
 
       function query(body) {
-        $http.post(url, body, {timeout:3000})
+        $http.post(url, body)
           .success(function(data, status) {
             // response data is play list
             listhandler.clear();
@@ -287,7 +287,7 @@ angular.module('pancakeApp')
       scope.like = function() {
         console.log("press Like It!");
 
-        $http.post(url, { 'id': scope.player.id, 'like': true }, {timeout: 3000} )
+        $http.post(url, { 'id': scope.player.id, 'like': true } )
           .success(function(data, status) {
             // TODO: Music List의 Like와 동일하게 서버쪽의 Like 수와 동기화 필요
             scope.player.like++;

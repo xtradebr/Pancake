@@ -150,7 +150,7 @@ angular.module('pancakeApp')
     $scope.search = function($event) {
       $event.preventDefault();
 
-      $http.post(url, {'name': $scope.musicName}, {timeout: 3000})
+      $http.post(url, {'name': $scope.musicName})
         .success(function(data, status) {
           console.log("fetching success!");
           $scope.listhandler.clear();
@@ -180,7 +180,7 @@ angular.module('pancakeApp')
       scope.like = function() {
         console.log("Like!");
 
-        $http.post(url, {'id': scope.music.id, 'like': true}, {timeout: 3000})
+        $http.post(url, {'id': scope.music.id, 'like': true})
           .success(function(data, status) {
             // TODO: 실제로는 서버의 like 수를 response로 받아서 그것을 업데이트 해야한다.
             scope.music.like++;

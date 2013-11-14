@@ -9,18 +9,22 @@
     <meta name="description" content="Pancake Prototype">
     <meta name="viewport" content="width=device-width">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-
+    <link rel="shortcut icon" href="favicon.ico">
     <!-- styles/main.css  <custom styles by pancake -->
     <!-- build:css({.tmp,app}) -->
-    <!--basic styles-->
+
+    <!-- basic styles -->
     <link rel="stylesheet" href="custom_bootstrap/css/uncompressed/bootstrap.css">
     <link rel="stylesheet" href="custom_bootstrap/css/bootstrap-responsive.min.css" />
     <link rel="stylesheet" href="custom_bootstrap/css/font-awesome.min.css" />
 
-    <!--ace styles-->
+    <!-- ace styles -->
     <link rel="stylesheet" href="custom_bootstrap/css/uncompressed/ace.css" />
-    <link rel="stylesheet" href="custom_bootstrap/css/ace-responsive.min.css" />
-    <link rel="stylesheet" href="custom_bootstrap/css/ace-skins.min.css" />
+    <!--<link rel="stylesheet" href="custom_bootstrap/css/uncompressed/ace-skins.css" />-->
+    <!--<link rel="stylesheet" href="custom_bootstrap/css/uncompressed/ace-responsive.css" />-->
+
+    <!-- Flat UI -->
+    <link rel="stylesheet" href="lib/flat_ui/css/flat-ui.css" />
 
     <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css" />
     <link rel="stylesheet" href="bower_components/test-angular-notifications/notification.css" />
@@ -56,7 +60,7 @@
                         <li><a href="/#!/about"><i class="icon-question-sign icon-white"></i> About </a></li>
                         <li class="divider-vertical"></li>
                     </ul>
-                    <div class="login">
+                    <div class="mylogin">
                         <div class="dropdown">
                             <div class="divider-vertical"></div>
                             <a href="" class="login-btn dropdown-toggle fa fa-smile-o icon-white" ng-click="login()"
@@ -65,7 +69,7 @@
                             </a>
                             <ul class="dropdown-menu" ng-show="$root.isLogged">
                                 <li><a href="/#!/dashboard">Dash Board</a></li>
-                                <li><a href="/#!/account">Account</a></li>
+                                <!--<li><a href="/#!/account">Account</a></li>-->
                                 <li><a href="" ng-click="logout()">Log Out</a></li>
                             </ul>
                         </div>

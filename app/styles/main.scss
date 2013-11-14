@@ -78,8 +78,10 @@ body {
   margin-bottom: 20px;
 }
 .small-description > p {
+  margin-top: 15px;
   min-height: 30px;
   max-height: 30px;
+  font-size: 17px;
 }
 /* Main Styling End */
 
@@ -167,7 +169,7 @@ body {
 .search-box .fa-search:before {
   position:absolute;
   left: 15px;
-  top: -10px;
+  top: -13px;
 }
 
 .divider-horizontal {
@@ -219,12 +221,12 @@ body {
 }
 .publisher-name {
   font-size: 15px;
-  color: cadetblue;
+  color: #2980B9;
   text-align: center;
 }
 
 player-component {
-  border: 2px solid black;
+  border: 2px solid #2980B9;
   border-radius: 15px;
   padding: 15px;
   display: inline-block;
@@ -246,15 +248,16 @@ player-component .span8 {
 }
 .play-control > a:hover {
   text-decoration: none;
-  color: cadetblue;
+  color: #0abddb;
 }
 .inform-text {
-  //height: 50%;
+  color: black;
   font-size: 32px;
   padding: 8% 0;
+  line-height: 14px;
 }
 player-component .divider-horizontal {
-  border-color: black;
+  border-color: #2980B9;
   margin-top: 0px;
 }
 .social {
@@ -269,7 +272,7 @@ player-component .divider-horizontal {
 }
 .social > a:hover {
   text-decoration: none;
-  color: cadetblue;
+  color: #0abddb;
 }
 .social-inform-text {
   font-size: 15px;
@@ -293,7 +296,7 @@ player-component .divider-horizontal {
 }
 .social .dropdown > a:hover {
   text-decoration: none;
-  color: cadetblue;
+  color: #0abddb;
 }
 
 .filter-area {
@@ -367,7 +370,7 @@ player-component .divider-horizontal {
 }
 .music-control > a:hover {
   text-decoration: none;
-  color: cadetblue;
+  color: #0abddb;
 }
 .music-control > a .social-act-text {
   position:absolute;
@@ -390,6 +393,7 @@ player-component .divider-horizontal {
   font-size: 20px;
   display: inline-block;
   padding: 10px 0px;
+  line-height: 20px;
 }
 
 /* Music List Styling End */
@@ -416,28 +420,29 @@ player-component .divider-horizontal {
 }
 
 /* Login Styling Area Start */
-.login {
+.mylogin {
   display: inline-block;
   float: right;
   height: 40px;
   width: auto;
   padding-right: 15px;
 }
-.login .divider-vertical {
+.mylogin .divider-vertical {
   display: inline-block;
   height: 40px;
 }
-.login .dropdown {
+.mylogin .dropdown {
   max-height: 40px;
 }
-.login .dropdown > a {
+.mylogin .dropdown > a {
   text-decoration: none;
+  font-weight: 700;
 }
-.login .dropdown > a:hover {
+.mylogin .dropdown > a:hover {
   text-decoration: none;
   color: #aeffca !important;
 }
-.login .dropdown > a:focus {
+.mylogin .dropdown > a:focus {
   font-size: 13px;
   text-shadow: none;
   color: #ffffff;
@@ -485,4 +490,37 @@ player-component .divider-horizontal {
 }
 .user-name {
   font-size: 25px;
+}
+
+.btn-success {
+  background-color: #58d68d;
+  border-color: #58d68d;
+}
+.btn-success:hover {
+  background-color: #58d68d;
+  border-color: #58d68d;
+}
+.btn-info {
+  background-color: #3498db;
+  border-color: #3498db;
+}
+.btn-info:hover {
+  background-color: #5dade2 !important;
+  border-color: #5dade2;
+}
+.btn-warning {
+  background-color: #f1c40f !important;
+  border-color: #f1c40f;
+}
+.btn-warning:hover {
+  background-color: #f5d313 !important;
+  border-color: #f5d313;
+}
+.btn-inverse {
+  background-color: #34495e !important;
+  border-color: #34495e;
+}
+.btn-inverse:hover {
+  background-color: #415b76 !important;
+  border-color: #415b76;
 }

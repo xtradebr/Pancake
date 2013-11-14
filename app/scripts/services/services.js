@@ -79,7 +79,10 @@ angular.module('pancakeApp')
   .service('loginHandler', function($FB, $rootScope, $log, $notification, $location) {
 
     var loginStatus;
-    var apiMe;
+    var apiMe = {
+      name: 'guest',
+      username: 'guest'
+    };
 
     $log.info("In Login Handler Service");
 
@@ -124,6 +127,9 @@ angular.module('pancakeApp')
 
     this.getName = function() {
       return (apiMe.name || 'guest');
+    };
+    this.getID = function() {
+      return (apiMe.username || 'guest');
     };
 
     return this;
