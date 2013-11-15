@@ -5,10 +5,10 @@ var application_root = "/home/ubuntu/Pancake/app/";
 
 var app = express();
 var server = require('http').createServer(app);
-var socketio = require('socket.io');
-var io = socketio.listen(server);
+var io_client= require('socket.io-client');
 
 server.listen(3000);
+var io = socketio.listen(server);
 
 var MongoClient = require("mongodb").MongoClient;
 var redis_port = "27071";
@@ -28,13 +28,20 @@ function randomString() {
 
 io.sockets.on("connection", function(socket) {
 	console.log("a connection created!");
+	// TODO: There is no method 'connect' in socketio
 	var client = redis.createClient(redis_port, redis_host);
-	var redis_socket = socketio.connect(redis_host);
+	var redis_socket = io_client.connect(redis_host + ":5000", {reconnect: true});
+	redis_socket.connect();
 	var key = randomString();
 	while (key in client.get("keys")) {
 		key = randomString();
-	}
-	
+	}*/
+
+	socket.on("test", function(data) {
+		console.log("Testing socket connection");
+		console.log(data);
+	});
+
 	/* in case modifying pre-composed files*/
 	socket.on("open", function(file_name) {
 		key = file_name;
@@ -115,18 +122,29 @@ app.configure(function () {
 	app.use(express.static(application_root));
 	app.use(express.static("/media", "/tmp/"));
 	app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
+	//app.use(express.logger());
 });
 
 app.get("/dashboard", function(req, res) {
 	res.render("dashboard", {id: "xarus"});
 });
-/*
-app.post("/api/query/playlist" //TODO
-)
-*/
+
+
+app.post("/api/query/playlist", function(req, res) {
+	var res_send = []
+	var MC = MongoClient.connect("mongodb://54.250.177.173/soundpancake", function(err, db) {
+		if(err) throw err;
+		var collection = db.collection("MIDIplaylist");
+		collection.find({name: req.name}).toArray(function(err, re) {
+			res_send = re;
+			db.close();
+		});
+	});
+	res.send(200, {list: res_send});
+});
+
+
 app.post("/api/query/musiclist", function(req, res) {
-	console.log("hello world");
-	/*parse req.body.blah query to mongo*/
 	var res_send = [];
 	var MC = MongoClient.connect("mongodb://54.250.177.173/soundpancake", function(err, db) {
 		if(err) throw err;
@@ -138,7 +156,6 @@ app.post("/api/query/musiclist", function(req, res) {
 	});
 	console.log(res_send);
 	res.send(200, {list: res_send});
-//	res.send(200, {list:[{id:1, MidiFileID: 2, title: '서버에서 날아옴', description: '이것도 더미라능', artist: 'tester', playtime: 305, like: 30, comment: 25, albumArt: '/images/test01.jps', share:'http://...'}]});
 });
 
 app.post("/api/auth/login", function(req, res) {
@@ -161,7 +178,6 @@ app.post("/api/auth/fb-session", function(req, res) {
 });
 
 app.post("/api/auth/fb", function(req, res) {
-//	console.log(JSON.stringify(req));
 	data = JSON.parse(req);
 	MongoClient.connect("mongodb://blah/dbname", function (err, db) {
 		if(err) throw err;

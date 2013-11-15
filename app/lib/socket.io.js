@@ -2,6 +2,7 @@
 
 var io = ('undefined' === typeof module ? {} : module.exports);
 (function() {
+console.log("io loaded");
 
 /**
  * socket.io

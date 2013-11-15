@@ -32,7 +32,7 @@ description <input type="text" id="description" name="description"></br>
 <script>
 
 //setting up socket
-var uploadSocket = io.connect('http://54.250.201.108:3000/');
+var uploadSocket = io.connect('http://soundpancake.io:80');
 
 uploadSocket.on('connect', function () {
 	console.log('Connected !');

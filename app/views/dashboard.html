@@ -5,7 +5,7 @@
 <div class="divider-horizontal"></div>
 <div class="row-fluid max-height">
     <!-- Music List Area -->
-    <div class="span9" ng-show="showMusic" ng-controller="MusicCtrl">
+    <div class="span9" ng-show="showMusic" ng-controller="MusicListCtrl">
         <div infinite-scroll="listhandler.nextPage()" infinite-scroll-disabled="listhandler.busy" infinite-scroll-distance="1">
             <div class="scrollable">
                 <div ng-repeat="music in listhandler.items">
