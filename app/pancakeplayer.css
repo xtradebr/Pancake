@@ -27,7 +27,7 @@ footer{
 
 div.player {
         /**********player box size 조정***********/
-        width: 640px;
+        width: 660px;
         height: 25px;
         margin-left: auto;
         margin-right: auto;
@@ -71,17 +71,18 @@ div.player #capsule #cursor {
         filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d0e4f7', endColorstr='#87bcea',GradientType=0 ); /* IE6-9 */
         
         width: 0;
-        display: inline-block;
+        /*display: inline-block;*/
         height: 100%;
 }
 div.player span.time {        
-        display: inline-block;
-        margin-left: 5px;
-        margin-right:5px;
-        margin-bottom: 5px;
+        /*display: inline-block;*/
+        margin: 0 5px;
+        position: relative;
+        top: -2px;
 }
 div.player div.time-controls {
         float: left;
+        height: 25px;
         color: #0099CC;
 
 }
@@ -90,7 +91,7 @@ div.player div.buttons {
         float: left;
         margin-left: 5px;
         margin-right:5px;
-        margin-top: 5px;
+        margin-top: 0px;
         color: #438eb9;
 }
 
@@ -111,6 +112,7 @@ div #imageSlider {
 }
 
 div #window {
+    background: rgba(67,142,185,0.3);
     width: 900px;
     height: 130px;
     border-style: solid;
@@ -155,14 +157,25 @@ div #scroll {
 }
 
 div #sliderNav {
+    position: absolute;
     height: 20px;
+    width: 900px;
     border-style: none;
     margin: 0 auto;
     padding: 0;
+    bottom: 0px;
+    text-align: center;
 }
 
-div .navDot a {
-    float: left;
+.navDot {
     color: #777;
     margin: 0 5px;
+}
+
+div .scrollbutton {
+    color: black;
+    width: 50px;
+    height: 50px;
+    margin-top: 50px;
+    text-align: center;
 }

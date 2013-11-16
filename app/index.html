@@ -9,18 +9,22 @@
     <meta name="description" content="Pancake Prototype">
     <meta name="viewport" content="width=device-width">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-
+    <link rel="shortcut icon" href="favicon.ico">
     <!-- styles/main.css  <custom styles by pancake -->
     <!-- build:css({.tmp,app}) -->
-    <!--basic styles-->
+
+    <!-- basic styles -->
     <link rel="stylesheet" href="custom_bootstrap/css/uncompressed/bootstrap.css">
     <link rel="stylesheet" href="custom_bootstrap/css/bootstrap-responsive.min.css" />
     <link rel="stylesheet" href="custom_bootstrap/css/font-awesome.min.css" />
 
-    <!--ace styles-->
+    <!-- ace styles -->
     <link rel="stylesheet" href="custom_bootstrap/css/uncompressed/ace.css" />
-    <link rel="stylesheet" href="custom_bootstrap/css/ace-responsive.min.css" />
-    <link rel="stylesheet" href="custom_bootstrap/css/ace-skins.min.css" />
+    <!--<link rel="stylesheet" href="custom_bootstrap/css/uncompressed/ace-skins.css" />-->
+    <!--<link rel="stylesheet" href="custom_bootstrap/css/uncompressed/ace-responsive.css" />-->
+
+    <!-- Flat UI -->
+    <link rel="stylesheet" href="lib/flat_ui/css/flat-ui.css" />
 
     <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css" />
     <link rel="stylesheet" href="bower_components/test-angular-notifications/notification.css" />
@@ -56,7 +60,7 @@
                         <li><a href="/#!/about"><i class="icon-question-sign icon-white"></i> About </a></li>
                         <li class="divider-vertical"></li>
                     </ul>
-                    <div class="login">
+                    <div class="mylogin">
                         <div class="dropdown">
                             <div class="divider-vertical"></div>
                             <a href="" class="login-btn dropdown-toggle fa fa-smile-o icon-white" ng-click="login()"
@@ -65,7 +69,7 @@
                             </a>
                             <ul class="dropdown-menu" ng-show="$root.isLogged">
                                 <li><a href="/#!/dashboard">Dash Board</a></li>
-                                <li><a href="/#!/account">Account</a></li>
+                                <!--<li><a href="/#!/account">Account</a></li>-->
                                 <li><a href="" ng-click="logout()">Log Out</a></li>
                             </ul>
                         </div>
@@ -95,21 +99,19 @@
         </div>
 
         <div id="imageSlider">
-            <div class="scrollbutton" id="scroll-left"></div>
+            <!--<div class="scrollbutton" id="scroll-left" style="clear:both;float:left;"><i class="fa fa-chevron-left fa-3x"></i></div>-->
             <div id="window">
                 <div id="scroll">
-                    <div class="panel" ng-repeat="entry in list" ng-click="moveToPanel($index)">
+                    <div class="panel" ng-repeat="entry in list" ng-click="moveToPanel($index)" style="float:left;">
                         <img tooltip-placement="left" tooltip="({{entry.like}} likes) {{entry.description}}" ng-src="{{entry.albumArt}}"/>
                         <p>{{entry.title}}</p>
                     </div>
                 </div>
-                <!--<div id="sliderNav">
-                    <div class="navDot"ng-repeat="entry in list" ng-click="moveToPanel($index)">
-                        <a href="">&#9679;</a>
-                    </div>
-                </div>-->
+                <div id="sliderNav">
+                    <a href="" class="navDot"ng-repeat="entry in list" ng-click="moveToPanel($index)">&#9679;</a>
+                </div>
             </div>
-            <div class="scrollbutton" id="scroll-right"></div>
+            <!--<div class="scrollbutton" id="scroll-right"style="float:left;"><i class="fa fa-chevron-right fa-3x"></i></div>-->
         </div>
 
     </footer>

@@ -112,14 +112,14 @@ function upload(){
 		'owner': document.getElementById('owner').value,
 		'playtime': player.endTime,
 		'description': document.getElementById('description').value,
-		'MidiFile': myMidi //CompositionFile();
-		'albumArt': albumArt;
-		'albumArtName': albumArtName;
+		'MidiFile': myMidi,
+		'albumArt': albumArt,
+		'albumArtName': albumArtName
 	}
 	uploadSocket.emit('saveMidiFile');
 	uploadSocket.on('startSave', function () {
 		uploadSocket.emit('midiData',data);
-	}
+	})
 }
 
 document.getElementById('files').addEventListener('change', readMidi, false);

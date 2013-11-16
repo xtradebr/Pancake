@@ -3,9 +3,9 @@
  */
 
 angular.module('pancakeApp')
-  .controller('DashboardCtrl', function($scope, $rootScope, $http, listhandler, $notification) {
+  .controller('DashboardCtrl', function($scope, $http, listhandler, $notification, loginHandler) {
     $scope.showMusic = true;
-    $scope.name = ($rootScope.loginInfo || 'No One');
+    $scope.name = loginHandler.getName();
 
     $scope.musiclist = [
       {
@@ -147,12 +147,13 @@ angular.module('pancakeApp')
 
     initListHandler();
 
+    // TODO: needs to composition with server side
     (function getLists() {
 
-      $http.post('/api/query/musiclist', {'id': 'guest'}, {timeout:3000})
+      $http.post('/api/query/musiclist', {'userid': loginHandler.getID(), page:1})
         .success(function(data, status) {
           $scope.musiclist = data.list;
-          console.log(data);
+//          console.log(data);
           $scope.listhandler.clear();
           $scope.listhandler.setItems(data.list);
           $scope.listhandler.setUrl('/api/query/musiclist');
@@ -161,10 +162,10 @@ angular.module('pancakeApp')
           $notification.error("Error occurs !", "fail to fetch list from server.");
         });
 
-      $http.post('/api/query/playlist', {'id': 'guest'}, {timeout:3000})
+      $http.post('/api/query/playlist', {'userid': loginHandler.getID(), page:1})
         .success(function(data, status) {
           $scope.playlist = data.list;
-          console.log(data);
+//          console.log(data);
           $scope.listhandler.clear();
           $scope.listhandler.setItems(data.list);
           $scope.listhandler.setUrl('/api/query/playlist');
