@@ -172,7 +172,7 @@ angular.module('pancakeApp')
     $scope.search = function($event) {
       $event.preventDefault();
 
-      $http.post(url, {'name': $scope.playerName}, {timeout: 3000})
+      $http.post(url, {name: $scope.playerName}, {timeout: 3000})
         .success(function(data, status) {
           console.log("fetching success!");
           $scope.listhandler.clear();

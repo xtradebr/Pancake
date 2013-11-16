@@ -5,13 +5,14 @@ var application_root = "/home/ubuntu/Pancake/app/";
 
 var app = express();
 var server = require('http').createServer(app);
-var io_client= require('socket.io-client');
+var io_client = require('socket.io-client');
+var redis_socket = io_client.connect("http://54.249.9.214", {port: 5000});
 
 server.listen(3000);
-var io = socketio.listen(server);
+var io = require("socket.io").listen(server);
 
 var MongoClient = require("mongodb").MongoClient;
-var redis_port = "27071";
+var redis_port = "8081";
 var redis_host = "54.249.9.214";
 var fs = require("fs");
 var exec = require("child_process").exec;
@@ -26,17 +27,20 @@ function randomString() {
 	return rstring;
 }
 
+redis_socket.on("connect", function() {console.log("connection with redis good");});
+
 io.sockets.on("connection", function(socket) {
 	console.log("a connection created!");
-	// TODO: There is no method 'connect' in socketio
 	var client = redis.createClient(redis_port, redis_host);
-	var redis_socket = io_client.connect(redis_host + ":5000", {reconnect: true});
-	redis_socket.connect();
+	
 	var key = randomString();
-	while (key in client.get("keys")) {
-		key = randomString();
-	}*/
-
+	var keys = client.get("keys")
+	if (keys != false) {
+		if (typeof keys == "string") { keys = [keys]; }
+		while (key in keys) {
+			key = randomString();
+		}
+	}
 	socket.on("test", function(data) {
 		console.log("Testing socket connection");
 		console.log(data);
@@ -64,7 +68,15 @@ io.sockets.on("connection", function(socket) {
 	//------------saving midi data by either midiuploader or composer-----------
 
 	socket.on('saveMidiFile', function () {
-		var MidiObject;
+		var MidiObject =	{
+					id: "",
+					title: "",
+					playtime: "", 
+					owner: "", 
+					artist: "", 
+					description: "",
+					data: []
+					};
 
 		socket.emit('startSave');
 		socket.on("midiData", function (data) {
@@ -74,10 +86,15 @@ io.sockets.on("connection", function(socket) {
 			MidiObject.owner = data.owner; //console.log(data.owner);
 			MidiObject.artist = data.artist; //console.log(data.artist);
 			MidiObject.description = data.description; //console.log(data.description);
-
-			client.rpush(MidiObject.id, data.MidiFile);
-			client.rename(key, data.MidiFile);
-			redis_socket.emit("dump", key);
+			MidiObject.data = data.MidiFile;
+//			MongoClient.connect("mongodb://54.250.177.173/soundpancake", function (err, db) {
+//				if (err) throw err;
+//				var collection = db.collection("MidiFile");
+//				collection.insert(data.MidiFile);
+//			});
+//			client.rpush(MidiObject.id, data.MidiFile);
+//			client.rename(key, data.MidiFile);
+//			redis_socket.emit("dump", key);
 			MidiObject.MidiFileId = key;
 			var fileName = __dirname + '/tmp/albumArt/' + data.albumArtName;
 
@@ -91,14 +108,17 @@ io.sockets.on("connection", function(socket) {
 	                		});
 	            		});
 	        	});	
-		MongoClient.connect("mongodb://54.250.177.173/soundpancake", function (err, db) {
-			if(err) throw err;
-			var collection = db.collection("MidiObject");
-			collection.insert(MidiObject);
-			db.close();
+
+			MongoClient.connect("mongodb://54.250.177.173/soundpancake", function (err, db) {
+				if(err) throw err;
+				var collection = db.collection("MIDIObject");
+				collection.insert(MidiObject, function(err, insert) {
+					console.log(insert);
+				});
+				db.close();
+			});
 		});
 	});
-});
 	//--------------------------------------------------------------------------
 
 	socket.on("save", function() {
@@ -134,8 +154,8 @@ app.post("/api/query/playlist", function(req, res) {
 	var res_send = []
 	var MC = MongoClient.connect("mongodb://54.250.177.173/soundpancake", function(err, db) {
 		if(err) throw err;
-		var collection = db.collection("MIDIplaylist");
-		collection.find({name: req.name}).toArray(function(err, re) {
+		var collection = db.collection("MIDIPlaylist");
+		collection.find({title: req.name}).toArray(function(err, re) {
 			res_send = re;
 			db.close();
 		});
@@ -145,11 +165,14 @@ app.post("/api/query/playlist", function(req, res) {
 
 
 app.post("/api/query/musiclist", function(req, res) {
+//	console.log(req.body.name.trim());	
 	var res_send = [];
 	var MC = MongoClient.connect("mongodb://54.250.177.173/soundpancake", function(err, db) {
 		if(err) throw err;
-		var collection = db.collection("MIDIobject");
-		collection.find({title: req.name}).toArray(function(err, re) {
+		var collection = db.collection("MIDIObject");
+		collection.find({title: req.body.name.trim()}).toArray(function(err, re) {
+			if(err) throw err;
+			console.log(re);
 			res_send = re;
 			db.close();
 		});
