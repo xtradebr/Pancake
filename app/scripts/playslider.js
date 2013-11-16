@@ -191,7 +191,7 @@ app.controller('PlaySliderCtrl', function($rootScope) {
 
       //play if same panel is clicked again
       if(panelNum ===($rootScope.nowSelected)){ 
-        loadSong(($rootScope.list[panelNum].MidiFileId));
+        loadSong($rootScope.list[panelNum]);
         $rootScope.playSelect(panelNum);
         return;
       }
