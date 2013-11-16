@@ -22,8 +22,9 @@ app.controller('PlaySliderCtrl', function($rootScope) {
       'comment': 10,
       'description': 'if you feel weak, check this song out!',
       'albumArt': 'images/stronger.png',
-      'MidiFileId': 1234,
-      'share': 'link1'
+      'MidiFileId': 1234, //obsolete (dummy)
+      'share': 'link1',
+      'data': {}
     },
     {
       'id': 2345,
@@ -36,7 +37,8 @@ app.controller('PlaySliderCtrl', function($rootScope) {
       'description': 'if theres mamma mia then is there pappa pia?',
       'albumArt': 'images/mamma mia.png',
       'MidiFileId': 2345,
-      'share': 'link2'
+      'share': 'link2',
+      'data': {}
     },
     {
       'id': 34567,
@@ -49,7 +51,8 @@ app.controller('PlaySliderCtrl', function($rootScope) {
       'description': 'a common theme song',
       'albumArt': 'images/james bond.png',
       'MidiFileId': 34567,
-      'share': 'link3'
+      'share': 'link3',
+      'data': {}
     }
   ];
   $rootScope.nowPlaying;
@@ -125,10 +128,10 @@ app.controller('PlaySliderCtrl', function($rootScope) {
 
   function loadSong(MidiFileId) {
     console.log('load song wth midifileid:'+MidiFileId);    
-    /*uploadSocket.emit('requestMidiFile',MidiFileId);
+    uploadSocket.emit('requestMidiFile',MidiFileId);
     uploadSocket.on('sendMidiFile',function(midiFileObject){
       player.loadMidiFileObject(midiFileObject);
-    });*/
+    });
   }
 
 
