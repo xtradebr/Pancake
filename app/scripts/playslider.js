@@ -3,10 +3,6 @@
 app.controller('PlaySliderCtrl', function($rootScope) {
 
   var player;
-  MIDI.loadPlugin(function(){
-    player = MIDI.Player;
-    //MIDIPlayerPercentage(player);
-  });
   /*
    entry: 한 곡, 즉 하나의 MidiObject에 대응
    list: entry의 리스트
@@ -139,10 +135,10 @@ app.controller('PlaySliderCtrl', function($rootScope) {
       player.loadMdiFileObject(midiFileObject);
     });*/
     MIDI.loadPlugin(function(){
-	player.loadMidiFileObject(midiObject.data);
-	MIDIPlayerPercentage(player);
+      player.loadMidiFileObject(midiObject.data);
+      MIDIPlayerPercentage(player);
     });
-	MIDI.Player.stop();
+    MIDI.Player.stop();
     console.log("midiObject.data should be a MidiFile instance");
     console.dir(midiObject.data);
     console.log("player looks like this");
