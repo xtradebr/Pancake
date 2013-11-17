@@ -65,6 +65,32 @@ io.sockets.on("connection", function(socket) {
 		socket.emit("sendMidiFile", file);
 	});
 
+	/* liked */
+	socket.on("like", function(id) {
+		if ("_" in id) {
+			var MC = MongoClient.connect("mongodb://54.250.177.173/soundpancake", function(err, db) {
+				if(err) throw err;
+				var collection = db.collection("MIDIObject");
+				collection.update({id: id}, {$inc : {liked: 1}});
+				collection.find({id: id}).toArray(function(err, result) {
+					socket.emit("liked", result[0].liked); //Integer
+				});
+				db.close();
+			});
+		} else if ("-" in id) {
+			var MC = MongoClient.connect("mongodb://54.250.177.173/soundpancake", function(err, db) {
+				if(err) throw err;
+				var collection = db.collection("MIDIPlaylist");
+				collection.update({id: id}, {$inc : {liked: 1}});
+				collection.find({id: id}).toArray(function(err, result) {
+					socket.emit("liked", result[0].liked); //Integer
+				});
+				db.close();
+			});
+
+		}
+	});
+
 	//------------saving midi data by either midiuploader or composer-----------
 
 	socket.on('saveMidiFile', function () {
@@ -75,7 +101,8 @@ io.sockets.on("connection", function(socket) {
 					owner: "", 
 					artist: "", 
 					description: "",
-					data: []
+					data: [],
+					liked: 0
 					};
 
 		socket.emit('startSave');
@@ -87,15 +114,8 @@ io.sockets.on("connection", function(socket) {
 			MidiObject.artist = data.artist; //console.log(data.artist);
 			MidiObject.description = data.description; //console.log(data.description);
 			MidiObject.data = data.MidiFile;
-//			MongoClient.connect("mongodb://54.250.177.173/soundpancake", function (err, db) {
-//				if (err) throw err;
-//				var collection = db.collection("MidiFile");
-//				collection.insert(data.MidiFile);
-//			});
-//			client.rpush(MidiObject.id, data.MidiFile);
-//			client.rename(key, data.MidiFile);
-//			redis_socket.emit("dump", key);
 			MidiObject.MidiFileId = key;
+//			MidiObject.liked = data.liked;
 			var fileName = __dirname + '/tmp/albumArt/' + data.albumArtName;
 
 			fs.open(fileName, 'a', 0755, function(err, fd) {
@@ -145,22 +165,18 @@ app.configure(function () {
 	//app.use(express.logger());
 });
 
-app.get("/dashboard", function(req, res) {
-	res.render("dashboard", {id: "xarus"});
-});
-
 
 app.post("/api/query/playlist", function(req, res) {
 	var res_send = []
 	var MC = MongoClient.connect("mongodb://54.250.177.173/soundpancake", function(err, db) {
 		if(err) throw err;
 		var collection = db.collection("MIDIPlaylist");
-		collection.find({title: req.name}).toArray(function(err, re) {
+		collection.find({title: req.body.name}).toArray(function(err, re) {
 			res_send = re;
 			db.close();
+			res.send(200, {list: res_send});
 		});
 	});
-	res.send(200, {list: res_send});
 });
 
 
@@ -175,7 +191,7 @@ app.post("/api/query/musiclist", function(req, res) {
 		if( req.body.name === undefined ) {
 			collection.find().toArray(function(err, re) {
 				if(err) throw err;
-				//console.log(re);
+				console.log(re);
 				res_send = re;
 				db.close();		
 				res.send(200, {list: res_send});
@@ -183,7 +199,7 @@ app.post("/api/query/musiclist", function(req, res) {
 		} else {
 			collection.find({title: req.body.name.trim()}).toArray(function(err, re) {
 				if(err) throw err;
-				//console.log(re);
+				console.log(re);
 				res_send = re;
 				db.close();
 				res.send(200, {list: res_send});

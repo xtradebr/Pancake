@@ -34,7 +34,7 @@ angular.module('pancakeApp')
       busy: false,
       after: 1,
       clear: function() {
-        items = [];
+        this.items = [];
         this.after = 1;
       },
       setItems: function(list) {
@@ -69,8 +69,11 @@ angular.module('pancakeApp')
             return;
           }
           //push data.data.chlidren to this.items
-          console.log("res data in list handler: " + data.list);
-          items.push(data.list); 
+          console.log("res data in list handler: ");
+          console.log(data.list);
+          data.list.forEach(function(item) {
+            that.items.push(item);
+          });
           // this.after = next page or next element's id
           that.after = param.page + 1;
         });
@@ -136,6 +139,9 @@ angular.module('pancakeApp')
     };
     this.getID = function() {
       return (apiMe.username || 'guest');
+    };
+    this.getUID = function() {
+      return (apiMe.id || "guest");
     };
 
     return this;

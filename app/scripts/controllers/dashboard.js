@@ -6,6 +6,11 @@ angular.module('pancakeApp')
   .controller('DashboardCtrl', function($scope, $http, listhandler, $notification, loginHandler) {
     $scope.showMusic = true;
     $scope.name = loginHandler.getName();
+    if(loginHandler.getUID() != "guest") {
+      $scope.picture = "<img alt=\"fb image\" src=\"http://graph.facebook.com/" + loginHandler.getUID() + "/picture?type=normal\" />";
+    } else {
+      $scope.picture = "<i class=\"fa fa-smile-o fa-4x\"></i>";
+    }
 
     $scope.musiclist = [
       {

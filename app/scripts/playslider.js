@@ -6,7 +6,8 @@ app.controller('PlaySliderCtrl', function($rootScope) {
   MIDI.loadPlugin(function(player){
     player = MIDI.Player;
     console.log("is this executed?");
-  }); 
+	console.log(player);
+  });
     /*
     entry: 한 곡, 즉 하나의 MidiObject에 대응
     list: entry의 리스트
@@ -134,7 +135,9 @@ app.controller('PlaySliderCtrl', function($rootScope) {
     }
   };
 
-  function loadSong(midiObject) {
+  var loadSong = function (midiObject) {
+	console.log("Load SOng!");
+	console.log(player);
     player.loadMidiFileObject(midiObject.data);
     MIDIPlayerPercentage(player);
     player.start();
@@ -146,7 +149,7 @@ app.controller('PlaySliderCtrl', function($rootScope) {
   }
 
 
-  function MIDIPlayerPercentage(player) {
+  var MIDIPlayerPercentage = function (player) {
 
     var playtime = document.getElementById("playtime");
     var endtime = document.getElementById("endtime");
@@ -200,9 +203,6 @@ app.controller('PlaySliderCtrl', function($rootScope) {
   };
 
   $rootScope.moveToPanel = function (panelNum) {
-
-    	console.log("is player visible within $rootScope.moveToPanel?");
-    	console.dir(player);
       //play if same panel is clicked again
       if(panelNum ===($rootScope.nowSelected)){
         console.log("the panel to print has" + $rootScope.list[panelNum]); 
