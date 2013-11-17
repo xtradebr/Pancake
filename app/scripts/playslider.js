@@ -89,33 +89,33 @@ app.controller('PlaySliderCtrl', function($rootScope) {
     }
   }
 
-  $rootScope.stopbutton = function () {
+  $rootScope.stopbutton = function (player) {
     player.stop();
     console.log("stop button");
     console.log("MIDI defined?");
     console.dir(MIDI);
   };
-  $rootScope.playbutton = function () {
+  $rootScope.playbutton = function (player) {
     if ($rootScope.player.playing){
-      $rootScope.player.start();
+      player.start();
       console.log($rootScope.player.start);
     }
     else{
       $rootScope.player.resume();
     }
-	console.log("play button");
+	  console.log("play button");
   };
-  $rootScope.pausebutton = function () {
-    $rootScope.player.pause();
+  $rootScope.pausebutton = function (player) {
+    player.pause();
 	console.log("pause button");
   };
   $rootScope.nextbutton = function () {
-    $roorScope.nowPlaying = nowPlayingNext();
+    $rootScope.nowPlaying = nowPlayingNext();
     loadSong(list[nowPlaying]);
 	console.log("next button");
   };
   $rootScope.prevbutton = function () {
-    $roorScope.nowPlaying = nowPlayingPrev();
+    $rootScope.nowPlaying = nowPlayingPrev();
     loadSong(list[nowPlaying]);
 	console.log("prev button");
   };
@@ -136,8 +136,8 @@ app.controller('PlaySliderCtrl', function($rootScope) {
 
   function loadSong(midiObject) {
     player.loadMidiFileObject(midiObject.data);
-    MIDIPlayerPercentage();
-    $rootScope.player.start();
+    MIDIPlayerPercentage(player);
+    player.start();
     
     console.log("midiObject.data should be a MidiFile instance");
     console.dir(midiObject.data);
@@ -146,7 +146,7 @@ app.controller('PlaySliderCtrl', function($rootScope) {
   }
 
 
-  function MIDIPlayerPercentage() {
+  function MIDIPlayerPercentage(player) {
 
     var playtime = document.getElementById("playtime");
     var endtime = document.getElementById("endtime");
@@ -177,9 +177,9 @@ app.controller('PlaySliderCtrl', function($rootScope) {
       var now = data.now >> 0;
       var end = data.end >> 0;
       if (now === end) { // go to next song
-	console.log("reached now===end");
-	player.start();
-	//nextbutton();
+    	console.log("reached now===end");
+    	player.start();
+    	//nextbutton();
         //player.loadFile(song, player.start); // load MIDI
       }
       // display the information to the user
@@ -201,13 +201,13 @@ app.controller('PlaySliderCtrl', function($rootScope) {
 
   $rootScope.moveToPanel = function (panelNum) {
 
-	console.log("is player visible within $rootScope.moveToPanel?");
-	console.dir(player);
+    	console.log("is player visible within $rootScope.moveToPanel?");
+    	console.dir(player);
       //play if same panel is clicked again
       if(panelNum ===($rootScope.nowSelected)){
-	console.log("the panel to print has" + $rootScope.list[panelNum]); 
+        console.log("the panel to print has" + $rootScope.list[panelNum]); 
         console.dir($rootScope.list[panelNum]);
-	loadSong($rootScope.list[panelNum],player);
+        loadSong($rootScope.list[panelNum]);
         $rootScope.playSelect(panelNum);
         return;
       }
