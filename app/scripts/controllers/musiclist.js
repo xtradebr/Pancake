@@ -149,12 +149,16 @@ angular.module('pancakeApp')
 
     $scope.search = function($event) {
       $event.preventDefault();
+      var param = {name: $scope.musicName};
 
-      $http.post(url, {'name': $scope.musicName})
+	console.log("query to " + url + "/" + JSON.stringify(param));
+      $http.post(url, param) 
         .success(function(data, status) {
           console.log("fetching success!");
           $scope.listhandler.clear();
           $scope.listhandler.setItems(data.list);
+          $scope.listhandler.setParam(param);
+	console.log(data);
         })
         .error(function(data, status) {
           console.log("fetching list fails from server.");

@@ -26,14 +26,16 @@ angular.module('pancakeApp')
     var items = [];
     var dummy = [];
     var url = '';
+    var param = {};
     var isReachEnd = false;
 
     return {
       items: items,
       busy: false,
-      after: '',
+      after: 1,
       clear: function() {
         items = [];
+        this.after = 1;
       },
       setItems: function(list) {
         this.items = list;
@@ -44,6 +46,9 @@ angular.module('pancakeApp')
       setUrl: function(u) {
         url = u;
       },
+      setParam: function(p) {
+        param = p;
+      },
       nextPage: function() {
         var that = this;
 
@@ -52,25 +57,26 @@ angular.module('pancakeApp')
           return;
         }
         this.busy = true;
+        param.page = this.after;
 
-        dummy.forEach(function(item) {
-          that.items.push(item);
+
+        console.log("listHandler of " + url + "/" + JSON.stringify(param));
+
+        $http.post(url, param)
+          .success(function(data) {
+          if( data.isReachEnd ) {
+            that.isReachEnd = data.isReachEnd;
+            return;
+          }
+          //push data.data.chlidren to this.items
+          console.log("res data in list handler: " + data.list);
+          items.push(data.list); 
+          // this.after = next page or next element's id
+          that.after = param.page + 1;
         });
-
-        // TODO: implement to get elements list of next page depend on url.
-//      $http.get(url)
-//        .success(function(data) {
-//          if( data.isReachEnd ) {
-//            that.isReachEnd = data.isReachEnd;
-//            return;
-//          }
-//          //push data.data.chlidren to this.items
-//
-//          // this.after = next page or next element's id
-//        }).bind(this);
         $timeout(function() {
           that.busy = false;
-        }, 500);
+        }, 3000);
       }
     };
   });

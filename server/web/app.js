@@ -166,19 +166,30 @@ app.post("/api/query/playlist", function(req, res) {
 
 app.post("/api/query/musiclist", function(req, res) {
 //	console.log(req.body.name.trim());	
+	console.log("In musiclist");
+	console.log(req.body);
 	var res_send = [];
 	var MC = MongoClient.connect("mongodb://54.250.177.173/soundpancake", function(err, db) {
 		if(err) throw err;
 		var collection = db.collection("MIDIObject");
-		collection.find({title: req.body.name.trim()}).toArray(function(err, re) {
-			if(err) throw err;
-			console.log(re);
-			res_send = re;
-			db.close();
-		});
+		if( req.body.name === undefined ) {
+			collection.find().toArray(function(err, re) {
+				if(err) throw err;
+				//console.log(re);
+				res_send = re;
+				db.close();		
+				res.send(200, {list: res_send});
+			});
+		} else {
+			collection.find({title: req.body.name.trim()}).toArray(function(err, re) {
+				if(err) throw err;
+				//console.log(re);
+				res_send = re;
+				db.close();
+				res.send(200, {list: res_send});
+			});
+		}
 	});
-	console.log(res_send);
-	res.send(200, {list: res_send});
 });
 
 app.post("/api/auth/login", function(req, res) {
