@@ -1,12 +1,12 @@
 'use strict';
 
 app.controller('PlaySliderCtrl', function($rootScope) {
-  console.dir(Event);
-  $rootScope.player;
-  MIDI.loadPlugin(function($rootScope){
-    $rootScope.player = MIDI.Player;
+
+  var player;
+  MIDI.loadPlugin(function(player){
+    player = MIDI.Player;
     console.log("is this executed?");
-  });  
+  }); 
     /*
     entry: 한 곡, 즉 하나의 MidiObject에 대응
     list: entry의 리스트
@@ -90,7 +90,7 @@ app.controller('PlaySliderCtrl', function($rootScope) {
   }
 
   $rootScope.stopbutton = function () {
-    $rootScope.player.stop();
+    player.stop();
     console.log("stop button");
     console.log("MIDI defined?");
     console.dir(MIDI);
@@ -134,10 +134,9 @@ app.controller('PlaySliderCtrl', function($rootScope) {
     }
   };
 
-  $rootScope.loadSong = function (midiObject) {
-    
-    $rootScope.player.loadMidiFileObject(midiObject.data);
-  	$rootScope.MIDIPlayerPercentage(Event);
+  function loadSong(midiObject) {
+    player.loadMidiFileObject(midiObject.data);
+    MIDIPlayerPercentage();
     $rootScope.player.start();
     
     console.log("midiObject.data should be a MidiFile instance");
@@ -147,7 +146,7 @@ app.controller('PlaySliderCtrl', function($rootScope) {
   }
 
 
-  $rootScope.MIDIPlayerPercentage = function(Event) {
+  function MIDIPlayerPercentage() {
 
     var playtime = document.getElementById("playtime");
     var endtime = document.getElementById("endtime");
@@ -202,11 +201,13 @@ app.controller('PlaySliderCtrl', function($rootScope) {
 
   $rootScope.moveToPanel = function (panelNum) {
 
+	console.log("is player visible within $rootScope.moveToPanel?");
+	console.dir(player);
       //play if same panel is clicked again
       if(panelNum ===($rootScope.nowSelected)){
 	console.log("the panel to print has" + $rootScope.list[panelNum]); 
         console.dir($rootScope.list[panelNum]);
-	loadSong($rootScope.list[panelNum]);
+	loadSong($rootScope.list[panelNum],player);
         $rootScope.playSelect(panelNum);
         return;
       }
