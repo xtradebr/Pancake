@@ -2,9 +2,9 @@
 
 app.controller('PlaySliderCtrl', function($rootScope) {
 
-  var player;
-  MIDI.loadPlugin(function(){
-	player = MIDI.Player;
+  $rootScope.player;
+  MIDI.loadPlugin(function($rootScope){
+	$rootScope.player = MIDI.Player;
   console.log("is this executed?");
   });  
 /*
@@ -90,25 +90,23 @@ app.controller('PlaySliderCtrl', function($rootScope) {
   }
 
   $rootScope.stopbutton = function () {
-    MIDI.noteOn(0, 100, 127, 0);
-	player.stop();
+    $rootScope.player.stop();
     console.log("stop button");
     console.log("MIDI defined?");
     console.dir(MIDI);
   };
   $rootScope.playbutton = function () {
-    MIDI.noteOn(0, 100, 127, 0);
-	if (player.playing){
-      player.start();
-      console.log(player.start);
+    if ($rootScope.player.playing){
+      $rootScope.player.start();
+      console.log($rootScope.player.start);
     }
     else{
-      player.resume();
+      $rootScope.player.resume();
     }
 	console.log("play button");
   };
   $rootScope.pausebutton = function () {
-    player.pause();
+    $rootScope.player.pause();
 	console.log("pause button");
   };
   $rootScope.nextbutton = function () {
@@ -136,7 +134,7 @@ app.controller('PlaySliderCtrl', function($rootScope) {
     }
   };
 
-  function loadSong (midiObject) {
+  loadSong = function (midiObject) {
     //console.log('load song wth midifileid:'+MidiFileId);    
     //unnecessary due to change of structure which brought in MidiFile data into MidiObject
     /*uploadSocket.emit('requestMidiFile',MidiFileId);
@@ -144,10 +142,10 @@ app.controller('PlaySliderCtrl', function($rootScope) {
       player.loadMdiFileObject(midiFileObject);
     });*/
    // MIDI.loadPlugin(function(){
-	player.loadMidiFileObject(midiObject.data);
-	MIDIPlayerPercentage(player);
+	$rootScope.player.loadMidiFileObject(midiObject.data);
+	$rootScope.MIDIPlayerPercentage(player);
    // });
-	player.start();
+	$rootScope.player.start();
     console.log("midiObject.data should be a MidiFile instance");
     console.dir(midiObject.data);
     console.log("player looks like this");
