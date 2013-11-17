@@ -75,7 +75,7 @@ app.controller('EditorCtrl', function($scope, $modal, $notification, $timeout, l
       $scope.midiObject.owner = loginHandler.getName();
       MidiController.makeMidiFile(midiObject);
     }, function() {
-      console.log.info("do not saved midi file");
+      console.log("do not saved midi file");
     });
   };
 

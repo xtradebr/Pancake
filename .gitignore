@@ -7,3 +7,4 @@ dist/
 .swp
 app/custom_bootstrap/
 app/bower_components/
+server/web/tmp/
