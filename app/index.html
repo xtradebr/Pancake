@@ -89,9 +89,9 @@
                 <span id="endtime" class="time">0:00</span>
             </div>
             <div class="buttons">
-                <i class="fa fa-stop" value="stop" ng-click="stopbutton()"></i>
-                <i class="fa fa-play" value="play" ng-click="playbutton()"></i>
-                <i class="fa fa-pause" value="pause" ng-click="pausebutton()"></i>
+                <i class="fa fa-stop" value="stop" ng-click="stopbutton(player)"></i>
+                <i class="fa fa-play" value="play" ng-click="playbutton(player)"></i>
+                <i class="fa fa-pause" value="pause" ng-click="pausebutton(player)"></i>
                 <i class="fa fa-backward" value="backward" ng-click="prevbutton()"></i>
                 <i class="fa fa-forward" value="forward" ng-click="nextbutton()"></i>
                 <i class="fa fa-eject" value="openlist" ng-click="openlist()"></i>
@@ -165,6 +165,14 @@
         <script src="scripts/services/services.js"></script>
         <script src="scripts/filters/timeformatting.js"></script>
         <script src="scripts/filters/shortString.js"></script>
+
+	<script>
+	function miditesting(){
+		console.log("testing MIDI.noteOn");
+		MIDI.noteOn(0, 100, 100, 0);
+	};
+	</script>
+
 
     </body>
 </html>
