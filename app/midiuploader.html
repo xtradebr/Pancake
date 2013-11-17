@@ -32,7 +32,7 @@ description <input type="text" id="description" name="description"></br>
 <script>
 
 //setting up socket
-var uploadSocket = io.connect('http://soundpancake.io:80');
+var uploadSocket = io.connect('http:/54.250.201.108');
 
 uploadSocket.on('connect', function () {
 	console.log('Connected !');
@@ -75,6 +75,9 @@ function readMidi(evt) {
 			var midiString = String(evt.target.result);
 			player.loadFile(midiString,player.start);
 			myMidi = MidiFile(midiString);
+			console.log("midifile object looks like this");
+			console.dir(myMidi);
+			console.dir(player);
 		}
 	}
 }

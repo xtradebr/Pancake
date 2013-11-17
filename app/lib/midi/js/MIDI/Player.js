@@ -103,7 +103,9 @@ root.loadMidiFile = function() { // reads midi into javascript array of events
 };
 
 root.loadMidiFileObject = function (midiFileObject) {
+	root.stop();
 	root.replayer = new Replayer(midiFileObject, root.timeWarp);
+	root.currentData = midiFileObject;
 	root.data = root.replayer.getData();
 	root.endTime = getLength();
 };
@@ -121,14 +123,6 @@ root.loadFile = function (file, callback) {
 	else if (file.indexOf("MThd") !== -1){
 		var data = file;
 		root.currentData = MidiFile(data);
-		root.loadMidiFile();
-		if (callback) callback(data);
-		return;
-	}
-
-	else if (typeof(file)==='object') {
-		var data = file;
-		root.currentData = CompositionFile(data);
 		root.loadMidiFile();
 		if (callback) callback(data);
 		return;

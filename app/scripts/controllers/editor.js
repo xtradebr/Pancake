@@ -704,8 +704,8 @@ var MidiController = (function() {
     },
     pushEvent: function(event) {
       // event = { data, pitch, st, et }
-      composition.noteOn(event.startTime - lastTime, pitchSound[event.pitch]);
-      composition.noteOff(event.endTime - event.startTime, pitchSound[event.pitch]);
+      composition.noteOn((event.startTime - lastTime)*100, pitchSound[event.pitch]);
+      composition.noteOff((event.endTime - event.startTime)*100, pitchSound[event.pitch]);
     }
   };
 }( ));
@@ -744,6 +744,7 @@ var composition = (function(){
       event.type='channel';
       event.channel=1;
       event.noteNumber=noteNumber;
+      event.subType='noteOff';
 
       tracks[0].push(event);
     },

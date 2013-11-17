@@ -5,6 +5,7 @@ app.controller('PlaySliderCtrl', function($rootScope) {
   var player;
   MIDI.loadPlugin(function(){
     player = MIDI.Player;
+    //MIDIPlayerPercentage(player);
   });
   /*
    entry: 한 곡, 즉 하나의 MidiObject에 대응
@@ -89,26 +90,31 @@ app.controller('PlaySliderCtrl', function($rootScope) {
   }
 
   $rootScope.stopbutton = function () {
-    player.stop();
+    MIDI.Player.stop();
+    console.log("stop button");
   };
   $rootScope.playbutton = function () {
     if (player.playing){
-      player.start();
+      MIDI.Player.start();
     }
     else{
-      player.resume();
+      MIDI.Player.resume();
     }
+	console.log("play button");
   };
   $rootScope.pausebutton = function () {
-    player.pause();
+    MIDI.Player.pause();
+	console.log("pause button");
   };
   $rootScope.nextbutton = function () {
     $roorScope.nowPlaying = nowPlayingNext();
     loadSong(list[nowPlaying]);
+	console.log("next button");
   };
   $rootScope.prevbutton = function () {
     $roorScope.nowPlaying = nowPlayingPrev();
     loadSong(list[nowPlaying]);
+	console.log("prev button");
   };
 
   var ifOpen = false;
@@ -125,18 +131,26 @@ app.controller('PlaySliderCtrl', function($rootScope) {
     }
   };
 
-  function loadSong(midiObject) {
+  function loadSong (midiObject) {
     //console.log('load song wth midifileid:'+MidiFileId);    
     //unnecessary due to change of structure which brought in MidiFile data into MidiObject
     /*uploadSocket.emit('requestMidiFile',MidiFileId);
     uploadSocket.on('sendMidiFile',function(midiFileObject){
-      player.loadMidiFileObject(midiFileObject);
+      player.loadMdiFileObject(midiFileObject);
     });*/
-    player.loadMidiFileObject(midiObjet.data);
+    MIDI.loadPlugin(function(){
+	player.loadMidiFileObject(midiObject.data);
+	MIDIPlayerPercentage(player);
+    });
+	MIDI.Player.stop();
+    console.log("midiObject.data should be a MidiFile instance");
+    console.dir(midiObject.data);
+    console.log("player looks like this");
+    console.dir(player);
   }
 
 
-  var MIDIPlayerPercentage = function() {
+  var MIDIPlayerPercentage = function(player) {
 
     var playtime = document.getElementById("playtime");
     var endtime = document.getElementById("endtime");
@@ -167,8 +181,10 @@ app.controller('PlaySliderCtrl', function($rootScope) {
       var now = data.now >> 0;
       var end = data.end >> 0;
       if (now === end) { // go to next song
-
-        player.loadFile(song, player.start); // load MIDI
+	console.log("reached now===end");
+	player.start();
+	//nextbutton();
+        //player.loadFile(song, player.start); // load MIDI
       }
       // display the information to the user
       timeCursor.style.width = (percent * 100) + "%";
@@ -190,8 +206,10 @@ app.controller('PlaySliderCtrl', function($rootScope) {
   $rootScope.moveToPanel = function (panelNum) {
 
       //play if same panel is clicked again
-      if(panelNum ===($rootScope.nowSelected)){ 
-        loadSong($rootScope.list[panelNum]);
+      if(panelNum ===($rootScope.nowSelected)){
+	console.log("the panel to print has" + $rootScope.list[panelNum]); 
+        console.dir($rootScope.list[panelNum]);
+	loadSong($rootScope.list[panelNum]);
         $rootScope.playSelect(panelNum);
         return;
       }
