@@ -11,6 +11,18 @@ var redis_socket = io_client.connect("http://54.249.9.214", {port: 5000});
 server.listen(3000);
 var io = require("socket.io").listen(server);
 
+io.enable('browser client minification');
+io.enable('browser client etag');
+io.enable('browser client gzip');
+io.set('transports', [
+	'websocket',
+	'htmlfile',
+	'xhr-polling',
+	'jsonp-polling']
+);
+
+
+
 var MongoClient = require("mongodb").MongoClient;
 var redis_port = "8081";
 var redis_host = "54.249.9.214";
@@ -75,7 +87,7 @@ io.sockets.on("connection", function(socket) {
 					owner: "", 
 					artist: "", 
 					description: "",
-					data: []
+					data: {}
 					};
 
 		socket.emit('startSave');
@@ -87,14 +99,6 @@ io.sockets.on("connection", function(socket) {
 			MidiObject.artist = data.artist; //console.log(data.artist);
 			MidiObject.description = data.description; //console.log(data.description);
 			MidiObject.data = data.MidiFile;
-//			MongoClient.connect("mongodb://54.250.177.173/soundpancake", function (err, db) {
-//				if (err) throw err;
-//				var collection = db.collection("MidiFile");
-//				collection.insert(data.MidiFile);
-//			});
-//			client.rpush(MidiObject.id, data.MidiFile);
-//			client.rename(key, data.MidiFile);
-//			redis_socket.emit("dump", key);
 			MidiObject.MidiFileId = key;
 			var fileName = __dirname + '/tmp/albumArt/' + data.albumArtName;
 
@@ -104,7 +108,7 @@ io.sockets.on("connection", function(socket) {
 	        		fs.write(fd, data.albumArt, null, 'Binary', function(err, written, buff) {
 					fs.close(fd, function() {
 						console.log('File saved successful!');
-						MidiObject.albumArt = 'soundpancake.io/media/albumArt/' + data.albumArtName;
+						MidiObject.albumArt = '/media/albumArt/' + data.albumArtName;
 	                		});
 	            		});
 	        	});	
@@ -132,15 +136,13 @@ io.sockets.on("connection", function(socket) {
 		});
 	});
 });
-		
-
 
 app.configure(function () {
 	app.use(express.bodyParser());
 	app.use(express.methodOverride());
 	app.use(app.router);
-	app.use(express.static(application_root));
-	app.use(express.static("/media", "/tmp/"));
+	app.use("/", express.static(application_root));
+	app.use("/media", express.static("/home/ubuntu/Pancake/server/web/tmp/"));
 	app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 	//app.use(express.logger());
 });
@@ -155,10 +157,18 @@ app.post("/api/query/playlist", function(req, res) {
 	var MC = MongoClient.connect("mongodb://54.250.177.173/soundpancake", function(err, db) {
 		if(err) throw err;
 		var collection = db.collection("MIDIPlaylist");
-		collection.find({title: req.name}).toArray(function(err, re) {
-			res_send = re;
-			db.close();
-		});
+		if (!req.body.name) {
+			collection.find().toArray(function(err, re) {
+				res_send = re;
+				db.close();
+				res.send(200, {list: res_send});
+		} else {
+			collection.find({title: req.body.name}).toArray(function(err, re) {
+				res_send = re;
+				db.close();
+				res.send(200, {list: res_send});
+			});
+		}
 	});
 	res.send(200, {list: res_send});
 });
@@ -203,9 +213,6 @@ app.post("/api/auth/fb-session", function(req, res) {
 		if(err) throw err;
 		var collection = db.collection("fb-session");
 		dump = collection.find({"UserID": data.authResponse.UserID});
-//		if(dump.toArray().length = 0 || ) {
-//			collection.insert(data.authResponse);
-//		}
 	});
 
 	res.redirect('/');

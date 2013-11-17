@@ -4,10 +4,10 @@ app.controller('PlaySliderCtrl', function($rootScope) {
 
   var player;
   MIDI.loadPlugin(function(){
-    player = MIDI.Player;
-    //MIDIPlayerPercentage(player);
-  });
-  /*
+	player = MIDI.Player;
+  console.log("is this executed?");
+  });  
+/*
    entry: 한 곡, 즉 하나의 MidiObject에 대응
    list: entry의 리스트
    nowPlaying: 현재 플레이하고있는 곡의 entryNum
@@ -90,20 +90,24 @@ app.controller('PlaySliderCtrl', function($rootScope) {
   }
 
   $rootScope.stopbutton = function () {
-    MIDI.Player.stop();
+    MIDI.noteOn(0, 100, 127, 0);
+	player.stop();
     console.log("stop button");
+    console.log("MIDI defined? "+MIDI);
   };
   $rootScope.playbutton = function () {
-    if (player.playing){
-      MIDI.Player.start();
+    MIDI.noteOn(0, 100, 127, 0);
+	if (player.playing){
+      player.start();
+      console.log(player.start);
     }
     else{
-      MIDI.Player.resume();
+      player.resume();
     }
 	console.log("play button");
   };
   $rootScope.pausebutton = function () {
-    MIDI.Player.pause();
+    player.pause();
 	console.log("pause button");
   };
   $rootScope.nextbutton = function () {
@@ -138,11 +142,11 @@ app.controller('PlaySliderCtrl', function($rootScope) {
     uploadSocket.on('sendMidiFile',function(midiFileObject){
       player.loadMdiFileObject(midiFileObject);
     });*/
-    MIDI.loadPlugin(function(){
+   // MIDI.loadPlugin(function(){
 	player.loadMidiFileObject(midiObject.data);
 	MIDIPlayerPercentage(player);
-    });
-	MIDI.Player.stop();
+   // });
+	player.start();
     console.log("midiObject.data should be a MidiFile instance");
     console.dir(midiObject.data);
     console.log("player looks like this");
