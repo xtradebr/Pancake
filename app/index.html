@@ -104,6 +104,7 @@
                 <div id="scroll">
                     <div class="panel" ng-repeat="entry in list" ng-click="moveToPanel($index)" style="float:left;">
                         <img tooltip-placement="left" tooltip="({{entry.like}} likes) {{entry.description}}" ng-src="{{entry.albumArt}}"/>
+                        <i class="fa fa-minus-square" title="delete from list" ng-click="deletefromlist($index)"></i>
                         <p>{{entry.title}}</p>
                     </div>
                 </div>
