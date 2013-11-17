@@ -1,22 +1,17 @@
 'use strict';
 
 app.controller('PlaySliderCtrl', function($rootScope) {
-
-<<<<<<< HEAD
-  var player;
-  /*
-=======
+  console.dir(Event);
   $rootScope.player;
   MIDI.loadPlugin(function($rootScope){
-	$rootScope.player = MIDI.Player;
-  console.log("is this executed?");
+    $rootScope.player = MIDI.Player;
+    console.log("is this executed?");
   });  
-/*
->>>>>>> 11f1ed5563af4b7223891af72116313ae97e43ca
-   entry: 한 곡, 즉 하나의 MidiObject에 대응
-   list: entry의 리스트
-   nowPlaying: 현재 플레이하고있는 곡의 entryNum
-   */
+    /*
+    entry: 한 곡, 즉 하나의 MidiObject에 대응
+    list: entry의 리스트
+    nowPlaying: 현재 플레이하고있는 곡의 entryNum
+    */
   $rootScope.list = [
     {
       'id': 1234,
@@ -139,26 +134,12 @@ app.controller('PlaySliderCtrl', function($rootScope) {
     }
   };
 
-  loadSong = function (midiObject) {
-    //console.log('load song wth midifileid:'+MidiFileId);    
-    //unnecessary due to change of structure which brought in MidiFile data into MidiObject
-    /*uploadSocket.emit('requestMidiFile',MidiFileId);
-    uploadSocket.on('sendMidiFile',function(midiFileObject){
-      player.loadMdiFileObject(midiFileObject);
-    });*/
-<<<<<<< HEAD
-    MIDI.loadPlugin(function(){
-      player.loadMidiFileObject(midiObject.data);
-      MIDIPlayerPercentage(player);
-    });
-    MIDI.Player.stop();
-=======
-   // MIDI.loadPlugin(function(){
-	$rootScope.player.loadMidiFileObject(midiObject.data);
-	$rootScope.MIDIPlayerPercentage(player);
-   // });
-	$rootScope.player.start();
->>>>>>> 11f1ed5563af4b7223891af72116313ae97e43ca
+  $rootScope.loadSong = function (midiObject) {
+    
+    $rootScope.player.loadMidiFileObject(midiObject.data);
+  	$rootScope.MIDIPlayerPercentage(Event);
+    $rootScope.player.start();
+    
     console.log("midiObject.data should be a MidiFile instance");
     console.dir(midiObject.data);
     console.log("player looks like this");
@@ -166,7 +147,7 @@ app.controller('PlaySliderCtrl', function($rootScope) {
   }
 
 
-  var MIDIPlayerPercentage = function(player) {
+  $rootScope.MIDIPlayerPercentage = function(Event) {
 
     var playtime = document.getElementById("playtime");
     var endtime = document.getElementById("endtime");
