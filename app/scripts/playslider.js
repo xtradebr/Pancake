@@ -93,7 +93,8 @@ app.controller('PlaySliderCtrl', function($rootScope) {
     MIDI.noteOn(0, 100, 127, 0);
 	player.stop();
     console.log("stop button");
-    console.log("MIDI defined? "+MIDI);
+    console.log("MIDI defined?");
+    console.dir(MIDI);
   };
   $rootScope.playbutton = function () {
     MIDI.noteOn(0, 100, 127, 0);
