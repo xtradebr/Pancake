@@ -24,14 +24,16 @@ angular.module('pancakeApp')
   .service('listhandler', function($http, $timeout) {
 
     var items = [];
-    var dummy = [];
     var url = '';
     var param = {};
     var isReachEnd = false;
 
+    var dummy = [];
+
     return {
       items: items,
       busy: false,
+      toggleBusy: function() { this.busy = !this.busy; },
       after: 1,
       clear: function() {
         this.items = [];
@@ -41,7 +43,7 @@ angular.module('pancakeApp')
         this.items = list;
       },
       setDummy: function(d) {
-        dummy = d;
+        this.dummy = d;
       },
       setUrl: function(u) {
         url = u;
@@ -52,34 +54,31 @@ angular.module('pancakeApp')
       nextPage: function() {
         var that = this;
 
-        console.log("Next Paging");
-        if(this.busy) {
+        if(that.busy) {
           return;
         }
-        this.busy = true;
-        param.page = this.after;
 
+        that.toggleBusy();
+        console.log("Next Paging");
+        param.page = this.after;
 
         console.log("listHandler of " + url + "/" + JSON.stringify(param));
 
         $http.post(url, param)
           .success(function(data) {
-          if( data.isReachEnd ) {
-            that.isReachEnd = data.isReachEnd;
-            return;
-          }
-          //push data.data.chlidren to this.items
           console.log("res data in list handler: ");
           console.log(data.list);
-          data.list.forEach(function(item) {
-            that.items.push(item);
-          });
-          // this.after = next page or next element's id
-          that.after = param.page + 1;
+          that.items = that.items.concat(data.list);
+
+          if(data.list.length !== 0) {
+            that.after = param.page + 1;
+            that.toggleBusy();
+          } else {
+            $timeout(function() {
+              that.toggleBusy();
+            }, 5000);
+          }
         });
-        $timeout(function() {
-          that.busy = false;
-        }, 3000);
       }
     };
   });
