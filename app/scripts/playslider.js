@@ -69,7 +69,7 @@ app.controller('PlaySliderCtrl', function($rootScope) {
   };
 
   function nowPlayingNext(){
-    if ($roorScope.nowPlaying<$rootScope.list.length){
+    if ($rootScope.nowPlaying<$rootScope.list.length){
       return $rootScope.nowPlaying+1;
     }
     else{
@@ -77,14 +77,14 @@ app.controller('PlaySliderCtrl', function($rootScope) {
     }
   }
   function nowPlayingPrev(){
-    if ($roorScope.nowPlaying===1){
+    if ($rootScope.nowPlaying===1){
       return $rootScope.list.length;
     }
-    else if ($roorScope.nowPlaying > $rootScope.list.length){
-      return $roorScope.nowPlaying;
+    else if ($rootScope.nowPlaying > $rootScope.list.length){
+      return $rootScope.nowPlaying;
     }
     else{
-      return $roorScope.nowPlaying-1;
+      return $rootScope.nowPlaying-1;
     }
   }
 
@@ -103,12 +103,12 @@ app.controller('PlaySliderCtrl', function($rootScope) {
     player.pause();
   };
   $rootScope.nextbutton = function () {
-    $roorScope.nowPlaying = nowPlayingNext();
-    loadSong(list[nowPlaying]);
+    $rootScope.nowPlaying = nowPlayingNext();
+    loadSong(list[$rootScope.nowPlaying]);
   };
   $rootScope.prevbutton = function () {
-    $roorScope.nowPlaying = nowPlayingPrev();
-    loadSong(list[nowPlaying]);
+    $rootScope.nowPlaying = nowPlayingPrev();
+    loadSong(list[$rootScope.nowPlaying]);
   };
 
   var ifOpen = false;
@@ -132,7 +132,7 @@ app.controller('PlaySliderCtrl', function($rootScope) {
     uploadSocket.on('sendMidiFile',function(midiFileObject){
       player.loadMidiFileObject(midiFileObject);
     });*/
-    player.loadMidiFileObject(midiObjet.data);
+    player.loadMidiFileObject(midiObject.data);
   }
 
 
