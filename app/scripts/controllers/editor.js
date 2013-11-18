@@ -684,7 +684,7 @@ var MidiController = (function() {
       console.log("Make MIDI File!");
       midiObject.MidiFile = CompositionFile();
       console.log(midiObject);
-      // TODO: send midiObject to server
+
       uploadSocket.emit('saveMidiFile');
       uploadSocket.on('startSave', function () {
         uploadSocket.emit('midiData',midiObject);

@@ -113,7 +113,7 @@ angular.module('pancakeApp')
       $FB.logout(function () {
         updateLoginStatus(updateApiMe);
         $rootScope.isLogged = false;
-        $location.place('/');
+        $location.path('/');
         $notification.info('Logout Successfully!', 'come again~ :)');
       });
     };

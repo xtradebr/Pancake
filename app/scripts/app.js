@@ -2,9 +2,9 @@
 
 var app = angular.module('pancakeApp', ['ui.bootstrap', 'ezfb', 'infinite-scroll', 'ui.keypress', 'notifications']);
 
-//socket that stays open from entering the site until leaving the site
-//var uploadSocket = io.connect('http://www.soundpancake.io');
-var uploadSocket = io.connect('http://54.250.201.108');
+//uploadSocket that stays open from entering the site until leaving the site
+var uploadSocket = io.connect('http://www.soundpancake.io');
+//var uploadSocket = io.connect('http://54.250.201.108');
 
 app.config(function ($routeProvider, $locationProvider, $FBProvider) {
   $locationProvider.html5Mode(false).hashPrefix('!');
@@ -92,6 +92,6 @@ app.run(function ($rootScope, $location, $modal, loginHandler) {
   $rootScope.loginInfo = ' Log In';
   $rootScope.isLogged = false;
 
-  uploadSocket.emit('test', 'hello socket-world');
+  uploadSocket.emit('test', 'hello uploadSocket-world');
 
 });

@@ -29,6 +29,16 @@ function randomString() {
 
 redis_socket.on("connect", function() {console.log("connection with redis good");});
 
+io.set("transports", ["websocket", "xhr-polling", "jsonp-polling"]);
+/*
+io.set('transports', [
+    'websocket'
+  , 'flashsocket'
+  , 'htmlfile'
+  , 'xhr-polling'
+  , 'jsonp-polling'
+]);
+*/
 io.sockets.on("connection", function(socket) {
 	console.log("a connection created!");
 	var client = redis.createClient(redis_port, redis_host);
@@ -65,23 +75,45 @@ io.sockets.on("connection", function(socket) {
 		socket.emit("sendMidiFile", file);
 	});
 
-	/* liked */
-	socket.on("like", function(id) {
-		if ("_" in id) {
-			var MC = MongoClient.connect("mongodb://54.250.177.173/soundpancake", function(err, db) {
+	/* TODO:liked */
+	var midiId, response;
+	socket.on("like", function(mid) {
+		var return_data;
+		midiId = mid.substring(1);
+	});
+	var M = MongoClient.connect("mongodb://54.250.177.173/soundpancake", function(err, db) {
+			if(err) throw err;
+			var collection = db.collection("MIDIObject");
+			collection.save({id: midiId}, {$inc: {liked: 1}}, function(err, res) {
+				if(err) throw err;
+				db.close();
+			});
+		});
+
+
+/*		if (0 <= mid.search("_")) {
+			var M = MongoClient.connect("mongodb://54.250.177.173/soundpancake", function(err, db) {
 				if(err) throw err;
 				var collection = db.collection("MIDIObject");
-				collection.update({id: id}, {$inc : {liked: 1}});
-				collection.find({id: id}).toArray(function(err, result) {
-					socket.emit("liked", result[0].liked); //Integer
+				collection.find({id: mid}).toArray(function(err, results) {
+					console.dir(results);
+//				collection.update({id: mid}, {$inc : {liked: 1}}, function(err, re) {
+//					if (err) throw err;
+//					console.log("updated");
+//					console.dir(re);
+//				});
+//				collection.find().toArray(function(er, result) {
+//					if (er) throw er;
+//					socket.emit("liked", result[0].liked); //Integer
+//				});
 				});
 				db.close();
 			});
-		} else if ("-" in id) {
+		} else if (0 <= mid.search("-")) {
 			var MC = MongoClient.connect("mongodb://54.250.177.173/soundpancake", function(err, db) {
 				if(err) throw err;
 				var collection = db.collection("MIDIPlaylist");
-				collection.update({id: id}, {$inc : {liked: 1}});
+				collection.update({id: id}, {$inc : {liked: 1}}, function(err, re) {});
 				collection.find({id: id}).toArray(function(err, result) {
 					socket.emit("liked", result[0].liked); //Integer
 				});
@@ -89,7 +121,7 @@ io.sockets.on("connection", function(socket) {
 			});
 
 		}
-	});
+	});*/
 
 	//------------saving midi data by either midiuploader or composer-----------
 
@@ -124,7 +156,7 @@ io.sockets.on("connection", function(socket) {
 	        		fs.write(fd, data.albumArt, null, 'Binary', function(err, written, buff) {
 					fs.close(fd, function() {
 						console.log('File saved successful!');
-						MidiObject.albumArt = 'soundpancake.io/media/albumArt/' + data.albumArtName;
+						MidiObject.albumArt = '/media/albumArt/' + data.albumArtName;
 	                		});
 	            		});
 	        	});	
@@ -160,7 +192,7 @@ app.configure(function () {
 	app.use(express.methodOverride());
 	app.use(app.router);
 	app.use(express.static(application_root));
-	app.use(express.static("/media", "/tmp/"));
+	app.use("/media", express.static("/home/ubuntu/Pancake/server/web/tmp/"));
 	app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 	//app.use(express.logger());
 });
@@ -192,7 +224,15 @@ app.post("/api/query/musiclist", function(req, res) {
 			collection.find().toArray(function(err, re) {
 				if(err) throw err;
 				console.log(re);
-				res_send = re;
+				if (req.body.id) {
+					for (o in re) {
+						if (req.body.id == o.title.split("_")[0]) {
+							res_send.push(o);
+						}
+					}
+				} else {
+					res_send = re;
+				}
 				db.close();		
 				res.send(200, {list: res_send});
 			});
