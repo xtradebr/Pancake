@@ -29,18 +29,19 @@ function randomString() {
 
 
 function searchAndEmit(socket, collection, query) {
-	console.log(query);
 	collection.findOne(query, function(err, res) {
 		if (err) throw err;
 		if (res.id) {
 			collection.save({	_id: res._id,
 						id: res.id,
 						title: res.title,
-						playtime: res, 
+						playtime: res.playtime, 
 						owner: res.owner, 
 						artist: res.artist, 
 						description: res.description,
 						data: res.data,
+						MidiFileId: res.MidiFileId,
+						albumArt: res.albumArt,
 						like: res.like +1
 					}, function(err, res) {});
 			socket.emit("liked", res.like +1);
@@ -176,7 +177,7 @@ app.post("/api/query/musiclist", function(req, res) {
 		var collection = db.collection("MIDIObject");
 		if(!req.body.name) {
 			var res_send = []
-			collection.find().toArray(function(err, re) {
+			collection.find().skip(10*(req.body.page -1)).limit(10).toArray(function(err, re) {
 				if(err) throw err;
 				if (req.body.id) {
 					for (o in re) {
@@ -191,7 +192,7 @@ app.post("/api/query/musiclist", function(req, res) {
 				res.send(200, {list: res_send});
 			});
 		} else {
-			collection.find({title: req.body.name}).toArray(function(err, re) {
+			collection.find({title: req.body.name}).skip(10*(req.body.page -1)).limit(10).toArray(function(err, re) {
 				if(err) throw err;
 				res.send(200, {list: re});
 				db.close();
