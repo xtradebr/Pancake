@@ -4,7 +4,6 @@ var exec = require("child_process").exec;
 var util = require("util");
 var fs = require("fs");
 var io_client = require('socket.io-client');
-var MongoStore = require('mong.socket.io');
 
 var application_root = "/home/ubuntu/Pancake/app/";
 var redis_port = "8081";
@@ -30,9 +29,10 @@ function randomString() {
 
 
 function searchAndEmit(socket, collection, query) {
+	console.log(query);
 	collection.findOne(query, function(err, res) {
 		if (err) throw err;
-		if (res._id) {
+		if (res.id) {
 			collection.save({	_id: res._id,
 						id: res.id,
 						title: res.title,
@@ -100,7 +100,7 @@ io.sockets.on("connection", function(socket) {
 	socket.on("like", function(id) {
 		MongoClient.connect("mongodb://54.250.177.173/soundpancake", function (err, db) {
 			if(err) throw err;
-			searchAndEmit(socket, db.collection("MIDIObject"), {id: id.substring(1)});
+			searchAndEmit(socket, db.collection("MIDIObject"), {id: id});
 		});
 	});
 

@@ -1,8 +1,7 @@
-/*! Socket.IO.js build:0.9.16, development. Copyright(c) 2011 LearnBoost <dev@learnboost.com> MIT Licensed */
+/*! Socket.IO.js build:0.9.10, development. Copyright(c) 2011 LearnBoost <dev@learnboost.com> MIT Licensed */
 
 var io = ('undefined' === typeof module ? {} : module.exports);
 (function() {
-console.log("io loaded");
 
 /**
  * socket.io
@@ -26,7 +25,7 @@ console.log("io loaded");
    * @api public
    */
 
-  io.version = '0.9.16';
+  io.version = '0.9.10';
 
   /**
    * Protocol implemented.
@@ -263,7 +262,7 @@ console.log("io loaded");
 
   util.request = function (xdomain) {
 
-    if (xdomain && 'undefined' != typeof XDomainRequest && !util.ua.hasCORS) {
+    if (xdomain && 'undefined' != typeof XDomainRequest) {
       return new XDomainRequest();
     }
 
@@ -319,7 +318,7 @@ console.log("io loaded");
    *
    * @api public
    */
-
+  
   util.merge = function merge (target, additional, deep, lastseen) {
     var seen = lastseen || []
       , depth = typeof deep == 'undefined' ? 2 : deep
@@ -344,7 +343,7 @@ console.log("io loaded");
    *
    * @api public
    */
-
+  
   util.mixin = function (ctor, ctor2) {
     util.merge(ctor.prototype, ctor2.prototype);
   };
@@ -392,7 +391,7 @@ console.log("io loaded");
     }
 
     return ret;
-  };
+  }
 
   /**
    * Array indexOf compatibility.
@@ -402,8 +401,8 @@ console.log("io loaded");
    */
 
   util.indexOf = function (arr, o, i) {
-
-    for (var j = arr.length, i = i < 0 ? i + j < 0 ? 0 : i + j : i || 0;
+    
+    for (var j = arr.length, i = i < 0 ? i + j < 0 ? 0 : i + j : i || 0; 
          i < j && arr[i] !== o; i++) {}
 
     return j <= i ? -1 : i;
@@ -668,7 +667,7 @@ console.log("io loaded");
     return exports.JSON = {
       parse: nativeJSON.parse
     , stringify: nativeJSON.stringify
-    };
+    }
   }
 
   var JSON = exports.JSON = {};
@@ -1274,7 +1273,7 @@ console.log("io loaded");
 
   Transport.prototype.heartbeats = function () {
     return true;
-  };
+  }
 
   /**
    * Handles the response from the server. When a new response is received
@@ -1287,8 +1286,8 @@ console.log("io loaded");
 
   Transport.prototype.onData = function (data) {
     this.clearCloseTimeout();
-
-    // If the connection in currently open (or in a reopening state) reset the close
+    
+    // If the connection in currently open (or in a reopening state) reset the close 
     // timeout since we have just received data. This check is necessary so
     // that we don't reset the timeout on an explicitly disconnected connection.
     if (this.socket.connected || this.socket.connecting || this.socket.reconnecting) {
@@ -1340,7 +1339,7 @@ console.log("io loaded");
    *
    * @api private
    */
-
+  
   Transport.prototype.setCloseTimeout = function () {
     if (!this.closeTimeout) {
       var self = this;
@@ -1373,7 +1372,7 @@ console.log("io loaded");
   Transport.prototype.onConnect = function () {
     this.socket.onConnect();
     return this;
-  };
+  }
 
   /**
    * Clears close timeout
@@ -1424,7 +1423,7 @@ console.log("io loaded");
   Transport.prototype.onHeartbeat = function (heartbeat) {
     this.packet({ type: 'heartbeat' });
   };
-
+ 
   /**
    * Called when the transport opens.
    *
@@ -3236,7 +3235,7 @@ var swfobject=function(){var D="undefined",r="object",S="Shockwave Flash",W="Sho
       var request = io.util.request(xdomain),
           usesXDomReq = (global.XDomainRequest && request instanceof XDomainRequest),
           socketProtocol = (socket && socket.options && socket.options.secure ? 'https:' : 'http:'),
-          isXProtocol = (global.location && socketProtocol != global.location.protocol);
+          isXProtocol = (socketProtocol != global.location.protocol);
       if (request && !(usesXDomReq && isXProtocol)) {
         return true;
       }
@@ -3348,8 +3347,6 @@ var swfobject=function(){var D="undefined",r="object",S="Shockwave Flash",W="Sho
    */
 
   HTMLFile.prototype._ = function (data, doc) {
-    // unescape all forward slashes. see GH-1251
-    data = data.replace(/\\\//g, '/');
     this.onData(data);
     try {
       var script = doc.getElementsByTagName('script')[0];
@@ -3535,18 +3532,12 @@ var swfobject=function(){var D="undefined",r="object",S="Shockwave Flash",W="Sho
     function onload () {
       this.onload = empty;
       this.onerror = empty;
-      self.retryCounter = 1;
       self.onData(this.responseText);
       self.get();
     };
 
     function onerror () {
-      self.retryCounter ++;
-      if(!self.retryCounter || self.retryCounter > 3) {
-        self.onClose();  
-      } else {
-        self.get();
-      }
+      self.onClose();
     };
 
     this.xhr = this.request();
@@ -3760,7 +3751,7 @@ var swfobject=function(){var D="undefined",r="object",S="Shockwave Flash",W="Sho
 
     this.socket.setBuffer(true);
   };
-
+  
   /**
    * Creates a new JSONP poll that can be used to listen
    * for messages from the Socket.IO server.
@@ -3787,7 +3778,7 @@ var swfobject=function(){var D="undefined",r="object",S="Shockwave Flash",W="Sho
       self.onClose();
     };
 
-    var insertAt = document.getElementsByTagName('script')[0];
+    var insertAt = document.getElementsByTagName('script')[0]
     insertAt.parentNode.insertBefore(script, insertAt);
     this.script = script;
 
@@ -3868,7 +3859,4 @@ var swfobject=function(){var D="undefined",r="object",S="Shockwave Flash",W="Sho
   , this
 );
 
-if (typeof define === "function" && define.amd) {
-  define([], function () { return io; });
-}
 })();

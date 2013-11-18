@@ -61,7 +61,7 @@ angular.module('pancakeApp')
       scope.like = function() {
         console.log("Like!");
 
-        uploadSocket.emit("like", "_"+scope.music.id); 
+        uploadSocket.emit("like", scope.music.id); 
         uploadSocket.on("liked", function(like) {
           scope.music.like = like;
           $notification.success('Like It!', scope.music.title);
