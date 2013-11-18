@@ -3,7 +3,7 @@
 app.controller('PlaySliderCtrl', function($rootScope) {
 
   var player;
-  MIDI.loadPlugin(function(player){
+  MIDI.loadPlugin(function(){
     player = MIDI.Player;
   });
     /*
@@ -88,23 +88,25 @@ app.controller('PlaySliderCtrl', function($rootScope) {
     }
   }
 
-  $rootScope.stopbutton = function (player) {
+  $rootScope.stopbutton = function () {
     player.stop();
     console.log("stop button");
     console.log("MIDI defined?");
     console.dir(MIDI);
   };
-  $rootScope.playbutton = function (player) {
-    if ($rootScope.player.playing){
+  $rootScope.playbutton = function () {
+    if (!player.playing){
+	console.log("Player Start!");
+	console.log(player);
       player.start();
-      console.log($rootScope.player.start);
     }
     else{
-      $rootScope.player.resume();
+	console.log("Resume Playing!");
+      player.resume();
     }
 	  console.log("play button");
   };
-  $rootScope.pausebutton = function (player) {
+  $rootScope.pausebutton = function () {
     player.pause();
 	console.log("pause button");
   };
@@ -142,7 +144,7 @@ app.controller('PlaySliderCtrl', function($rootScope) {
   }
 
 
-  var MIDIPlayerPercentage = function (player) {
+  var MIDIPlayerPercentage = function () {
 
     var playtime = document.getElementById("playtime");
     var endtime = document.getElementById("endtime");

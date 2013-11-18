@@ -106,7 +106,6 @@ root.loadMidiFileObject = function (midiFileObject) {
 	root.stop();
 	root.currentData = midiFileObject;
 	root.replayer = new Replayer(midiFileObject, root.timeWarp);
-	root.currentData = midiFileObject;
 	root.data = root.replayer.getData();
 	root.endTime = getLength();
 };
