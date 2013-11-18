@@ -12,36 +12,10 @@ angular.module('pancakeApp')
       $scope.picture = "<i class=\"fa fa-smile-o fa-4x\"></i>";
     }
 
+    $scope.musiclist = [];
+    $scope.playlist = [];
+
     initListHandler();
-
-    // TODO: needs to composition with server side
-    (function getLists() {
-
-      $http.post('/api/query/musiclist', {'userid': loginHandler.getID(), page:1})
-        .success(function(data, status) {
-          $scope.musiclist = data.list;
-//          console.log(data);
-          $scope.listhandler.clear();
-          $scope.listhandler.setItems(data.list);
-          $scope.listhandler.setUrl('/api/query/musiclist');
-        })
-        .error(function(data, status) {
-          $notification.error("Error occurs !", "fail to fetch list from server.");
-        });
-
-      $http.post('/api/query/playlist', {'userid': loginHandler.getID(), page:1})
-        .success(function(data, status) {
-          $scope.playlist = data.list;
-//          console.log(data);
-          $scope.listhandler.clear();
-          $scope.listhandler.setItems(data.list);
-          $scope.listhandler.setUrl('/api/query/playlist');
-        })
-        .error(function(data, status) {
-          $notification.error("Error occurs !", "fail to fetch list from server.");
-        });
-//    });
-    })( );
 
     $scope.change = function() {
       $scope.showMusic = !$scope.showMusic;
@@ -54,9 +28,11 @@ angular.module('pancakeApp')
       if($scope.showMusic) {
         $scope.listhandler.setItems($scope.musiclist);
         $scope.listhandler.setUrl(getURL());
+        $scope.listhandler.setParam({userid: loginHandler.getID(), page: 1});
       } else {
         $scope.listhandler.setItems($scope.playlist);
         $scope.listhandler.setUrl(getURL());
+        $scope.listhandler.setParam({userid: loginHandler.getID(), page: 1});
       }
     }
 
