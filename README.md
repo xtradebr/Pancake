@@ -3,8 +3,6 @@
  `MIDI Sound Platform` anyone can composite, listening, shareing Midi Files.
 
  ver.0.1
-
-===
 #License
 
 The MIT License (MIT)
