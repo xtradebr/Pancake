@@ -26,7 +26,7 @@ app.controller('EditorCtrl', function($scope, $modal, $notification, $timeout, l
       albumArt: '',
       albumArtName: '',
       MidiFile: '',
-      ownder: (loginHandler.getID() || 'guest')
+      owner: (loginHandler.getID() || 'guest')
     };
   $scope.emit = function(event) {
     noteList.addLast(event);

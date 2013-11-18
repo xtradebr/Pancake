@@ -5,8 +5,6 @@ app.controller('PlaySliderCtrl', function($rootScope) {
   var player;
   MIDI.loadPlugin(function(player){
     player = MIDI.Player;
-    console.log("is this executed?");
-	console.log(player);
   });
     /*
     entry: 한 곡, 즉 하나의 MidiObject에 대응

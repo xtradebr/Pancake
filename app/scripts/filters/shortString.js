@@ -12,6 +12,9 @@ angular.module('pancakeApp')
     if( size === undefined ) {
       size = 20;
     }
+    if( string === undefined ) {
+      string = "";
+    }
     if( string.length > size ) {
       return string.substr(0, size) + '...';
     } else {
