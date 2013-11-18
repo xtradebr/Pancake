@@ -71,7 +71,7 @@ app.controller('PlaySliderCtrl', function($rootScope) {
   };
 
   function nowPlayingNext(){
-    if ($roorScope.nowPlaying<$rootScope.list.length){
+    if ($rootScope.nowPlaying<$rootScope.list.length){
       return $rootScope.nowPlaying+1;
     }
     else{
@@ -79,14 +79,14 @@ app.controller('PlaySliderCtrl', function($rootScope) {
     }
   }
   function nowPlayingPrev(){
-    if ($roorScope.nowPlaying===1){
+    if ($rootScope.nowPlaying===1){
       return $rootScope.list.length;
     }
-    else if ($roorScope.nowPlaying > $rootScope.list.length){
-      return $roorScope.nowPlaying;
+    else if ($rootScope.nowPlaying > $rootScope.list.length){
+      return $rootScope.nowPlaying;
     }
     else{
-      return $roorScope.nowPlaying-1;
+      return $rootScope.nowPlaying-1;
     }
   }
 
@@ -112,13 +112,11 @@ app.controller('PlaySliderCtrl', function($rootScope) {
   };
   $rootScope.nextbutton = function () {
     $rootScope.nowPlaying = nowPlayingNext();
-    loadSong(list[nowPlaying]);
-	console.log("next button");
+    loadSong(list[$rootScope.nowPlaying]);
   };
   $rootScope.prevbutton = function () {
     $rootScope.nowPlaying = nowPlayingPrev();
-    loadSong(list[nowPlaying]);
-	console.log("prev button");
+    loadSong(list[$rootScope.nowPlaying]);
   };
 
   var ifOpen = false;
@@ -135,17 +133,14 @@ app.controller('PlaySliderCtrl', function($rootScope) {
     }
   };
 
-  var loadSong = function (midiObject) {
-	console.log("Load SOng!");
-	console.log(player);
+  function loadSong(midiObject) {
+    //console.log('load song wth midifileid:'+MidiFileId);    
+    //unnecessary due to change of structure which brought in MidiFile data into MidiObject
+    /*uploadSocket.emit('requestMidiFile',MidiFileId);
+    uploadSocket.on('sendMidiFile',function(midiFileObject){
+      player.loadMidiFileObject(midiFileObject);
+    });*/
     player.loadMidiFileObject(midiObject.data);
-    MIDIPlayerPercentage(player);
-    player.start();
-    
-    console.log("midiObject.data should be a MidiFile instance");
-    console.dir(midiObject.data);
-    console.log("player looks like this");
-    console.dir(player);
   }
 
 
