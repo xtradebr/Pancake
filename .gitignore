@@ -5,6 +5,7 @@ dist/
 .DS_Store
 .idea*
 .swp
+.swo
 app/custom_bootstrap/
 app/bower_components/
 server/web/tmp/
