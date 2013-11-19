@@ -183,6 +183,11 @@ angular.module('pancakeApp')
         });
     };
 
+    $scope.$on('$routeChangeSuccess', function(next, current) {
+      listhandler.clear();
+      listhandler.setUrl(url);
+    });
+
     $scope.FilterCtrl = function($scope, $http, $notification, loginHandler) {
 
       var url = 'http://www.soundpancake.io/api/query/playlist';

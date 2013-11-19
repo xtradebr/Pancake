@@ -22,20 +22,20 @@ angular.module('pancakeApp')
       $event.preventDefault();
       var param = {name: $scope.musicName};
 
-	console.log("query to " + url + "/" + JSON.stringify(param));
-      $http.post(url, param) 
+      console.log("query to " + url + "/" + JSON.stringify(param));
+      $http.post(url, param)
         .success(function(data, status) {
           console.log("fetching success!");
-	console.log(data.list);
+          console.log(data.list);
           $scope.listhandler.clear();
           $scope.listhandler.setItems(data.list);
           $scope.listhandler.setParam(param);
-	console.log(data);
+          console.log(data);
         })
         .error(function(data, status) {
           console.log("fetching list fails from server.");
         });
-    }
+    };
 
     $scope.$on('$routeChangeSuccess', function(next, current) {
       listhandler.clear();
@@ -61,7 +61,7 @@ angular.module('pancakeApp')
       scope.like = function() {
         console.log("Like!");
 
-        uploadSocket.emit("like", scope.music.id); 
+        uploadSocket.emit("like", scope.music.id);
         uploadSocket.on("liked", function(like) {
           scope.music.like = like;
           $notification.success('Like It!', scope.music.title);

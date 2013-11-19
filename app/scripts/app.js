@@ -49,6 +49,12 @@ app.config(function ($routeProvider, $locationProvider, $FBProvider) {
       title: 'Dashboard',
       isInEditor: false
     })
+    .when('/share', {
+      templateUrl: 'views/sharing.html',
+      controller: 'ShareCtrl',
+      title: 'Sharing',
+      isInEditor: false
+    })
     .otherwise({
       redirectTo: '/home'
     });
