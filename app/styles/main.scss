@@ -524,3 +524,33 @@ player-component .divider-horizontal {
   background-color: #415b76 !important;
   border-color: #415b76;
 }
+
+.sharing {
+  width: 500px;
+  margin: 40px auto;
+  padding: 30px;
+  border-radius: 15px;
+  background-color: #ECF0F1;
+}
+
+.sharing h6 {
+  font-size: 20px;
+}
+
+.image-view {
+  width: 170px;
+  height: 170px;
+  padding-right: 20px;
+  display: inline-block;
+  max-width: 170px;
+  max-height: 170px;
+}
+
+.album-art {
+  width: 150%;
+  height: auto;
+}
+
+.description {
+  padding-top: 15px;
+}
