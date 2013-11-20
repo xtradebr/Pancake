@@ -5,6 +5,7 @@ app.controller('PlaySliderCtrl', function($rootScope) {
   var player;
   MIDI.loadPlugin(function(){
     player = MIDI.Player;
+    MIDIPlayerPercentage(player);
   });
     /*
     entry: 한 곡, 즉 하나의 MidiObject에 대응
@@ -89,10 +90,7 @@ app.controller('PlaySliderCtrl', function($rootScope) {
   }
 
   $rootScope.stopbutton = function () {
-    player.stop();
-    console.log("stop button");
-    console.log("MIDI defined?");
-    console.dir(MIDI);
+	player.loadFile("http://soundpancake.io/midi/nibi.mid",player.start);
   };
   $rootScope.playbutton = function () {
     if (!player.playing){
@@ -134,8 +132,7 @@ app.controller('PlaySliderCtrl', function($rootScope) {
 
   function loadSong(midiObject) {
     player.loadMidiFileObject(midiObject.data);
-    MIDIPlayerPercentage(player);
-    MIDI.Player.start();
+    player.start();
     console.log("player inside loadSong");
     console.dir(player);
   }

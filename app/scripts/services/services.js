@@ -36,7 +36,7 @@ angular.module('pancakeApp')
       toggleBusy: function() { this.busy = !this.busy; },
       after: 1,
       clear: function() {
-        param = {};
+        param = {"page": 1};
         this.items = [];
         this.after = 1;
       },
@@ -59,15 +59,12 @@ angular.module('pancakeApp')
           return;
         }
         that.toggleBusy();
-        //console.log("Next Paging");
-        param.page = this.after;
+        param.page = that.after;
 
         console.log("listHandler of " + url + "/" + JSON.stringify(param));
 
         $http.post(url, param)
           .success(function(data) {
-//          console.log("res data in list handler: ");
- //         console.log(data.list);
           that.items = that.items.concat(data.list);
 
           if(data.list.length !== 0) {
