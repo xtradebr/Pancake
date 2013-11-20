@@ -1,17 +1,56 @@
 'use strict';
 
-app.controller('PlaySliderCtrl', function($rootScope) {
-
-  var player;
-  MIDI.loadPlugin(function(){
+var player;
+MIDI.loadPlugin(function(){
     player = MIDI.Player;
     MIDIPlayerPercentage(player);
-  });
-    /*
-    entry: 한 곡, 즉 하나의 MidiObject에 대응
-    list: entry의 리스트
-    nowPlaying: 현재 플레이하고있는 곡의 entryNum
-    */
+});
+
+function MIDIPlayerPercentage (player) {
+
+    var playtime = document.getElementById("playtime");
+    var endtime = document.getElementById("endtime");
+    var capsule = document.getElementById("capsule");
+    var timeCursor = document.getElementById("cursor");
+
+    Event.add(capsule, "drag", function (event, self) {
+      Event.cancel(event);
+      player.currentTime = (self.x) / 420 * player.endTime;
+      if (player.currentTime < 0) player.currentTime = 0;
+      if (player.currentTime > player.endTime) player.currentTime = player.endTime;
+      if (self.state === "down") {
+        player.pause(true);
+      } else if (self.state === "up") {
+        player.resume();
+      }
+    });
+
+    function timeFormatting(n) {
+      var minutes = n / 60 >> 0;
+      var seconds = String(n - (minutes * 60) >> 0);
+      if (seconds.length == 1) seconds = "0" + seconds;
+      return minutes + ":" + seconds;
+    }
+
+    player.setAnimation(function(data, element) {
+      var percent = data.now / data.end;
+      var now = data.now >> 0;
+      var end = data.end >> 0;
+      if (now === end) { // go to next song
+      console.log("reached now===end");
+        player.stop();
+        //nextbutton();
+        //player.loadFile(song, player.start); // load MIDI
+      }
+      // display the information to the user
+      timeCursor.style.width = (percent * 100) + "%";
+      playtime.innerHTML = timeFormatting(now);
+      endtime.innerHTML = timeFormatting(end);
+    })
+};
+
+app.controller('PlaySliderCtrl', function($rootScope) {
+
   $rootScope.list = [
     {
       'id': 1234,
@@ -91,21 +130,22 @@ app.controller('PlaySliderCtrl', function($rootScope) {
 
   $rootScope.stopbutton = function () {
 	player.loadFile("http://soundpancake.io/midi/nibi.mid",player.start);
+    player.stop();
   };
   $rootScope.playbutton = function () {
     if (!player.playing){
-	console.log("Player Start!");
-      MIDI.Player.start();
+      console.log("Player Start!");
+      player.start();
     }
     else{
-	console.log("Resume Playing!");
-      MIDI.Player.resume();
+      console.log("Resume Playing!");
+      player.resume();
     }
-	  console.log("play button");
+      console.log("play button");
   };
   $rootScope.pausebutton = function () {
-    MIDI.Player.pause();
-	console.log("pause button");
+    player.pause();
+    console.log("pause button");
   };
   $rootScope.nextbutton = function () {
     $rootScope.nowPlaying = nowPlayingNext();
@@ -136,50 +176,6 @@ app.controller('PlaySliderCtrl', function($rootScope) {
     console.log("player inside loadSong");
     console.dir(player);
   }
-
-
-  function MIDIPlayerPercentage (player) {
-
-    var playtime = document.getElementById("playtime");
-    var endtime = document.getElementById("endtime");
-    var capsule = document.getElementById("capsule");
-    var timeCursor = document.getElementById("cursor");
-
-    Event.add(capsule, "drag", function (event, self) {
-      Event.cancel(event);
-      player.currentTime = (self.x) / 420 * player.endTime;
-      if (player.currentTime < 0) player.currentTime = 0;
-      if (player.currentTime > player.endTime) player.currentTime = player.endTime;
-      if (self.state === "down") {
-        player.pause(true);
-      } else if (self.state === "up") {
-        player.resume();
-      }
-    });
-
-    function timeFormatting(n) {
-      var minutes = n / 60 >> 0;
-      var seconds = String(n - (minutes * 60) >> 0);
-      if (seconds.length == 1) seconds = "0" + seconds;
-      return minutes + ":" + seconds;
-    }
-
-    player.setAnimation(function(data, element) {
-      var percent = data.now / data.end;
-      var now = data.now >> 0;
-      var end = data.end >> 0;
-      if (now === end) { // go to next song
-    	console.log("reached now===end");
-    	player.stop();
-    	//nextbutton();
-        //player.loadFile(song, player.start); // load MIDI
-      }
-      // display the information to the user
-      timeCursor.style.width = (percent * 100) + "%";
-      playtime.innerHTML = timeFormatting(now);
-      endtime.innerHTML = timeFormatting(end);
-    })
-  };
 
   //init function
   $(function ($rootScope){
@@ -221,16 +217,4 @@ app.controller('PlaySliderCtrl', function($rootScope) {
       //set the nowSelected to the selected panel number
   };
 
-});
-
-app.directive('ngRightClick', function($parse) {
-    return function(scope, element, attrs) {
-        var fn = $parse(attrs.ngRightClick);
-        element.bind('contextmenu', function(event) {
-            scope.$apply(function() {
-                event.preventDefault();
-                fn(scope, {$event:event});
-            });
-        });
-    };
 });
