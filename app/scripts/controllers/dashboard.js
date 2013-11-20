@@ -20,6 +20,7 @@ angular.module('pancakeApp')
     $scope.change = function() {
       $scope.showMusic = !$scope.showMusic;
       initListHandler();
+	console.log($scope.musiclist.length);
     };
 
     function initListHandler() {
@@ -29,11 +30,13 @@ angular.module('pancakeApp')
         $scope.listhandler.setItems($scope.musiclist);
         $scope.listhandler.setUrl(getURL());
         $scope.listhandler.setParam({userid: loginHandler.getID(), page: 1});
+	console.log(loginHandler.getID());
       } else {
         $scope.listhandler.setItems($scope.playlist);
         $scope.listhandler.setUrl(getURL());
         $scope.listhandler.setParam({userid: loginHandler.getID(), page: 1});
       }
+      listhandler.nextPage();
     }
 
     function getURL() {

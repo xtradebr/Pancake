@@ -28,11 +28,11 @@ album art  <input type="file" id="albumArt" name="albumArt"><br>
 description <input type="text" id="description" name="description"></br>
 <button id="upload" onclick="upload();">Upload</button>
 <!-- TODO -->
-<script src="/socket.io/socket.io.js"> </script>
+<script src="/lib/socket.io.js"> </script>
 <script>
 
 //setting up socket
-var uploadSocket = io.connect('http:/54.250.201.108');
+var uploadSocket = io.connect('http://www.soundpancake.io');
 
 uploadSocket.on('connect', function () {
 	console.log('Connected !');

@@ -14,7 +14,7 @@ angular.module('pancakeApp')
       'description': 'if you feel weak, check this song out!',
       'albumArt': 'images/stronger.png',
       'MidiFileId': 1234, //obsolete (dummy)
-      'share': 'http://www.soundpancake.io/share/125402525',
+      'share': 'http://www.soundpancake.io/#!/share/125402525',
       'data': {}
     };
 

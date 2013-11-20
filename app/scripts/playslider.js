@@ -97,17 +97,16 @@ app.controller('PlaySliderCtrl', function($rootScope) {
   $rootScope.playbutton = function () {
     if (!player.playing){
 	console.log("Player Start!");
-	console.log(player);
-      player.start();
+      MIDI.Player.start();
     }
     else{
 	console.log("Resume Playing!");
-      player.resume();
+      MIDI.Player.resume();
     }
 	  console.log("play button");
   };
   $rootScope.pausebutton = function () {
-    player.pause();
+    MIDI.Player.pause();
 	console.log("pause button");
   };
   $rootScope.nextbutton = function () {
@@ -134,17 +133,15 @@ app.controller('PlaySliderCtrl', function($rootScope) {
   };
 
   function loadSong(midiObject) {
-    //console.log('load song wth midifileid:'+MidiFileId);    
-    //unnecessary due to change of structure which brought in MidiFile data into MidiObject
-    /*uploadSocket.emit('requestMidiFile',MidiFileId);
-    uploadSocket.on('sendMidiFile',function(midiFileObject){
-      player.loadMidiFileObject(midiFileObject);
-    });*/
     player.loadMidiFileObject(midiObject.data);
+    MIDIPlayerPercentage(player);
+    MIDI.Player.start();
+    console.log("player inside loadSong");
+    console.dir(player);
   }
 
 
-  var MIDIPlayerPercentage = function () {
+  function MIDIPlayerPercentage (player) {
 
     var playtime = document.getElementById("playtime");
     var endtime = document.getElementById("endtime");
@@ -176,7 +173,7 @@ app.controller('PlaySliderCtrl', function($rootScope) {
       var end = data.end >> 0;
       if (now === end) { // go to next song
     	console.log("reached now===end");
-    	player.start();
+    	player.stop();
     	//nextbutton();
         //player.loadFile(song, player.start); // load MIDI
       }

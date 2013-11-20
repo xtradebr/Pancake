@@ -179,9 +179,10 @@ app.post("/api/query/musiclist", function(req, res) {
 			var res_send = []
 			collection.find().skip(10*(req.body.page -1)).limit(10).toArray(function(err, re) {
 				if(err) throw err;
+				console.log(re);
 				if (req.body.id) {
-					for (o in re) {
-						if (req.body.id == o.title.split("_")[0]) {
+					for (var i = 0; i < re.lenghth; i ++) {
+						if (req.body.userid == re[i].title.split("_")[0]) {
 							res_send.push(o);
 						}
 					}
@@ -235,3 +236,4 @@ app.post("/api/auth/fb", function(req, res) {
 
 
 console.log("listening on port 80/3000");
+

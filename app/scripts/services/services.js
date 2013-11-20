@@ -36,6 +36,7 @@ angular.module('pancakeApp')
       toggleBusy: function() { this.busy = !this.busy; },
       after: 1,
       clear: function() {
+        param = {};
         this.items = [];
         this.after = 1;
       },
@@ -57,17 +58,16 @@ angular.module('pancakeApp')
         if(that.busy) {
           return;
         }
-
         that.toggleBusy();
-        console.log("Next Paging");
+        //console.log("Next Paging");
         param.page = this.after;
 
         console.log("listHandler of " + url + "/" + JSON.stringify(param));
 
         $http.post(url, param)
           .success(function(data) {
-          console.log("res data in list handler: ");
-          console.log(data.list);
+//          console.log("res data in list handler: ");
+ //         console.log(data.list);
           that.items = that.items.concat(data.list);
 
           if(data.list.length !== 0) {
@@ -76,7 +76,7 @@ angular.module('pancakeApp')
           } else {
             $timeout(function() {
               that.toggleBusy();
-            }, 5000);
+            }, 1000);
           }
         });
       }

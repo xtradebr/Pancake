@@ -704,8 +704,8 @@ var MidiController = (function() {
     },
     pushEvent: function(event) {
       // event = { data, pitch, st, et }
-      composition.noteOn((event.startTime - lastTime)*100, pitchSound[event.pitch]);
-      composition.noteOff((event.endTime - event.startTime)*100, pitchSound[event.pitch]);
+      composition.noteOn(parseInt((event.startTime - lastTime)*98), pitchSound[event.pitch]);
+      composition.noteOff(parseInt((event.endTime - event.startTime)*98), pitchSound[event.pitch]);
     }
   };
 }( ));
@@ -715,7 +715,7 @@ var MidiController = (function() {
  */
 var composition = (function(){
 
-  var formatType=1;
+  var formatType=0;
   var trackCount=1; //단일트랙 파일인 경우만 생각함
   var timeDivision=480; //Ticks per Beat;
   var header = {
@@ -725,13 +725,13 @@ var composition = (function(){
   };
   var tracks=[];
   tracks[0] = [];
-
+  //tracks[0].push({
   return {
     noteOn: function(deltaTime, noteNumber){
       var event={};
       event.deltaTime=deltaTime;
       event.type='channel';
-      event.channel=1;
+      event.channel=0;
       event.noteNumber=noteNumber;
       event.velocity=80;		//use fixed value for velocity (temporarily);
       event.subType='noteOn';
@@ -742,7 +742,7 @@ var composition = (function(){
       var event={};
       event.deltaTime=deltaTime;
       event.type='channel';
-      event.channel=1;
+      event.channel=0;
       event.noteNumber=noteNumber;
       event.subType='noteOff';
 
