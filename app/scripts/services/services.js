@@ -27,7 +27,7 @@ angular.module('pancakeApp')
     var url = '';
     var param = {};
     var isReachEnd = false;
-
+    var len = { musiclist: 0, playlist: 0 };
     var dummy = [];
 
     return {
@@ -53,7 +53,10 @@ console.log("clear");
       setParam: function(p) {
         param = p;
       },
-      nextPage: function() {
+      getLength: function() {
+        return len;
+      },
+      nextPage: function(callback) {
         var that = this;
 
         if(that.busy) {
@@ -67,12 +70,13 @@ console.log("clear");
         $http.post(url, param)
           .success(function(data) {
           that.items = that.items.concat(data.list);
-console.log(that.items);
 
           if(data.list.length !== 0) {
-console.log('before'+JSON.stringify(param));
+		if(callback !== undefined) {
+            		len = { musiclist: that.items.length, playlist: 0 };
+			callback();
+                }
             that.after = param.page + 1;
-console.log('after'+JSON.stringify(param));
             that.toggleBusy();
           } else {
             $timeout(function() {

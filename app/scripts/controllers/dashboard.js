@@ -7,7 +7,7 @@ angular.module('pancakeApp')
     $scope.showMusic = true;
     $scope.name = loginHandler.getName();
     $scope.length = {
-      musiclist: 5,
+      musiclist: 0,
       playlist: 0
     };
 
@@ -33,7 +33,11 @@ angular.module('pancakeApp')
       $scope.listhandler.setUrl(getURL());
       $scope.listhandler.setParam({userid: loginHandler.getName(), page: 1});
 
-      listhandler.nextPage();
+      listhandler.nextPage(function() {
+        var len = listhandler.getLength();
+	console.log(len);
+        $scope.length = len;
+      });
     }
 
     function getURL() {
