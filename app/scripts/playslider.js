@@ -137,16 +137,16 @@ app.controller('PlaySliderCtrl', function($rootScope) {
   };
 
   function nowPlayingNext(){
-    if ($rootScope.nowPlaying<$rootScope.list.length){
+    if ($rootScope.nowPlaying<$rootScope.list.length-1){
       return $rootScope.nowPlaying+1;
     }
     else{
-      return 1;
+      return 0;
     }
   }
   function nowPlayingPrev(){
-    if ($rootScope.nowPlaying===1){
-      return $rootScope.list.length;
+    if ($rootScope.nowPlaying===0){
+      return $rootScope.list.length-1;
     }
     else if ($rootScope.nowPlaying > $rootScope.list.length){
       return $rootScope.nowPlaying;
@@ -178,11 +178,13 @@ app.controller('PlaySliderCtrl', function($rootScope) {
   };
   $rootScope.nextbutton = function () {
     $rootScope.nowPlaying = nowPlayingNext();
-    loadSong(list[$rootScope.nowPlaying]);
+    loadSong($rootScope.list[$rootScope.nowPlaying]);
+    $rootScope.playSelect($rootScope.nowPlaying);
   };
   $rootScope.prevbutton = function () {
     $rootScope.nowPlaying = nowPlayingPrev();
-    loadSong(list[$rootScope.nowPlaying]);
+    loadSong($rootScope.list[$rootScope.nowPlaying]);
+    $rootScope.playSelect($rootScope.nowPlaying);
   };
 
   var ifOpen = false;
