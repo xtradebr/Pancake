@@ -178,11 +178,13 @@ app.controller('PlaySliderCtrl', function($rootScope) {
   };
   $rootScope.nextbutton = function () {
     $rootScope.nowPlaying = nowPlayingNext();
-    loadSong(list[$rootScope.nowPlaying]);
+    loadSong($rootScope.list[$rootScope.nowPlaying]);
+    $rootScope.playSelect($rootScope.nowPlaying);
   };
   $rootScope.prevbutton = function () {
     $rootScope.nowPlaying = nowPlayingPrev();
-    loadSong(list[$rootScope.nowPlaying]);
+    loadSong($rootScope.list[$rootScope.nowPlaying]);
+    $rootScope.playSelect($rootScope.nowPlaying);
   };
 
   var ifOpen = false;
