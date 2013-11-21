@@ -200,7 +200,7 @@ app.controller('PlaySliderCtrl', function($rootScope) {
   };
 
   function loadSong(midiObject) {
-    player.loadMidiFileObject(midiObject.data);
+    player.loadFile(midiObject.data);
     player.start();
     console.log("player inside loadSong");
     console.dir(player);
