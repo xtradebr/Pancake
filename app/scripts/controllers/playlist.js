@@ -12,7 +12,7 @@ angular.module('pancakeApp')
     $scope.showPublisher = false;
 
     var url = '/api/query/playlist';
-    var list = [
+    $scope.list = [
       {
         // id: server에서 참조하는 각 player의 고유 식별 번호
         id: 1,
@@ -162,9 +162,9 @@ angular.module('pancakeApp')
         ]
       }
     ];
-    listhandler.clear();
+    //listhandler.clear();
 
-    listhandler.setItems(list);
+    listhandler.setItems($scope.list);
     listhandler.setDummy(dummy);
     listhandler.setUrl(url);
     $scope.listhandler = listhandler;
@@ -234,7 +234,7 @@ angular.module('pancakeApp')
         });
 
 //        console.log(body);
-        query(body);
+       // query(body);
       };
 
       $scope.social = function() {

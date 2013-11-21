@@ -8,7 +8,7 @@ angular.module('pancakeApp')
     $scope.name = loginHandler.getName();
     $scope.length = {
       musiclist: 5,
-      playlist: 2
+      playlist: 0
     };
 
     if(loginHandler.getUID() != "guest") {
@@ -30,14 +30,9 @@ angular.module('pancakeApp')
     function initListHandler() {
       listhandler.clear();
       $scope.listhandler = listhandler;
-      if($scope.showMusic) {
-        $scope.listhandler.setUrl(getURL());
-        $scope.listhandler.setParam({userid: loginHandler.getID(), page: 1});
-	console.log(loginHandler.getID());
-      } else {
-        $scope.listhandler.setUrl(getURL());
-        $scope.listhandler.setParam({userid: loginHandler.getID(), page: 1});
-      }
+      $scope.listhandler.setUrl(getURL());
+      $scope.listhandler.setParam({userid: loginHandler.getName(), page: 1});
+
       listhandler.nextPage();
     }
 

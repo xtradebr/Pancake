@@ -36,6 +36,7 @@ angular.module('pancakeApp')
       toggleBusy: function() { this.busy = !this.busy; },
       after: 1,
       clear: function() {
+console.log("clear");
         param = {"page": 1};
         this.items = [];
         this.after = 1;
@@ -66,9 +67,12 @@ angular.module('pancakeApp')
         $http.post(url, param)
           .success(function(data) {
           that.items = that.items.concat(data.list);
+console.log(that.items);
 
           if(data.list.length !== 0) {
+console.log('before'+JSON.stringify(param));
             that.after = param.page + 1;
+console.log('after'+JSON.stringify(param));
             that.toggleBusy();
           } else {
             $timeout(function() {

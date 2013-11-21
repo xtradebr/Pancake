@@ -6,12 +6,14 @@
 
 angular.module('pancakeApp')
   .controller('MusicListCtrl', function($scope, $http, listhandler) {
+	console.log("MusicList Ctrl");
 
     $scope.show = false;
     $scope.musicName = '';
 
     var url = '/api/query/musiclist';
     $scope.listhandler = listhandler;
+    listhandler.setUrl(url);
 
     $scope.$on('showMusicInfo', function(event, music) {
       $scope.show = true;
@@ -37,10 +39,6 @@ angular.module('pancakeApp')
         });
     };
 
-    $scope.$on('$routeChangeSuccess', function(next, current) {
-      listhandler.clear();
-      listhandler.setUrl(url);
-    });
   });
 
 angular.module('pancakeApp')
@@ -53,7 +51,6 @@ angular.module('pancakeApp')
 
       scope.play = function() {
         console.log("Play!");
-//        console.log(scope.music);
         $rootScope.appendtolist(scope.music);
         $notification.info("'" + scope.music.title + "' Added!", 'check music list');
       };
@@ -70,7 +67,9 @@ angular.module('pancakeApp')
 
       scope.share = function() {
         console.log("Share!");
-        $notification.error('Not Available!', 'Share Function is not available now...');
+	window.prompt('Share Link', scope.music.share);
+        //$notification.error('Not Available!', 'Share Function is not available now...');
+        $notification.info('Copyed', 'now you can share this music, just paste it!');
       };
 
       scope.info = function() {

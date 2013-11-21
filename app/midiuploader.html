@@ -38,22 +38,21 @@ album art  <input type="file" id="albumArt" name="albumArt"><br>
 description <input type="text" id="description" name="description"></br>
 <button id="upload" onclick="upload();">Upload</button>
 <!-- TODO -->
-<!--<script src="/lib/socket.io.js"> </script>-->
+<script src="lib/socket.io.js"> </script>
 <script>
 
 //setting up socket
-/*var uploadSocket = io.connect('http://www.soundpancake.io');
-
-uploadSocket.on('connect', function () {
-	console.log('Connected !');
-})*/
+var uploadSocket = io.connect('http://www.soundpancake.io');
+uploadSocket.on('clear', function(data) {
+	console.log(data + " socket world");
+});
 
 //setting up player
 var player;
 MIDI.loadPlugin(function () {
     player = MIDI.Player;
     MIDIPlayerPercentage(player);
-})
+});
 
 var playstop = function(either){
 	if (either==0){
@@ -62,7 +61,7 @@ var playstop = function(either){
 	else if (either==1){
 		MIDI.Player.stop();
 	}
-}
+};
 
 var myMidi;
 
@@ -77,7 +76,7 @@ function readMidi(evt) {
 	var file = files[0];
 	var reader = new FileReader();
 	
-	var blob = file.slice(0, file.size-1)
+	var blob = file.slice(0, file.size-1);
 	reader.readAsBinaryString(blob);
 	
 	reader.onloadend = function(evt) {
@@ -86,12 +85,9 @@ function readMidi(evt) {
 			var midiString = String(evt.target.result);
 			player.loadFile(midiString,player.start);
 			myMidi = MidiFile(midiString);
-			console.log("midifile object looks like this");
-			console.dir(myMidi);
-			console.dir(player);
 		}
 	}
-}
+};
 
 var albumArt;
 var albumArtName;
@@ -111,12 +107,14 @@ function readAlbumArt(evt) {
 	reader.onloadend = function(evt) {
 		if (evt.target.readyState == FileReader.DONE) {	
 			albumArt = evt.target.result;
-			albumArtName = file.name;
+			albumArtNsdfame = file.name;
 		}
 	}
-}
+};
 
 function upload(){
+	uploadSocket.emit("test", "from midiuploader");
+
 	var data = 
 	{
 		'title': document.getElementById('title').value,
@@ -127,12 +125,14 @@ function upload(){
 		'MidiFile': myMidi,
 		'albumArt': albumArt,
 		'albumArtName': albumArtName
-	}
+	};
 	uploadSocket.emit('saveMidiFile');
 	uploadSocket.on('startSave', function () {
+		console.log("start save");
+		console.log(data);
 		uploadSocket.emit('midiData',data);
 	});
-}
+};
 
 document.getElementById('files').addEventListener('change', readMidi, false);
 document.getElementById('albumArt').addEventListener('change', readAlbumArt, false);

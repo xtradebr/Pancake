@@ -2,6 +2,7 @@
 
 angular.module('pancakeApp')
   .controller('MainCtrl', function ($scope) {
+	console.log("Main Ctrl");
 
     $scope.title = 'Sound Pancake';
     $scope.description = 'Sound Pancake는 새로운 MIDI 사운드 공유 서비스입니다. 클라우드 컴퓨팅 기술을 활용하여 언제 어디서나 누구나 쉽게 MIDI 음악을 작곡하고 공유할 수 있습니다. 이제 새로운 클라우드 서비스를 즐겨보세요~';

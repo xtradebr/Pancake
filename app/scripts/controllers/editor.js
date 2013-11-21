@@ -10,6 +10,7 @@
 // TODO: Integration with Master branch after MIDI module function correctly.
 var app = angular.module('pancakeApp');
 app.controller('EditorCtrl', function($scope, $modal, $notification, $timeout, loginHandler) {
+	console.log("Editor Ctrl");
 
   $notification.smile('Press Start!', 'and wait a second.. then you can composite your own music');
 
@@ -26,7 +27,7 @@ app.controller('EditorCtrl', function($scope, $modal, $notification, $timeout, l
       albumArt: '',
       albumArtName: '',
       MidiFile: '',
-      owner: (loginHandler.getID() || 'guest')
+      owner: loginHandler.getName()
     };
   $scope.emit = function(event) {
     noteList.addLast(event);
@@ -652,22 +653,6 @@ var semaphore = (function() {
 // MIDI에 sendEvent를 하는 것
 var MidiController = (function() {
 
-  // 강호가 만든 MIDI 모듈이 들어갈 자리.
-  // 해당 모듈은 MidiController 내부에서만 존재하고,
-  // 외부로 노출된 sendEvent가 위임해주는 이벤트를 미디 파일에 기록한다.
-  var module = MIDI.loadPlugin(function() {
-    module = MIDI;
-    module.noteOn = (function(func) {
-      return function(note) {
-        return func(0, note, 60, 0);
-      };
-    }(MIDI.noteOn));
-    module.noteOff = (function(func) {
-      return function(note) {
-        return func(0, note, 0);
-      };
-    }(MIDI.noteOff));
-  });
   // 48 = C, 49 = C#, ..., B = 59
   // 넘겨줄 데이터 = pitch, dt
   var pitch = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B', 'C'];
@@ -694,18 +679,18 @@ var MidiController = (function() {
       // when people access editor directly, editor needs time for load plugin.
       // error occurs before loading is done. so check it and flow away.
       try {
-        module.noteOn(pitchSound[note]);
+        MIDI.noteOn(0, pitchSound[note], 60, 0);
       } catch (e) {}
     },
     noteOff: function(note) {
       try {
-        module.noteOff(pitchSound[note]);
+        MIDI.noteOff(0, pitchSound[note], 0);
       } catch (e) {}
     },
     pushEvent: function(event) {
       // event = { data, pitch, st, et }
-      composition.noteOn(parseInt((event.startTime - lastTime)*98), pitchSound[event.pitch]);
-      composition.noteOff(parseInt((event.endTime - event.startTime)*98), pitchSound[event.pitch]);
+      composition.noteOn(parseInt(event.startTime - lastTime)*50, pitchSound[event.pitch]);
+      composition.noteOff(parseInt(event.endTime - event.startTime)*50, pitchSound[event.pitch]);
     }
   };
 }( ));
@@ -715,9 +700,9 @@ var MidiController = (function() {
  */
 var composition = (function(){
 
-  var formatType=0;
+  var formatType=1;
   var trackCount=1; //단일트랙 파일인 경우만 생각함
-  var timeDivision=480; //Ticks per Beat;
+  var timeDivision=250; //Ticks per Beat;
   var header = {
     'formatType': formatType,
     'trackCount': trackCount,
@@ -725,7 +710,7 @@ var composition = (function(){
   };
   var tracks=[];
   tracks[0] = [];
-  //tracks[0].push({
+  tracks[0].push({deltaTime:0,channel:0,type:'channel',subtype:'programChange',programNumber:1});
   return {
     noteOn: function(deltaTime, noteNumber){
       var event={};

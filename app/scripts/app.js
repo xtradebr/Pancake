@@ -1,6 +1,6 @@
 'use strict';
 
-var app = angular.module('pancakeApp', ['ui.bootstrap', 'ezfb', 'infinite-scroll', 'ui.keypress', 'notifications']);
+var app = angular.module('pancakeApp', ['ui.bootstrap', 'ezfb', 'infinite-scroll', 'ui.keypress', 'notifications', 'ngClipboard']);
 
 //uploadSocket that stays open from entering the site until leaving the site
 var uploadSocket = io.connect('http://www.soundpancake.io');
@@ -49,7 +49,7 @@ app.config(function ($routeProvider, $locationProvider, $FBProvider) {
       title: 'Dashboard',
       isInEditor: false
     })
-    .when('/share', {
+    .when('/share/:id', {
       templateUrl: 'views/sharing.html',
       controller: 'ShareCtrl',
       title: 'Sharing',
@@ -60,10 +60,12 @@ app.config(function ($routeProvider, $locationProvider, $FBProvider) {
     });
 });
 
-app.run(function ($rootScope, $location, $modal, loginHandler) {
+app.run(function ($rootScope, $location, $modal, loginHandler, listhandler) {
   $rootScope.$on('$routeChangeSuccess', function(event, currentRoute) {
     $rootScope.title = currentRoute.title;
     $rootScope.isInEditor = currentRoute.isInEditor;
+
+    listhandler.clear();
 
     if($rootScope.isInEditor){
       $('body').css('margin-bottom',0);
@@ -101,3 +103,4 @@ app.run(function ($rootScope, $location, $modal, loginHandler) {
   uploadSocket.emit('test', 'hello uploadSocket-world');
 
 });
+

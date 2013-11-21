@@ -61,6 +61,7 @@ io.set("transports", ["xhr-polling", "jsonp-polling"]);
 
 io.sockets.on("connection", function(socket) {
 	console.log("a connection created!");
+	socket.emit("clear", "hello");
 	var client = redis.createClient(redis_port, redis_host);
 	var key = randomString();
 	var keys = client.get("keys")
@@ -71,10 +72,10 @@ io.sockets.on("connection", function(socket) {
 		}
 	}
 
-//	socket.on("test", function(data) {
-//		console.log("Testing socket connection");
-//		console.log(data);
-//	});
+	socket.on("test", function(data) {
+		console.log("Testing socket connection");
+		console.log(data);
+	});
 
 //	Deprecated
 //	socket.on("open", function(file_name) {
@@ -117,6 +118,7 @@ io.sockets.on("connection", function(socket) {
 					like: 0
 				};
 		socket.emit('startSave');
+console.log("ready to Save midi");
 		socket.on("midiData", function (data) {
 			MidiObject.id = data.owner + "_" +  key
 			MidiObject.title = data.title;
@@ -126,6 +128,10 @@ io.sockets.on("connection", function(socket) {
 			MidiObject.description = data.description;
 			MidiObject.data = data.MidiFile;
 			MidiObject.MidiFileId = key;
+                        MidiObject.share = 'http://www.soundpancake.io/#!/share/'+MidiObject.id;
+			
+			console.log("save image file");			
+
 			var fileName = __dirname + '/tmp/albumArt/' + data.albumArtName;
 			fs.open(fileName, 'a', 0755, function(err, fd) { //'a': probably append mode; 0755: permission
 	        		if (err) throw err;
@@ -138,6 +144,8 @@ io.sockets.on("connection", function(socket) {
 			MongoClient.connect("mongodb://54.250.177.173/soundpancake", function (err, db) {
 				if(err) throw err;
 				var collection = db.collection("MIDIObject");
+				console.log("Saved Midi is ");
+				console.log(MidiObject);
 				collection.insert(MidiObject, function(err, res) {});
 				db.close();
 			});
@@ -156,6 +164,21 @@ app.configure(function () {
 	//app.use(express.logger());
 });
 
+app.post("/api/query/share", function(req, res) {
+	var res_send = [];
+	var MC = MongoClient.connect("mongodb://54.250.177.173/soundpancake", function(err, db) {
+
+	if(err) throw err;
+	var collection = db.collection("MIDIObject");
+	
+	collection.find({id: req.body.id}).toArray(function(err, re) {
+		if(err) throw err;
+		res.send(200, {list: re});
+		db.close();
+		});
+
+	});
+});
 
 app.post("/api/query/playlist", function(req, res) {
 	var res_send = []
@@ -176,22 +199,19 @@ app.post("/api/query/musiclist", function(req, res) {
 		if(err) throw err;
 		var collection = db.collection("MIDIObject");
 		if(!req.body.name) {
-			var res_send = []
-			collection.find().skip(10*(req.body.page -1)).limit(10).toArray(function(err, re) {
-				if(err) throw err;
-				console.log(re);
-				if (req.body.id) {
-					for (var i = 0; i < re.lenghth; i ++) {
-						if (req.body.userid == re[i].title.split("_")[0]) {
-							res_send.push(o);
-						}
-					}
-				} else {
-					res_send = re;
-				}
-				db.close();		
-				res.send(200, {list: res_send});
-			});
+			if(req.body.userid) {
+				collection.find({owner: req.body.userid}).skip(10*(req.body.page -1)).limit(10).toArray(function(err, re) {
+					if (err) throw err;
+					res.send(200, {list: re});
+					db.close();
+				});
+			} else {
+				collection.find().skip(10*(req.body.page -1)).limit(10).toArray(function(err, re) {
+					if (err) throw err;
+					res.send(200, {list: re});
+					db.close();
+				});
+			}
 		} else {
 			collection.find({title: req.body.name}).skip(10*(req.body.page -1)).limit(10).toArray(function(err, re) {
 				if(err) throw err;
@@ -237,3 +257,7 @@ app.post("/api/auth/fb", function(req, res) {
 
 console.log("listening on port 80/3000");
 
+app.get("/midi/*", function(req, res) {
+	console.log("response about " + req.params[0]);
+	res.sendfile('./midi/'+req.params[0]);
+});

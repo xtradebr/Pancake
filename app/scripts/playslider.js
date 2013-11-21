@@ -1,10 +1,10 @@
 'use strict';
 
 var player;
-MIDI.loadPlugin(function(){
-    player = MIDI.Player;
-    MIDIPlayerPercentage(player);
-});
+MIDI.loadPlugin(function () {
+	player = MIDI.Player;
+	MIDIPlayerPercentage(player);
+})
 
 function MIDIPlayerPercentage (player) {
 
@@ -129,8 +129,9 @@ app.controller('PlaySliderCtrl', function($rootScope) {
   }
 
   $rootScope.stopbutton = function () {
-	player.loadFile("http://soundpancake.io/midi/nibi.mid",player.start);
-    player.stop();
+	player.loadFile("http://www.soundpancake.io/midi/nibi.mid",MIDI.Player.start);
+	console.dir(player);
+	//player.stop();
   };
   $rootScope.playbutton = function () {
     if (!player.playing){
@@ -194,6 +195,7 @@ app.controller('PlaySliderCtrl', function($rootScope) {
         console.dir($rootScope.list[panelNum]);
         loadSong($rootScope.list[panelNum]);
         $rootScope.playSelect(panelNum);
+	$rootScope.nowPlaying=panelNum;
         return;
       }
       if (panelNum < 0){
@@ -214,7 +216,8 @@ app.controller('PlaySliderCtrl', function($rootScope) {
       $('#scroll').find('.playing').removeClass('playing').find('img').css({'border-style': 'none'});
       //gets the new panel to enlarge and do the operation
       $('#scroll').find('.panel:eq('+panelNum+')').addClass('playing').find('img').css({'border-style': 'dotted', 'border-width': 2, 'border-color': 'black'});
-      //set the nowSelected to the selected panel number
+      //set nowPlaying
+	$rootScope.nowPlaying = panelNum;
   };
 
 });

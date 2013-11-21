@@ -13,7 +13,7 @@
             <div class="playlist scrollable">
                 <h2><strong>Hot 3 Player</strong></h2>
                 <ol>
-                    <div ng-repeat="player in listhandler.items">
+                    <div ng-repeat="player in list">
                         <li><span> {{ player.name }} </span></li>
                         <span class="description"> {{ player.description | shortString:100 }} </span>
                         <player-component></player-component>
