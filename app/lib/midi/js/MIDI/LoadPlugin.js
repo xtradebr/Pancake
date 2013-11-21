@@ -1,10 +1,14 @@
 /*
-
-	MIDI.loadPlugin(callback, type);
-	-------------------------------------
-	https://github.com/mudx/MIDI.js
-	-------------------------------------
-
+	-----------------------------------------------------------
+	MIDI.loadPlugin : 0.1.2 : 01/18/2012
+	-----------------------------------------------------------
+	https://github.com/mudcube/MIDI.js
+	-----------------------------------------------------------
+	MIDI.loadPlugin({
+		instrument: "acoustic_grand_piano", // or 1 (default)
+		instruments: [ "acoustic_grand_piano", "acoustic_guitar_nylon" ], // or multiple instruments
+		callback: function() { }
+	});
 */
 
 if (typeof (MIDI) === "undefined") var MIDI = {};
@@ -12,84 +16,161 @@ if (typeof (MIDI.Soundfont) === "undefined") MIDI.Soundfont = {};
 
 (function() { "use strict";
 
-var plugins = { "#webaudio": true, "#html5": true, "#java": true, "#flash": true };
+// Turn on to get "onprogress" event. XHR will not work from file://
+var USE_XHR = false; 
+var USE_JAZZMIDI = false;
 
-MIDI.loadPlugin = function(callback, instrument) {
-	var type, loader;
-	var instrument = instrument || "";
+MIDI.loadPlugin = function(conf) {
+	if (typeof(conf) === "function") conf = {
+		callback: conf
+	};
+	/// Get the instrument name.
+	var instruments = conf.instruments || conf.instrument || "acoustic_grand_piano";
+	if (typeof(instruments) !== "object") instruments = [ instruments ];
+	///
+	for (var n = 0; n < instruments.length; n ++) {
+		var instrument = instruments[n];
+		if (typeof(instrument) === "number") {
+			instruments[n] = MIDI.GeneralMIDI.byId[instrument];
+		}
+	};
+	///
+	MIDI.soundfontUrl = conf.soundfontUrl || MIDI.soundfontUrl || "./lib/midi/soundfont/";
+	/// Detect the best type of audio to use.
 	MIDI.audioDetect(function(types) {
+		var api = "";
 		// use the most appropriate plugin if not specified
-		if (typeof(type) === 'undefined') {
-			if (plugins[window.location.hash]) {
-				type = window.location.hash;
-			} else {
-				type = "";
-			}
+		if (apis[conf.api]) {
+			api = conf.api;
+		} else if (apis[window.location.hash.substr(1)]) {
+			api = window.location.hash.substr(1);
+		} else if (USE_JAZZMIDI && navigator.requestMIDIAccess) {
+			api = "webmidi";
+		} else if (window.webkitAudioContext) { // Chrome
+			api = "webaudio";
+		} else if (window.Audio) { // Firefox
+			api = "audiotag";
+		} else { // Internet Explorer
+			api = "flash";
 		}
-		if (type === "") {
-			var isSafari = navigator.userAgent.toLowerCase().indexOf("safari") !== -1;
-			if (window.webkitAudioContext) { // Chrome
-				type = "#webaudio";
-			} else if (window.Audio && isSafari === false) { // Firefox
-				type = "#html5";
-			} else { // Safari and Internet Explorer
-				type = "#flash";
-			}
-		}
+		///
+		if (!connect[api]) return;
 		// use audio/ogg when supported
 		var filetype = types["audio/ogg"] ? "ogg" : "mp3";
 		// load the specified plugin
-		switch (type) {
-			case "#java":
-				// works well cross-browser, and highly featured, but required Java machine to startup
-				if (loader) loader.message("Soundfont (500KB)<br>Java Interface...");
-				MIDI.Java.connect(callback);
-				break;
-			case "#flash":
-				// fairly quick, but requires loading of individual MP3s
-				if (loader) loader.message("Soundfont (2MB)<br>Flash Interface...");
-				DOMLoader.script.add({
-					src: "./inc/SoundManager2/script/soundmanager2.js",
-					verify: "SoundManager",
-					callback: function () {
-						MIDI.Flash.connect(callback);
-					}
-				});
-				break;
-			case "#html5":
-				// works well in Firefox
-				DOMLoader.sendRequest({
-					url: "./soundfont/soundfont-" + filetype + ".js",
-					callback: function (response) {
-						MIDI.Soundfont = JSON.parse(response.responseText);
-						if (loader) loader.message("Downloading: 100%<br>Processing...");
-						MIDI.HTML5.connect(callback);
-					}, 
-					progress: function (evt) {
-						var percent = evt.loaded / 1719931 * 100 >> 0;
-						if (loader) loader.message("Downloading: " + (percent + "%"));
-					}
-				});
-				break;
-			case "#webaudio":
-				// works well in Chrome
-				DOMLoader.sendRequest({
-					url: "./soundfont/soundfont-" + filetype + instrument + ".js",
-					callback: function(response) {
-						MIDI.Soundfont = JSON.parse(response.responseText);
-						if (loader) loader.message("Downloading: 100%<br>Processing...");
-						MIDI.WebAudioAPI.connect(callback);
-					}, 
-					progress: function (evt) {
-						var percent = evt.loaded / 1719931 * 100 >> 0;
-						if (loader) loader.message("Downloading: " + (percent + "%"));
-					}
-				});
-				break;
-			default:
-				break;
+		connect[api](filetype, instruments, conf);
+	});
+};
+
+///
+
+var connect = {};
+
+connect.webmidi = function(filetype, instruments, conf) {
+	MIDI.lang="Web MIDI API";
+	MIDI.WebMIDI.connect(conf);
+};
+
+connect.flash = function(filetype, instruments, conf) {
+	// fairly quick, but requires loading of individual MP3s (more http requests).
+	MIDI.lang="Flash API";
+	DOMLoader.script.add({
+		src: conf.soundManagerUrl || "./lib/midi/inc/SoundManager2/script/soundmanager2.js",
+		verify: "SoundManager",
+		callback: function () {
+			MIDI.Flash.connect(instruments, conf);
 		}
 	});
+};
+
+connect.audiotag = function(filetype, instruments, conf) {
+	MIDI.lang="HTML5 Audio API";
+	// works ok, kinda like a drunken tuna fish, across the board.
+	var queue = createQueue({
+		items: instruments,
+		getNext: function(instrumentId) {
+			if (USE_XHR) {
+				DOMLoader.sendRequest({
+					url: MIDI.soundfontUrl + instrumentId + "-" + filetype + ".js",
+					onprogress: getPercent,
+					onload: function (response) {
+						MIDI.Soundfont[instrumentId] = JSON.parse(response.responseText);
+						if (MIDI.loader) MIDI.loader.update(null, "Downloading", 100);
+						queue.getNext();
+					}
+				});
+			} else {
+				DOMLoader.script.add({
+					src: MIDI.soundfontUrl + instrumentId + "-" + filetype + ".js",
+					verify: "MIDI.Soundfont." + instrumentId,
+					callback: function() {
+						if (MIDI.loader) MIDI.loader.update(null, "Downloading...", 100);
+						queue.getNext();
+					}
+				});
+			}
+		},
+		onComplete: function() {
+			MIDI.AudioTag.connect(conf);
+		}
+	});
+};
+
+connect.webaudio = function(filetype, instruments, conf) {
+	MIDI.lang="Web Audio API";
+	// works awesome! safari and chrome support
+	var queue = createQueue({
+		items: instruments,
+		getNext: function(instrumentId) {
+			if (USE_XHR) {
+				DOMLoader.sendRequest({
+					url: MIDI.soundfontUrl + instrumentId + "-" + filetype + ".js",
+					onprogress: getPercent,
+					onload: function(response) {
+						MIDI.Soundfont[instrumentId] = JSON.parse(response.responseText);
+						if (MIDI.loader) MIDI.loader.update(null, "Downloading...", 100);
+						queue.getNext();
+					}
+				});
+			} else {
+				DOMLoader.script.add({
+					src: MIDI.soundfontUrl + instrumentId + "-" + filetype + ".js",
+					verify: "MIDI.Soundfont." + instrumentId,
+					callback: function() {
+						if (MIDI.loader) MIDI.loader.update(null, "Downloading...", 100);
+						queue.getNext();
+					}
+				});
+			}
+		},
+		onComplete: function() {
+			MIDI.WebAudio.connect(conf);
+		}
+	});
+};
+
+/// Helpers
+
+var apis = {
+	"webmidi": true, 
+	"webaudio": true, 
+	"audiotag": true, 
+	"flash": true 
+};
+
+
+var createQueue = function(conf) {
+	var self = {};
+	self.queue = [];
+	for (var key in conf.items) {
+		self.queue.push(conf.items[key]);
+	}
+	self.getNext = function() {
+		if (!self.queue.length) return conf.onComplete();
+		conf.getNext(self.queue.shift());
+	};
+	setTimeout(self.getNext, 1);
+	return self;
 };
 
 })();
